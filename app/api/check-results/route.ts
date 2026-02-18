@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         console.log(`[CheckResults] Found ${pendingLegs.length} pending legs to check.`)
 
         // 2. Get unique sports from pending legs
-        const uniqueSports = [...new Set(pendingLegs.map(l => l.sport).filter(Boolean))]
+        const uniqueSports = Array.from(new Set(pendingLegs.map(l => l.sport).filter(Boolean)))
         console.log(`[CheckResults] Sports to check: ${uniqueSports.join(', ')}`)
 
         // 3. Fetch scores for each sport
@@ -148,7 +148,7 @@ export async function POST(request: Request) {
         }
 
         // 6. Now resolve full parlays — check if all legs are done
-        const affectedParlayIds = [...new Set(pendingLegs.map(l => l.parlay_id))]
+        const affectedParlayIds = Array.from(new Set(pendingLegs.map(l => l.parlay_id)))
 
         for (const parlayId of affectedParlayIds) {
             const allLegs = await prisma.parlayLeg.findMany({
