@@ -62,12 +62,6 @@ export default function LoginPage() {
                     <CardDescription>
                         Sign in to access AI-powered sports betting parlays.
                     </CardDescription>
-                    {!process.env.NEXT_PUBLIC_SUPABASE_URL && (
-                        <div className="bg-red-500/10 text-red-500 text-xs p-2 rounded mt-2 border border-red-500/20">
-                            <b>DEBUG:</b> Env Vars Missing in Browser!<br />
-                            This means <code>NEXT_PUBLIC_SUPABASE_URL</code> is not set in Vercel.
-                        </div>
-                    )}
                 </CardHeader>
                 <CardContent>
                     <Tabs defaultValue="signin" className="w-full">
