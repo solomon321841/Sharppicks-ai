@@ -25,27 +25,35 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Invalid tier or configuration' }, { status: 400 })
         }
 
-        // 3. Get or Create Stripe Customer
+        // 3. Get or Create User in DB and Stripe
         let stripeCustomerId = null
 
-        const userProfile = await prisma.user.findUnique({
+        // Ensure user exists in our DB first (Sync from Supabase)
+        const profile = await prisma.user.upsert({
             where: { id: user.id },
-            select: { stripe_customer_id: true, email: true }
+            update: {}, // No updates needed if exists
+            create: {
+                id: user.id,
+                email: user.email!,
+                full_name: user.user_metadata?.full_name || null,
+                avatar_url: user.user_metadata?.avatar_url || null,
+                subscription_tier: 'free'
+            }
         })
 
-        if (userProfile?.stripe_customer_id) {
-            stripeCustomerId = userProfile.stripe_customer_id
+        if (profile.stripe_customer_id) {
+            stripeCustomerId = profile.stripe_customer_id
         } else {
             // Create new customer in Stripe
             const customer = await stripe.customers.create({
-                email: userProfile?.email || user.email!,
+                email: user.email!,
                 metadata: {
                     userId: user.id
                 }
             })
             stripeCustomerId = customer.id
 
-            // Save to DB immediately
+            // Save to DB
             await prisma.user.update({
                 where: { id: user.id },
                 data: { stripe_customer_id: stripeCustomerId }
