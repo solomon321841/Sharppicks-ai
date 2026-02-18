@@ -148,7 +148,7 @@ export function Hero() {
                     </div>
 
                     {/* Headline */}
-                    <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1] text-white">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.1] text-white">
                         Outsmart the <br className="hidden sm:inline" />
                         <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-700">Sportsbooks</span>
                     </h1>
@@ -200,8 +200,8 @@ export function Hero() {
                                 {/* Subtle Noise Texture */}
                                 <div className="absolute inset-0 opacity-20 bg-[url('/noise.png')] mix-blend-overlay pointer-events-none" />
 
-                                <div className="p-8 md:p-12 grid md:grid-cols-2 gap-12 items-center relative z-10">
-                                    <div className="space-y-8">
+                                <div className="p-6 sm:p-8 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
+                                    <div className="space-y-6 md:space-y-8">
                                         {/* Badge */}
                                         <div className="inline-flex items-center gap-2 text-emerald-400 text-[10px] font-mono font-bold tracking-widest uppercase bg-emerald-950/50 px-3 py-1.5 rounded border border-emerald-500/30 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]">
                                             <span className="relative flex h-2 w-2">
@@ -212,7 +212,7 @@ export function Hero() {
                                         </div>
 
                                         <div className="space-y-4">
-                                            <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9]">
+                                            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9]">
                                                 Value <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Edge</span><br />
                                                 Detected
                                             </h3>

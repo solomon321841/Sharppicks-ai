@@ -150,7 +150,7 @@ export function ParlayBuilder() {
 
     return (
         <div className="grid gap-6 lg:grid-cols-12 items-start lg:h-[calc(100vh-140px)] lg:min-h-[500px]">
-            <div className="lg:col-span-7 h-full flex flex-col order-1 lg:order-none">
+            <div className="lg:col-span-7 h-full flex flex-col">
                 <div className="flex-1 space-y-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-4 shadow-2xl flex flex-col">
 
                     {/* Compact Header */}

@@ -336,7 +336,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                         </div>
                                                         {awayOdds && (
                                                             <span className={cn(
-                                                                "text-xs font-mono font-bold shrink-0 px-2 py-0.5 rounded-md tabular-nums",
+                                                                "text-xs font-mono font-bold shrink-0 px-3 py-1.5 rounded-md tabular-nums transition-colors",
                                                                 awayOdds > 0
                                                                     ? "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/15"
                                                                     : "text-zinc-400 bg-white/[0.04]"
@@ -347,14 +347,14 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                     </div>
 
                                                     {/* VS Divider */}
-                                                    <div className="flex items-center gap-3 py-0.5">
+                                                    <div className="flex items-center gap-3 py-1">
                                                         <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
                                                         <span className="text-[8px] font-bold text-zinc-700 tracking-widest">VS</span>
                                                         <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
                                                     </div>
 
                                                     {/* Home Team */}
-                                                    <div className="flex items-center justify-between gap-2 py-1.5">
+                                                    <div className="flex items-center justify-between gap-2 py-2">
                                                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
                                                             <TeamLogo name={game.home} className="w-7 h-7 shrink-0" />
                                                             <span className="text-[13px] font-semibold text-zinc-200 truncate">
@@ -363,7 +363,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                         </div>
                                                         {homeOdds && (
                                                             <span className={cn(
-                                                                "text-xs font-mono font-bold shrink-0 px-2 py-0.5 rounded-md tabular-nums",
+                                                                "text-xs font-mono font-bold shrink-0 px-3 py-1.5 rounded-md tabular-nums transition-colors",
                                                                 homeOdds > 0
                                                                     ? "text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/15"
                                                                     : "text-zinc-400 bg-white/[0.04]"

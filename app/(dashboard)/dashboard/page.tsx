@@ -128,7 +128,7 @@ export default function DashboardPage() {
     const tierInfo = getTierFeatures(tier || 'free')
 
     return (
-        <div className="relative h-full flex flex-col space-y-2 lg:space-y-3 overflow-hidden px-4 md:px-0 py-2">
+        <div className="relative h-auto lg:h-full flex flex-col space-y-2 lg:space-y-3 lg:overflow-hidden px-4 md:px-0 py-2">
             {/* Simplified Animated Mesh Background for Performance */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                 <motion.div
@@ -190,9 +190,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Stats Overview: Ultra Compact */}
-            <div className="grid gap-3 md:grid-cols-3 relative z-10 shrink-0 h-24">
+            <div className="grid gap-3 md:grid-cols-3 relative z-10 shrink-0 h-auto md:h-24">
                 <DashboardCard glowColor="emerald" delay={0.1} className="py-0" contentClassName="p-4">
-                    <div className="flex flex-col h-full justify-between">
+                    <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
                             <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">All-Time Record</div>
                             <Activity className="w-4 h-4 text-emerald-500/50" />
@@ -214,7 +214,7 @@ export default function DashboardPage() {
                 </DashboardCard>
 
                 <DashboardCard glowColor="blue" delay={0.2} className="py-0" contentClassName="p-4">
-                    <div className="flex flex-col h-full justify-between">
+                    <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
                             <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">Accuracy</div>
                             <Activity className="w-4 h-4 text-blue-500/50" />
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                 </DashboardCard>
 
                 <DashboardCard glowColor={tier !== 'free' ? 'gold' : 'zinc'} delay={0.3} className="py-0" contentClassName="p-4">
-                    <div className="flex flex-col h-full justify-between">
+                    <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
                             <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">License</div>
                             <Activity className={`w-4 h-4 ${tier !== 'free' ? 'text-yellow-500/50' : 'text-zinc-500/50'}`} />
@@ -254,9 +254,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Tactical Content Grid: Viewport-Filling */}
-            <div className="flex-1 min-h-0 grid gap-3 lg:gap-4 lg:grid-cols-12 relative z-10 pb-2">
+            <div className="shrink-0 lg:flex-1 lg:min-h-0 grid gap-3 lg:gap-4 lg:grid-cols-12 relative z-10 pb-2">
                 {/* Recent Logs: Fluid container */}
-                <DashboardCard className="lg:col-span-7 flex flex-col h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
+                <DashboardCard className="lg:col-span-7 flex flex-col h-[400px] lg:h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex items-center justify-between border-b border-white/5 pb-3 shrink-0">
                             <div className="flex items-center gap-2">
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                 </DashboardCard>
 
                 {/* The Ticket: Optimized for vertical space */}
-                <div className="lg:col-span-5 h-full min-h-0">
+                <div className="lg:col-span-5 h-auto lg:h-full lg:min-h-0">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

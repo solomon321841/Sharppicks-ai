@@ -94,7 +94,7 @@ export function SportSelector({ value, onChange, schedule }: {
                             onClick={() => toggleSport(sport.id)}
                             className={`
                                 relative flex flex-col items-center justify-center py-3 px-1 rounded-2xl border transition-all duration-500 group overflow-hidden
-                                w-[calc(33.33%-5px)] sm:w-[calc(14.28%-5px)]
+                                w-[calc(33.33%-6px)] sm:w-[calc(20%-6px)] md:w-[calc(14.28%-6px)]
                                 ${!available
                                     ? 'opacity-40 grayscale cursor-not-allowed border-zinc-800/50'
                                     : 'cursor-pointer hover:border-emerald-500/30 hover:bg-white/[0.03]'}

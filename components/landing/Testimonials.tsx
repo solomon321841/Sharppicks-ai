@@ -171,7 +171,7 @@ export function Testimonials() {
 
                 {/* Stats Bar - Unified Glass Bar */}
                 <FadeIn delay={0.6} className="mt-24 max-w-5xl mx-auto">
-                    <div className="relative bg-zinc-900/30 border border-white/10 rounded-2xl p-8 md:p-12 backdrop-blur-md overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
+                    <div className="relative bg-zinc-900/30 border border-white/10 rounded-2xl p-6 md:p-12 backdrop-blur-md overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
                         {/* Shimmer overlay */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-100%] animate-[shimmer_3s_infinite]" />
 
