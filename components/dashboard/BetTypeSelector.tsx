@@ -30,7 +30,7 @@ export function BetTypeSelector({ value, onChange, disabledTypes = [] }: {
                 <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Bet Types</label>
             </div>
 
-            <div className="grid grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                 {betTypes.map((type) => {
                     const isSelected = value.includes(type.id);
                     const isDisabled = disabledTypes.includes(type.id);

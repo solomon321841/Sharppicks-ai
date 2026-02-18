@@ -80,7 +80,7 @@ export default function DailyPicksPage() {
     return (
         <div className="space-y-8 animate-in fade-in duration-700">
             <div className="flex flex-col gap-2">
-                <h2 className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+                <h2 className="text-2xl sm:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
                     Daily Picks <span className="text-emerald-500">.</span>
                 </h2>
                 <p className="text-muted-foreground font-medium flex items-center gap-2">

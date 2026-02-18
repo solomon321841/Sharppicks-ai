@@ -94,7 +94,7 @@ export function SportSelector({ value, onChange, schedule }: {
                             onClick={() => toggleSport(sport.id)}
                             className={`
                                 relative flex flex-col items-center justify-center py-3 px-1 rounded-2xl border transition-all duration-500 group overflow-hidden
-                                w-[calc(25%-5px)] sm:w-[calc(14.28%-5px)]
+                                w-[calc(33.33%-5px)] sm:w-[calc(14.28%-5px)]
                                 ${!available
                                     ? 'opacity-40 grayscale cursor-not-allowed border-zinc-800/50'
                                     : 'cursor-pointer hover:border-emerald-500/30 hover:bg-white/[0.03]'}
@@ -109,7 +109,7 @@ export function SportSelector({ value, onChange, schedule }: {
                             )}
 
                             <div className={`
-                                w-12 h-12 mb-1.5 rounded-full flex items-center justify-center relative transition-transform duration-500
+                                w-14 h-14 sm:w-12 sm:h-12 mb-1.5 rounded-full flex items-center justify-center relative transition-transform duration-500
                                 ${available ? 'group-hover:scale-110 group-hover:rotate-3' : ''}
                                 ${isSelected && available
                                     ? 'bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 shadow-[0_0_15px_-5px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30'
