@@ -5,7 +5,7 @@ import { kv } from '@vercel/kv'
 const BASE_URL = 'https://api.the-odds-api.com/v4/sports'
 
 export async function getOdds(sports: string[], region: string = 'us', markets: string = 'h2h,spreads,totals', disableTimeFilter: boolean = false) {
-    const apiKey = process.env.ODDS_API_KEY || '8b1fbf0dc1c1f546fb324f291eadb26e'
+    const apiKey = process.env.ODDS_API_KEY || '5a09e10850e12620758a1b6f4504d87f'
     if (!apiKey) {
         throw new Error('Missing ODDS_API_KEY. MOCK DATA IS DISABLED.')
     }

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 // 1. Test Odds API Key
 async function testOdds() {
     console.log('Testing Odds API Key...')
-    const apiKey = '8b1fbf0dc1c1f546fb324f291eadb26e' // The one we hardcoded
+    const apiKey = '5a09e10850e12620758a1b6f4504d87f' // The one we hardcoded
     const url = `https://api.the-odds-api.com/v4/sports/basketball_nba/odds?apiKey=${apiKey}&regions=us&markets=h2h&oddsFormat=american`
 
     try {
