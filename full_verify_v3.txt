@@ -1,0 +1,2960 @@
+Generating La Liga Parlay (Risk 7) for verification...
+[API] Fetching odds for soccer_spain_la_liga (Region: us)...
+[API] Props detected. Switching to Event-Based Fetch for soccer_spain_la_liga...
+[API] Found 7 games for soccer_spain_la_liga. Fetching props for each...
+[API] Failed to fetch props for game 6fe99394fb94560e4e225bc12861e09d: 429
+[API] Failed to fetch props for game 5da3aabbca16750dd654f6a340f1e721: 429
+[API] Failed to fetch props for game b5085cc1ac313f645a18bbc9ac58d7df: 429
+[AI Input Data Sample]: [
+  {
+    "home": "Getafe",
+    "away": "Villarreal",
+    "bookmakers": [
+      {
+        "key": "h2h",
+        "outcomes": [
+          {
+            "name": "Getafe",
+            "price": -220
+          },
+          {
+            "name": "Villarreal",
+            "price": 750
+          },
+          {
+            "name": "Draw",
+            "price": 260
+          }
+        ]
+      },
+      {
+        "key": "player_goal_scorer_anytime",
+        "outcomes": [
+          {
+            "name": "Yes",
+            "description": "Hugo Lopez",
+            "price": 450
+          },
+          {
+            "name": "Yes",
+            "description": "Tani Oluwaseyi",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Tajon Buchanan",
+            "price": 750
+          },
+          {
+            "name": "Yes",
+            "description": "Pape Alassane Gueye",
+            "price": 1000
+          },
+          {
+            "name": "Yes",
+            "description": "Daniel Parejo",
+            "price": 1400
+          },
+          {
+            "name": "Yes",
+            "description": "Alfonso Pedraza",
+            "price": 1400
+          },
+          {
+            "name": "Yes",
+            "description": "Luis Milla",
+            "price": 1600
+          },
+          {
+            "name": "Yes",
+            "description": "Renato Veiga",
+            "price": 1700
+          },
+          {
+            "name": "Yes",
+            "description": "Santiago Mourino",
+            "price": 2000
+          },
+          {
+            "name": "Yes",
+            "description": "Juan Iglesias Sanchez",
+            "price": 2200
+          },
+          {
+            "name": "Yes",
+            "description": "Pau Navarro",
+            "price": 3500
+          },
+          {
+            "name": "Yes",
+            "description": "Domingos Duarte",
+            "price": 3500
+          },
+          {
+            "name": "Yes",
+            "description": "Djene Dakonam",
+            "price": 4000
+          },
+          {
+            "name": "Yes",
+            "description": "Abdel Abqar",
+            "price": 5000
+          }
+        ]
+      },
+      {
+        "key": "player_shots",
+        "outcomes": [
+          {
+            "name": "Over",
+            "description": "Luis Milla",
+            "price": 950,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Mauro Arambarri",
+            "price": 3000,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Luis Milla",
+            "price": 150,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Mauro Arambarri",
+            "price": 800,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Tani Oluwaseyi",
+            "price": 1300,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Hugo Lopez",
+            "price": 1400,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Tani Oluwaseyi",
+            "price": -330,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Hugo Lopez",
+            "price": -320,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Pape Alassane Gueye",
+            "price": -210,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Tajon Buchanan",
+            "price": -165,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Alfonso Pedraza",
+            "price": 115,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Santiago Mourino",
+            "price": 125,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Renato Veiga",
+            "price": 130,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Juan Iglesias Sanchez",
+            "price": 135,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Abdel Abqar",
+            "price": 150,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Parejo",
+            "price": 155,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Djene Dakonam",
+            "price": 310,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Domingos Duarte",
+            "price": 310,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Pau Navarro",
+            "price": 350,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Luis Milla",
+            "price": 4500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Mauro Arambarri",
+            "price": 230,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Tani Oluwaseyi",
+            "price": 430,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Hugo Lopez",
+            "price": 460,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Pape Alassane Gueye",
+            "price": 800,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Tajon Buchanan",
+            "price": 1100,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Mauro Arambarri",
+            "price": -210,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Hugo Lopez",
+            "price": 135,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Tani Oluwaseyi",
+            "price": 135,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Pape Alassane Gueye",
+            "price": 230,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Tajon Buchanan",
+            "price": 300,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Alfonso Pedraza",
+            "price": 700,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Santiago Mourino",
+            "price": 750,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Renato Veiga",
+            "price": 800,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Juan Iglesias Sanchez",
+            "price": 850,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Abdel Abqar",
+            "price": 850,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Parejo",
+            "price": 950,
+            "point": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "home": "Sevilla",
+    "away": "Alavés",
+    "bookmakers": [
+      {
+        "key": "h2h",
+        "outcomes": [
+          {
+            "name": "Alavés",
+            "price": 300
+          },
+          {
+            "name": "Sevilla",
+            "price": 110
+          },
+          {
+            "name": "Draw",
+            "price": 200
+          }
+        ]
+      },
+      {
+        "key": "player_assists",
+        "outcomes": [
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": 330,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jose Angel Carmona",
+            "price": 360,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": 380,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": 380,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": 380,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": 400,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": 440,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": 460,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": 470,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Lucien Agoume",
+            "price": 470,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Gabriel Suazo",
+            "price": 480,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Antonio Blanco",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Djibril Sow",
+            "price": 550,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Guridi",
+            "price": 550,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": 650,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 700,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Cesar Azpilicueta",
+            "price": 750,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Kike Salas",
+            "price": 950,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Victor Parada",
+            "price": 1000,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": 1000,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Youssef Enriquez",
+            "price": 1100,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Tenaglia Nahuel",
+            "price": 1300,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Pacheco",
+            "price": 1400,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Nemanja Gudelj",
+            "price": 1400,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Batista Mendy",
+            "price": 1700,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Fabio Cardoso",
+            "price": 1900,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Facundo Garces",
+            "price": 2000,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Ander Guevara Lajo",
+            "price": 4000,
+            "point": 0.5
+          }
+        ]
+      },
+      {
+        "key": "player_goal_scorer_anytime",
+        "outcomes": [
+          {
+            "name": "Yes",
+            "description": "Akor Jerome Adams",
+            "price": 155
+          },
+          {
+            "name": "Yes",
+            "description": "Isaac Romero",
+            "price": 195
+          },
+          {
+            "name": "Yes",
+            "description": "Lucas Boye",
+            "price": 220
+          },
+          {
+            "name": "Yes",
+            "description": "Alexis Sánchez",
+            "price": 220
+          },
+          {
+            "name": "Yes",
+            "description": "Chidera Ejuke",
+            "price": 270
+          },
+          {
+            "name": "Yes",
+            "description": "Ramon Martinez",
+            "price": 280
+          },
+          {
+            "name": "Yes",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": 330
+          },
+          {
+            "name": "Yes",
+            "description": "Juanlu Sanchez",
+            "price": 350
+          },
+          {
+            "name": "Yes",
+            "description": "Joan Jordan",
+            "price": 370
+          },
+          {
+            "name": "Yes",
+            "description": "Djibril Sow",
+            "price": 400
+          },
+          {
+            "name": "Yes",
+            "description": "Adnan Januzaj",
+            "price": 410
+          },
+          {
+            "name": "Yes",
+            "description": "Abde Rebbach",
+            "price": 420
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Guridi",
+            "price": 430
+          },
+          {
+            "name": "Yes",
+            "description": "Carles Alena Castillo",
+            "price": 490
+          },
+          {
+            "name": "Yes",
+            "description": "Calebe Goncalves",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Gabriel Suazo",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Denis Suarez",
+            "price": 600
+          },
+          {
+            "name": "Yes",
+            "description": "Nemanja Gudelj",
+            "price": 600
+          },
+          {
+            "name": "Yes",
+            "description": "Kike Salas",
+            "price": 650
+          },
+          {
+            "name": "Yes",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 750
+          },
+          {
+            "name": "Yes",
+            "description": "Edu Altozano",
+            "price": 850
+          },
+          {
+            "name": "Yes",
+            "description": "Jose Angel Carmona",
+            "price": 850
+          },
+          {
+            "name": "Yes",
+            "description": "Lucien Agoume",
+            "price": 950
+          },
+          {
+            "name": "Yes",
+            "description": "Batista Mendy",
+            "price": 1100
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Pacheco",
+            "price": 1100
+          },
+          {
+            "name": "Yes",
+            "description": "Youssef Enriquez",
+            "price": 1100
+          },
+          {
+            "name": "Yes",
+            "description": "Cesar Azpilicueta",
+            "price": 1300
+          },
+          {
+            "name": "Yes",
+            "description": "Fabio Cardoso",
+            "price": 1300
+          },
+          {
+            "name": "Yes",
+            "description": "Facundo Garces",
+            "price": 1400
+          },
+          {
+            "name": "Yes",
+            "description": "Tenaglia Nahuel",
+            "price": 1500
+          },
+          {
+            "name": "Yes",
+            "description": "Antonio Blanco",
+            "price": 1700
+          },
+          {
+            "name": "Yes",
+            "description": "Ander Guevara Lajo",
+            "price": 1800
+          },
+          {
+            "name": "Yes",
+            "description": "Victor Parada",
+            "price": 2200
+          }
+        ]
+      },
+      {
+        "key": "player_shots",
+        "outcomes": [
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": -310,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": -140,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": -125,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": -115,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": -105,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": 140,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": 160,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": 165,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": 195,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": 190,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": 210,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": 320,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": 320,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 320,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": 340,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Jon Guridi",
+            "price": 470,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Nemanja Gudelj",
+            "price": 600,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Kike Salas",
+            "price": 600,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Batista Mendy",
+            "price": 700,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Djibril Sow",
+            "price": 950,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Antonio Blanco",
+            "price": 950,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Ander Guevara Lajo",
+            "price": 1100,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Jose Angel Carmona",
+            "price": 1300,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Youssef Enriquez",
+            "price": 1500,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Fabio Cardoso",
+            "price": 1500,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": -130,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": 185,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": 210,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": 220,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": 250,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": 380,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": 440,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": 450,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": 500,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": 500,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": 550,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 950,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": 950,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": 1000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": 1000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Jon Guridi",
+            "price": 1500,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Nemanja Gudelj",
+            "price": 2000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Kike Salas",
+            "price": 2000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": 170,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": 450,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": 490,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": 550,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": 650,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": 1000,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": 1100,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": 1200,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": 1400,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": 1400,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": 1500,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": 2700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 2700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": 2700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": 3000,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": 360,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": 1000,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": 1100,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": 1200,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": 1500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": 2500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": 3000,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": 3000,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": 3300,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": 3500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": 3500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": -7000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": -2500,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": -2000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": -2000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": -1500,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": -1100,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": -900,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": -900,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": -750,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": -700,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": -650,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Guridi",
+            "price": -340,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Kike Salas",
+            "price": -280,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Nemanja Gudelj",
+            "price": -270,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Batista Mendy",
+            "price": -230,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Djibril Sow",
+            "price": -200,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Antonio Blanco",
+            "price": -195,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Ander Guevara Lajo",
+            "price": -180,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jose Angel Carmona",
+            "price": -165,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Youssef Enriquez",
+            "price": -150,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Fabio Cardoso",
+            "price": -150,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Lucien Agoume",
+            "price": -140,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Cesar Azpilicueta",
+            "price": -110,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Tenaglia Nahuel",
+            "price": 100,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Facundo Garces",
+            "price": 105,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Victor Parada",
+            "price": 105,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Gabriel Suazo",
+            "price": 110,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Pacheco",
+            "price": 110,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Isaac Romero",
+            "price": -1000,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Akor Jerome Adams",
+            "price": -400,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Adnan Januzaj",
+            "price": -360,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Ramon Martinez",
+            "price": -330,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Lucas Boye",
+            "price": -300,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Alexis Sánchez",
+            "price": -220,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Miguel Angel Sierra Ortega",
+            "price": -190,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Chidera Ejuke",
+            "price": -190,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Abde Rebbach",
+            "price": -160,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Juanlu Sanchez",
+            "price": -160,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Calebe Goncalves",
+            "price": -150,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Carles Alena Castillo",
+            "price": -105,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Denis Suarez",
+            "price": -105,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Ibanez Lumbreras",
+            "price": 100,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Joan Jordan",
+            "price": 100,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Guridi",
+            "price": 130,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Kike Salas",
+            "price": 170,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Nemanja Gudelj",
+            "price": 170,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Batista Mendy",
+            "price": 200,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Djibril Sow",
+            "price": 250,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Antonio Blanco",
+            "price": 250,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Ander Guevara Lajo",
+            "price": 280,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jose Angel Carmona",
+            "price": 320,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Fabio Cardoso",
+            "price": 360,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Youssef Enriquez",
+            "price": 370,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Lucien Agoume",
+            "price": 390,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Cesar Azpilicueta",
+            "price": 500,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Tenaglia Nahuel",
+            "price": 600,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Victor Parada",
+            "price": 600,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Facundo Garces",
+            "price": 650,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Gabriel Suazo",
+            "price": 650,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Pacheco",
+            "price": 650,
+            "point": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "home": "Real Madrid",
+    "away": "Real Sociedad",
+    "bookmakers": [
+      {
+        "key": "h2h",
+        "outcomes": [
+          {
+            "name": "Real Madrid",
+            "price": -330
+          },
+          {
+            "name": "Real Sociedad",
+            "price": 650
+          },
+          {
+            "name": "Draw",
+            "price": 480
+          }
+        ]
+      },
+      {
+        "key": "player_assists",
+        "outcomes": [
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": 155,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": 165,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": 185,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": 200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": 200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": 210,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": 210,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": 270,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Fran Garcia",
+            "price": 270,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": 300,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": 330,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": 340,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Fernandez Carreras",
+            "price": 380,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": 410,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "David Alaba",
+            "price": 420,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Dani Carvajal",
+            "price": 470,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Diego Aguado",
+            "price": 490,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Ferland Mendy",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": 500,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Edouardo Camavinga",
+            "price": 600,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": 650,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": 650,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": 700,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": 700,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": 800,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": 850,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Raul Asencio del Rosario",
+            "price": 850,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Sergio Gomez Martin",
+            "price": 1000,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Martin Vicente",
+            "price": 1000,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Odriozola",
+            "price": 1100,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Aritz Elustondo Iribarria",
+            "price": 1200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Benat Turrientes",
+            "price": 1200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Aihen Munoz",
+            "price": 1200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Aranburu",
+            "price": 1200,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Gorrotxategi",
+            "price": 1400,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Dean Huijsen",
+            "price": 1400,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Duje Caleta Car",
+            "price": 1900,
+            "point": 0.5
+          },
+          {
+            "name": "Over",
+            "description": "Igor Zubeldia",
+            "price": 1900,
+            "point": 0.5
+          }
+        ]
+      },
+      {
+        "key": "player_goal_scorer_anytime",
+        "outcomes": [
+          {
+            "name": "Yes",
+            "description": "Kylian Mbappe",
+            "price": -270
+          },
+          {
+            "name": "Yes",
+            "description": "Gonzalo Garcia",
+            "price": -115
+          },
+          {
+            "name": "Yes",
+            "description": "Vinicius Junior",
+            "price": -105
+          },
+          {
+            "name": "Yes",
+            "description": "Arda Guler",
+            "price": 130
+          },
+          {
+            "name": "Yes",
+            "description": "Franco Mastantuono",
+            "price": 130
+          },
+          {
+            "name": "Yes",
+            "description": "Rodrygo Silva de Goes",
+            "price": 140
+          },
+          {
+            "name": "Yes",
+            "description": "Brahim Diaz",
+            "price": 155
+          },
+          {
+            "name": "Yes",
+            "description": "Orri Steinn Oskarsson",
+            "price": 280
+          },
+          {
+            "name": "Yes",
+            "description": "Mikel Oyarzabal",
+            "price": 280
+          },
+          {
+            "name": "Yes",
+            "description": "Federico Valverde",
+            "price": 370
+          },
+          {
+            "name": "Yes",
+            "description": "Ander Barrenetxea",
+            "price": 380
+          },
+          {
+            "name": "Yes",
+            "description": "Goncalo Guedes",
+            "price": 380
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Karrikaburu",
+            "price": 390
+          },
+          {
+            "name": "Yes",
+            "description": "Daniel Ceballos",
+            "price": 480
+          },
+          {
+            "name": "Yes",
+            "description": "Edouardo Camavinga",
+            "price": 480
+          },
+          {
+            "name": "Yes",
+            "description": "Arsen Zakharyan",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Arkaitz Mariezkurrena",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Trent Alexander-Arnold",
+            "price": 500
+          },
+          {
+            "name": "Yes",
+            "description": "Carlos Soler",
+            "price": 550
+          },
+          {
+            "name": "Yes",
+            "description": "Alvaro Fernandez Carreras",
+            "price": 600
+          },
+          {
+            "name": "Yes",
+            "description": "Pablo Marin Tejada",
+            "price": 600
+          },
+          {
+            "name": "Yes",
+            "description": "Aurelien Tchouameni",
+            "price": 600
+          },
+          {
+            "name": "Yes",
+            "description": "David Alaba",
+            "price": 650
+          },
+          {
+            "name": "Yes",
+            "description": "Dean Huijsen",
+            "price": 650
+          },
+          {
+            "name": "Yes",
+            "description": "Dani Carvajal",
+            "price": 750
+          },
+          {
+            "name": "Yes",
+            "description": "Diego Aguado",
+            "price": 750
+          },
+          {
+            "name": "Yes",
+            "description": "Benat Turrientes",
+            "price": 850
+          },
+          {
+            "name": "Yes",
+            "description": "Fran Garcia",
+            "price": 900
+          },
+          {
+            "name": "Yes",
+            "description": "Ferland Mendy",
+            "price": 1100
+          },
+          {
+            "name": "Yes",
+            "description": "Alvaro Odriozola",
+            "price": 1200
+          },
+          {
+            "name": "Yes",
+            "description": "Sergio Gomez Martin",
+            "price": 1200
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Gorrotxategi",
+            "price": 1200
+          },
+          {
+            "name": "Yes",
+            "description": "Raul Asencio del Rosario",
+            "price": 1300
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Martin Vicente",
+            "price": 1800
+          },
+          {
+            "name": "Yes",
+            "description": "Aritz Elustondo Iribarria",
+            "price": 2200
+          },
+          {
+            "name": "Yes",
+            "description": "Aihen Munoz",
+            "price": 2500
+          },
+          {
+            "name": "Yes",
+            "description": "Jon Aranburu",
+            "price": 2500
+          },
+          {
+            "name": "Yes",
+            "description": "Duje Caleta Car",
+            "price": 2500
+          },
+          {
+            "name": "Yes",
+            "description": "Igor Zubeldia",
+            "price": 2700
+          }
+        ]
+      },
+      {
+        "key": "player_shots",
+        "outcomes": [
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": -550,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": -165,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": -150,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": -150,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": 100,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": 130,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": 195,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": 220,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": 240,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": 340,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": 350,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": 490,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": 600,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": 650,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": 650,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": 700,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": 1000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": 1000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": 1000,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": 1200,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Dean Huijsen",
+            "price": 1500,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Benat Turrientes",
+            "price": 1700,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Edouardo Camavinga",
+            "price": 1800,
+            "point": 4
+          },
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": -7000,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": -1500,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": -1250,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": -1100,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": -700,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": -600,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": -400,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": -330,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": -290,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": -230,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": -220,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": -180,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": -145,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": -140,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": -135,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": -130,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": -105,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": 100,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": 100,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": 115,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Dean Huijsen",
+            "price": 135,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Edouardo Camavinga",
+            "price": 155,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Benat Turrientes",
+            "price": 160,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Sergio Gomez Martin",
+            "price": 210,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Diego Aguado",
+            "price": 220,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "David Alaba",
+            "price": 270,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Fran Garcia",
+            "price": 330,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Raul Asencio del Rosario",
+            "price": 340,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Dani Carvajal",
+            "price": 340,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Fernandez Carreras",
+            "price": 340,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Martin Vicente",
+            "price": 360,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Aranburu",
+            "price": 410,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Aritz Elustondo Iribarria",
+            "price": 430,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Jon Gorrotxategi",
+            "price": 480,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Ferland Mendy",
+            "price": 550,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Duje Caleta Car",
+            "price": 600,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Aihen Munoz",
+            "price": 700,
+            "point": 2
+          },
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": -120,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": 280,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": 320,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": 330,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": 500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": 700,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": 1100,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": 1100,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": 1300,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": 2200,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": 2200,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": 3300,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": 4500,
+            "point": 6
+          },
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": -240,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": 130,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": 155,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": 150,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": 230,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": 310,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": 470,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": 500,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": 550,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": 850,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": 900,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": 1300,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": 1700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": 1700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": 1900,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": 1900,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": 2700,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": 3000,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": 3000,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": 3500,
+            "point": 5
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": -10000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": -10000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": -10000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": -7000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": -4000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": -2500,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": -2000,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": -1500,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": -1100,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": -1100,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": -900,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": -650,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": -600,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": -600,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": -550,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": -450,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": -380,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Dean Huijsen",
+            "price": -340,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Edouardo Camavinga",
+            "price": -300,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Benat Turrientes",
+            "price": -290,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Sergio Gomez Martin",
+            "price": -230,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Diego Aguado",
+            "price": -220,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "David Alaba",
+            "price": -185,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Fernandez Carreras",
+            "price": -160,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Fran Garcia",
+            "price": -155,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Raul Asencio del Rosario",
+            "price": -155,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Dani Carvajal",
+            "price": -155,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Martin Vicente",
+            "price": -145,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Aritz Elustondo Iribarria",
+            "price": -130,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Aranburu",
+            "price": -130,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Jon Gorrotxategi",
+            "price": -115,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Ferland Mendy",
+            "price": -105,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Duje Caleta Car",
+            "price": 105,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Aihen Munoz",
+            "price": 120,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Igor Zubeldia",
+            "price": 170,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Odriozola",
+            "price": 210,
+            "point": 1
+          },
+          {
+            "name": "Over",
+            "description": "Kylian Mbappe",
+            "price": -1500,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Franco Mastantuono",
+            "price": -400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Vinicius Junior",
+            "price": -350,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Gonzalo Garcia",
+            "price": -350,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Arda Guler",
+            "price": -230,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Rodrygo Silva de Goes",
+            "price": -190,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Brahim Diaz",
+            "price": -135,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Mikel Oyarzabal",
+            "price": -115,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Jon Karrikaburu",
+            "price": -105,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Orri Steinn Oskarsson",
+            "price": 130,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Goncalo Guedes",
+            "price": 130,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Federico Valverde",
+            "price": 175,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Trent Alexander-Arnold",
+            "price": 220,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Ander Barrenetxea",
+            "price": 230,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Arsen Zakharyan",
+            "price": 240,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Pablo Marin Tejada",
+            "price": 240,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Arkaitz Mariezkurrena",
+            "price": 320,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Carlos Soler",
+            "price": 340,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Daniel Ceballos",
+            "price": 340,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Aurelien Tchouameni",
+            "price": 400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Dean Huijsen",
+            "price": 470,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Edouardo Camavinga",
+            "price": 550,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Benat Turrientes",
+            "price": 550,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Sergio Gomez Martin",
+            "price": 750,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Diego Aguado",
+            "price": 850,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "David Alaba",
+            "price": 1100,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Dani Carvajal",
+            "price": 1400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Raul Asencio del Rosario",
+            "price": 1400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Fran Garcia",
+            "price": 1400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Alvaro Fernandez Carreras",
+            "price": 1400,
+            "point": 3
+          },
+          {
+            "name": "Over",
+            "description": "Jon Martin Vicente",
+            "price": 1500,
+            "point": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+[AI Optimization] Reduced 4 games to 4 minified inputs.
+[AI] Requesting analysis from Anthropic (Attempt 1/3)...
+Debug Attempt 1 | Risk: 7 | Legs: ["-550","+110","+390"]
+[AI] Requesting analysis from Anthropic (Attempt 2/3)...
+Debug Attempt 2 | Risk: 7 | Legs: ["-550","+330","+390"]
+[AI] Requesting analysis from Anthropic (Attempt 3/3)...
+Debug Attempt 3 | Risk: 7 | Legs: ["+330","-550","+390"]
+Generation failed: Error: AI failed validation after max attempts (3). Last Error: Risk Level 7 violation. Expected Balanced (>-500). Got odds: +330, -550, +390
+    at analyzePicks (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/lib/ai/analyzePicks.ts:359:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async generateParlay (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/lib/ai/generateParlay.ts:82:20)
+    at async main (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/scripts/verify-laliga-parlay.ts:29:24)

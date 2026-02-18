@@ -1,0 +1,572 @@
+[dotenv@17.3.1] injecting env (16) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+Testing getSchedule...
+[Schedule] Skipping cache - KV credentials missing
+[Schedule] Fetching fresh schedule from API...
+Schedule result: [
+  {
+    "sport": "americanfootball_nfl",
+    "gamesCount": 0,
+    "matchups": []
+  },
+  {
+    "sport": "basketball_nba",
+    "gamesCount": 0,
+    "matchups": []
+  },
+  {
+    "sport": "basketball_ncaab",
+    "gamesCount": 30,
+    "matchups": [
+      {
+        "id": "5cdf7ad5ad0742cde68a5264eab4b9c9",
+        "home": "Florida St Seminoles",
+        "away": "Boston College Eagles",
+        "time": "2026-02-17T23:00:00Z",
+        "h2h": [
+          {
+            "name": "Boston College Eagles",
+            "price": 586
+          },
+          {
+            "name": "Florida St Seminoles",
+            "price": -850
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 7
+      },
+      {
+        "id": "7771054bb31f63dc57f933d9916a1392",
+        "home": "Charleston Southern Buccaneers",
+        "away": "Gardner-Webb Bulldogs",
+        "time": "2026-02-17T23:00:00Z",
+        "h2h": [
+          {
+            "name": "Charleston Southern Buccaneers",
+            "price": -3000
+          },
+          {
+            "name": "Gardner-Webb Bulldogs",
+            "price": 1200
+          }
+        ],
+        "bestBook": "BetRivers",
+        "evScore": 99
+      },
+      {
+        "id": "5621581942c6b80b6498b1f5723d5371",
+        "home": "Buffalo Bulls",
+        "away": "Northern Illinois Huskies",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Buffalo Bulls",
+            "price": -425
+          },
+          {
+            "name": "Northern Illinois Huskies",
+            "price": 334
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 6.3
+      },
+      {
+        "id": "58531bf2b287bec48da2b40b998c6ef2",
+        "home": "Eastern Michigan Eagles",
+        "away": "Central Michigan Chippewas",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Central Michigan Chippewas",
+            "price": 200
+          },
+          {
+            "name": "Eastern Michigan Eagles",
+            "price": -240
+          }
+        ],
+        "bestBook": "DraftKings",
+        "evScore": 6.7
+      },
+      {
+        "id": "74c82fb23fb57e46926072c4d0d56cd0",
+        "home": "Xavier Musketeers",
+        "away": "Villanova Wildcats",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Villanova Wildcats",
+            "price": -185
+          },
+          {
+            "name": "Xavier Musketeers",
+            "price": 154
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 4.5
+      },
+      {
+        "id": "66a984c47de28d4de36aee6afcadcceb",
+        "home": "Purdue Boilermakers",
+        "away": "Michigan Wolverines",
+        "time": "2026-02-17T23:30:23Z",
+        "h2h": [
+          {
+            "name": "Michigan Wolverines",
+            "price": -146
+          },
+          {
+            "name": "Purdue Boilermakers",
+            "price": 122
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 4.1
+      },
+      {
+        "id": "df71900f3d765d68e0152d6b498b8679",
+        "home": "Western Michigan Broncos",
+        "away": "Akron Zips",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Akron Zips",
+            "price": -1400
+          },
+          {
+            "name": "Western Michigan Broncos",
+            "price": 836
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 12.2
+      },
+      {
+        "id": "d7813eb4e5e8d9402e5b026bd5678038",
+        "home": "Ohio Bobcats",
+        "away": "Ball State Cardinals",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Ball State Cardinals",
+            "price": 383
+          },
+          {
+            "name": "Ohio Bobcats",
+            "price": -500
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 6.4
+      },
+      {
+        "id": "08fe5da673f6b36d3aa3329c8ab8a4ff",
+        "home": "Bowling Green Falcons",
+        "away": "Kent State Golden Flashes",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Bowling Green Falcons",
+            "price": -152
+          },
+          {
+            "name": "Kent State Golden Flashes",
+            "price": 132
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 5.1
+      },
+      {
+        "id": "46a8b84e814bcfa39dc2d6189e9682b1",
+        "home": "Florida Gators",
+        "away": "South Carolina Gamecocks",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Florida Gators",
+            "price": -6500
+          },
+          {
+            "name": "South Carolina Gamecocks",
+            "price": 2000
+          }
+        ],
+        "bestBook": "DraftKings",
+        "evScore": 928
+      },
+      {
+        "id": "dcea6ccdcbb9724ba8ab1adcaf5c0a88",
+        "home": "SMU Mustangs",
+        "away": "Louisville Cardinals",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Louisville Cardinals",
+            "price": -185
+          },
+          {
+            "name": "SMU Mustangs",
+            "price": 154
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 4.2
+      },
+      {
+        "id": "185cc5fe17e5cfa9173c035ea3336871",
+        "home": "Massachusetts Minutemen",
+        "away": "Miami (OH) RedHawks",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Massachusetts Minutemen",
+            "price": 140
+          },
+          {
+            "name": "Miami (OH) RedHawks",
+            "price": -166
+          }
+        ],
+        "bestBook": "DraftKings",
+        "evScore": 4
+      },
+      {
+        "id": "6eca5f4d74c19c605747c3f2fca9cdf2",
+        "home": "NC State Wolfpack",
+        "away": "North Carolina Tar Heels",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "NC State Wolfpack",
+            "price": -275
+          },
+          {
+            "name": "North Carolina Tar Heels",
+            "price": 226
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 5.1
+      },
+      {
+        "id": "e8669a7c2754aa549f5774aff497d59b",
+        "home": "Rhode Island Rams",
+        "away": "Saint Louis Billikens",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Rhode Island Rams",
+            "price": 455
+          },
+          {
+            "name": "Saint Louis Billikens",
+            "price": -625
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 8.9
+      },
+      {
+        "id": "395476c72b82f8e034979c5f18bede1d",
+        "home": "UCF Knights",
+        "away": "TCU Horned Frogs",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "TCU Horned Frogs",
+            "price": 110
+          },
+          {
+            "name": "UCF Knights",
+            "price": -130
+          }
+        ],
+        "bestBook": "LowVig.ag",
+        "evScore": 3.8
+      },
+      {
+        "id": "e245b8ddb0eac5d67672bd34566275bd",
+        "home": "VCU Rams",
+        "away": "GW Revolutionaries",
+        "time": "2026-02-18T01:00:00Z",
+        "h2h": [
+          {
+            "name": "GW Revolutionaries",
+            "price": 235
+          },
+          {
+            "name": "VCU Rams",
+            "price": -290
+          }
+        ],
+        "bestBook": "Bovada",
+        "evScore": 7.3
+      },
+      {
+        "id": "2cf928f4e1171ec0d1cef58f8a5c1118",
+        "home": "Miami Hurricanes",
+        "away": "Virginia Tech Hokies",
+        "time": "2026-02-18T01:00:00Z",
+        "h2h": [
+          {
+            "name": "Miami Hurricanes",
+            "price": -360
+          },
+          {
+            "name": "Virginia Tech Hokies",
+            "price": 289
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 8.8
+      },
+      {
+        "id": "bb1321af76b324142bc572f5f62dde5a",
+        "home": "Wyoming Cowboys",
+        "away": "Fresno St Bulldogs",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Fresno St Bulldogs",
+            "price": 350
+          },
+          {
+            "name": "Wyoming Cowboys",
+            "price": -450
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 7.8
+      },
+      {
+        "id": "9e8b4942533f665ef5757aa7a045dc60",
+        "home": "Michigan St Spartans",
+        "away": "UCLA Bruins",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Michigan St Spartans",
+            "price": -455
+          },
+          {
+            "name": "UCLA Bruins",
+            "price": 350
+          }
+        ],
+        "bestBook": "LowVig.ag",
+        "evScore": 9.3
+      },
+      {
+        "id": "cfd8b8c4d3b8c81d9097b6f3c0dd9264",
+        "home": "Ohio State Buckeyes",
+        "away": "Wisconsin Badgers",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Ohio State Buckeyes",
+            "price": 102
+          },
+          {
+            "name": "Wisconsin Badgers",
+            "price": -122
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 3.7
+      },
+      {
+        "id": "489d663c0183761cf515b7887d61ff9b",
+        "home": "Tenn-Martin Skyhawks",
+        "away": "SE Missouri St Redhawks",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "SE Missouri St Redhawks",
+            "price": 125
+          },
+          {
+            "name": "Tenn-Martin Skyhawks",
+            "price": -145
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 4
+      },
+      {
+        "id": "d24d0e4b2e6fea28ddd5a3cb0d4f6c32",
+        "home": "New Mexico Lobos",
+        "away": "Air Force Falcons",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Air Force Falcons",
+            "price": 2000
+          },
+          {
+            "name": "New Mexico Lobos",
+            "price": -6500
+          }
+        ],
+        "bestBook": "DraftKings",
+        "evScore": 1803
+      },
+      {
+        "id": "900aa0dab3f0c801711765e352c3374f",
+        "home": "Kansas St Wildcats",
+        "away": "Baylor Bears",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Baylor Bears",
+            "price": -180
+          },
+          {
+            "name": "Kansas St Wildcats",
+            "price": 150
+          }
+        ],
+        "bestBook": "FanDuel",
+        "evScore": 5.4
+      },
+      {
+        "id": "845cb9de00d05e6094e934a50989e91d",
+        "home": "Kentucky Wildcats",
+        "away": "Georgia Bulldogs",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Georgia Bulldogs",
+            "price": 250
+          },
+          {
+            "name": "Kentucky Wildcats",
+            "price": -310
+          }
+        ],
+        "bestBook": "Bovada",
+        "evScore": 6.4
+      },
+      {
+        "id": "ea7780fe99a91e917987557769331431",
+        "home": "Iowa Hawkeyes",
+        "away": "Nebraska Cornhuskers",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Iowa Hawkeyes",
+            "price": -122
+          },
+          {
+            "name": "Nebraska Cornhuskers",
+            "price": 102
+          }
+        ],
+        "bestBook": "LowVig.ag",
+        "evScore": 3.9
+      },
+      {
+        "id": "a6dc038cae4af947c2334d9a41acda9b",
+        "home": "Texas Longhorns",
+        "away": "LSU Tigers",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "LSU Tigers",
+            "price": 550
+          },
+          {
+            "name": "Texas Longhorns",
+            "price": -800
+          }
+        ],
+        "bestBook": "BetRivers",
+        "evScore": 14.1
+      },
+      {
+        "id": "fba2ac1b8d8689b928fb134a3c29acba",
+        "home": "San Diego St Aztecs",
+        "away": "Grand Canyon Antelopes",
+        "time": "2026-02-18T03:00:00Z",
+        "h2h": [
+          {
+            "name": "Grand Canyon Antelopes",
+            "price": 310
+          },
+          {
+            "name": "San Diego St Aztecs",
+            "price": -395
+          }
+        ],
+        "bestBook": "BetOnline.ag",
+        "evScore": 7.1
+      },
+      {
+        "id": "59ded394d77bbd940d0b3093e639da06",
+        "home": "San José St Spartans",
+        "away": "Nevada Wolf Pack",
+        "time": "2026-02-18T03:00:00Z",
+        "h2h": [
+          {
+            "name": "Nevada Wolf Pack",
+            "price": -700
+          },
+          {
+            "name": "San José St Spartans",
+            "price": 500
+          }
+        ],
+        "bestBook": "DraftKings",
+        "evScore": 5.5
+      },
+      {
+        "id": "08bb7e3d200edc45748efb1dc0c1a910",
+        "home": "Oregon Ducks",
+        "away": "Minnesota Golden Gophers",
+        "time": "2026-02-18T03:30:00Z",
+        "h2h": [
+          {
+            "name": "Minnesota Golden Gophers",
+            "price": 164
+          },
+          {
+            "name": "Oregon Ducks",
+            "price": -198
+          }
+        ],
+        "bestBook": "Bovada",
+        "evScore": 5.5
+      },
+      {
+        "id": "f0415f93b38f4f03598cbd79368a4c6d",
+        "home": "Arizona St Sun Devils",
+        "away": "Texas Tech Red Raiders",
+        "time": "2026-02-18T04:00:00Z",
+        "h2h": [
+          {
+            "name": "Arizona St Sun Devils",
+            "price": 310
+          },
+          {
+            "name": "Texas Tech Red Raiders",
+            "price": -395
+          }
+        ],
+        "bestBook": "BetUS",
+        "evScore": 5.1
+      }
+    ]
+  },
+  {
+    "sport": "icehockey_nhl",
+    "gamesCount": 0,
+    "matchups": []
+  },
+  {
+    "sport": "soccer_epl",
+    "gamesCount": 0,
+    "matchups": []
+  }
+]

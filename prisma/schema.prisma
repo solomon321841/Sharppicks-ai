@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                  String    @unique
+  full_name              String?
+  avatar_url             String?
+  subscription_tier      String    @default("free") // 'free'|'tier1'|'tier2'|'tier3'
+  subscription_status    String?   // 'active'|'trialing'|'canceled'|'past_due'
+  stripe_customer_id     String?   @unique
+  stripe_subscription_id String?   @unique
+  trial_ends_at          DateTime?
+  created_at             DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+
+  parlays     Parlay[]
+  bet_history BetHistory[]
+
+  @@map("users")
+}
+
+model Parlay {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String   @db.Uuid
+  parlay_type      String   // 'daily'|'custom'
+  sports           String[] // ['NFL','NBA']
+  risk_level       Int?
+  num_legs         Int?
+  bet_types        String[] // ['moneyline','spread','totals']
+  total_odds       String?
+  potential_payout Decimal? @db.Decimal(10, 2)
+  ai_confidence    Int?
+  is_daily         Boolean  @default(false)
+  post_date        DateTime? @db.Timestamptz(6)
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+
+  user        User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  legs        ParlayLeg[]
+  bet_history BetHistory[] // A parlay can be bet on by the creator (or others if shared?)
+  daily_pick  DailyPick?
+
+  @@map("parlays")
+}
+
+model ParlayLeg {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parlay_id    String    @db.Uuid
+  sport        String
+  team         String
+  opponent     String?
+  bet_type     String
+  line         String?
+  odds         String?
+  game_time    DateTime? @db.Timestamptz(6)
+  ai_reasoning String?
+  player       String?
+  result       String?   @default("pending")
+
+  parlay Parlay @relation(fields: [parlay_id], references: [id], onDelete: Cascade)
+
+  @@map("parlay_legs")
+}
+
+model BetHistory {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String   @db.Uuid
+  parlay_id    String?  @db.Uuid
+  stake_amount Decimal? @db.Decimal(10, 2)
+  sportsbook   String?  // 'FanDuel', 'DraftKings', etc.
+  result       String?  @default("pending")
+  profit       Decimal? @db.Decimal(10, 2)
+  created_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  user   User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  parlay Parlay? @relation(fields: [parlay_id], references: [id])
+
+  @@map("bet_history")
+}
+
+model DailyPick {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parlay_id   String?  @unique @db.Uuid
+  sport_focus String?
+  post_date   DateTime @db.Date
+  result      String?  @default("pending")
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  parlay Parlay? @relation(fields: [parlay_id], references: [id])
+
+  @@map("daily_picks")
+}

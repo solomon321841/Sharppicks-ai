@@ -1,0 +1,941 @@
+[dotenv@17.3.1] injecting env (16) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Testing getSchedule...
+[Schedule] Fetching fresh schedule from API...
+Schedule result: [
+  {
+    "sport": "americanfootball_nfl",
+    "gamesCount": 0,
+    "matchups": []
+  },
+  {
+    "sport": "basketball_nba",
+    "gamesCount": 13,
+    "matchups": [
+      {
+        "id": "c93f72cb146ef69c7bd4a79f03481123",
+        "home": "Washington Wizards",
+        "away": "Indiana Pacers",
+        "time": "2026-02-20T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Indiana Pacers",
+            "price": -172
+          },
+          {
+            "name": "Washington Wizards",
+            "price": 144
+          }
+        ]
+      },
+      {
+        "id": "d647541d42648749f3bde601547fa1be",
+        "home": "Philadelphia 76ers",
+        "away": "Atlanta Hawks",
+        "time": "2026-02-20T00:10:00Z",
+        "h2h": [
+          {
+            "name": "Atlanta Hawks",
+            "price": 166
+          },
+          {
+            "name": "Philadelphia 76ers",
+            "price": -198
+          }
+        ]
+      },
+      {
+        "id": "24a92d49df82923f29b3e9cda4d57446",
+        "home": "Cleveland Cavaliers",
+        "away": "Brooklyn Nets",
+        "time": "2026-02-20T00:10:00Z",
+        "h2h": [
+          {
+            "name": "Brooklyn Nets",
+            "price": 570
+          },
+          {
+            "name": "Cleveland Cavaliers",
+            "price": -820
+          }
+        ]
+      },
+      {
+        "id": "97031eee2ea39d890bf5046a1c57c7a7",
+        "home": "Charlotte Hornets",
+        "away": "Houston Rockets",
+        "time": "2026-02-20T00:10:00Z",
+        "h2h": [
+          {
+            "name": "Charlotte Hornets",
+            "price": 120
+          },
+          {
+            "name": "Houston Rockets",
+            "price": -142
+          }
+        ]
+      },
+      {
+        "id": "0ea61c4bb159036d242d6aa077216586",
+        "home": "New York Knicks",
+        "away": "Detroit Pistons",
+        "time": "2026-02-20T00:40:00Z",
+        "h2h": [
+          {
+            "name": "Detroit Pistons",
+            "price": 146
+          },
+          {
+            "name": "New York Knicks",
+            "price": -174
+          }
+        ]
+      },
+      {
+        "id": "537f72a12ccf54596ce42c638bacb485",
+        "home": "Chicago Bulls",
+        "away": "Toronto Raptors",
+        "time": "2026-02-20T01:10:00Z",
+        "h2h": [
+          {
+            "name": "Chicago Bulls",
+            "price": 166
+          },
+          {
+            "name": "Toronto Raptors",
+            "price": -198
+          }
+        ]
+      },
+      {
+        "id": "d34f8e76f10dd65a684c9bd6301e667e",
+        "home": "San Antonio Spurs",
+        "away": "Phoenix Suns",
+        "time": "2026-02-20T01:40:00Z",
+        "h2h": [
+          {
+            "name": "Phoenix Suns",
+            "price": 240
+          },
+          {
+            "name": "San Antonio Spurs",
+            "price": -295
+          }
+        ]
+      },
+      {
+        "id": "7bb1dc8e7e0b6a77195533729951d187",
+        "home": "Golden State Warriors",
+        "away": "Boston Celtics",
+        "time": "2026-02-20T03:10:00Z",
+        "h2h": [
+          {
+            "name": "Boston Celtics",
+            "price": -164
+          },
+          {
+            "name": "Golden State Warriors",
+            "price": 138
+          }
+        ]
+      },
+      {
+        "id": "fc4ef6fdb917bca80f99940665442e96",
+        "home": "Sacramento Kings",
+        "away": "Orlando Magic",
+        "time": "2026-02-20T03:10:00Z",
+        "h2h": [
+          {
+            "name": "Orlando Magic",
+            "price": -650
+          },
+          {
+            "name": "Sacramento Kings",
+            "price": 480
+          }
+        ]
+      },
+      {
+        "id": "13c088a4f279e674bf80e4cb06d231a9",
+        "home": "Los Angeles Clippers",
+        "away": "Denver Nuggets",
+        "time": "2026-02-20T03:40:00Z",
+        "h2h": [
+          {
+            "name": "Denver Nuggets",
+            "price": -166
+          },
+          {
+            "name": "Los Angeles Clippers",
+            "price": 140
+          }
+        ]
+      },
+      {
+        "id": "fde066653cf72796682157aeae55c1e3",
+        "home": "Memphis Grizzlies",
+        "away": "Utah Jazz",
+        "time": "2026-02-21T00:10:00Z",
+        "h2h": [
+          {
+            "name": "Memphis Grizzlies",
+            "price": -188
+          },
+          {
+            "name": "Utah Jazz",
+            "price": 158
+          }
+        ]
+      },
+      {
+        "id": "8b76ff37aae273884a7ea6ce7f8d1aa6",
+        "home": "Minnesota Timberwolves",
+        "away": "Dallas Mavericks",
+        "time": "2026-02-21T00:40:00Z",
+        "h2h": [
+          {
+            "name": "Dallas Mavericks",
+            "price": 480
+          },
+          {
+            "name": "Minnesota Timberwolves",
+            "price": -650
+          }
+        ]
+      },
+      {
+        "id": "2007c2367cb16289e11f34463016e147",
+        "home": "New Orleans Pelicans",
+        "away": "Milwaukee Bucks",
+        "time": "2026-02-21T01:10:00Z",
+        "h2h": [
+          {
+            "name": "Milwaukee Bucks",
+            "price": 146
+          },
+          {
+            "name": "New Orleans Pelicans",
+            "price": -174
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sport": "basketball_ncaab",
+    "gamesCount": 30,
+    "matchups": [
+      {
+        "id": "5cdf7ad5ad0742cde68a5264eab4b9c9",
+        "home": "Florida St Seminoles",
+        "away": "Boston College Eagles",
+        "time": "2026-02-17T23:00:00Z",
+        "h2h": [
+          {
+            "name": "Boston College Eagles",
+            "price": 586
+          },
+          {
+            "name": "Florida St Seminoles",
+            "price": -850
+          }
+        ]
+      },
+      {
+        "id": "7771054bb31f63dc57f933d9916a1392",
+        "home": "Charleston Southern Buccaneers",
+        "away": "Gardner-Webb Bulldogs",
+        "time": "2026-02-17T23:00:00Z",
+        "h2h": [
+          {
+            "name": "Charleston Southern Buccaneers",
+            "price": -3000
+          },
+          {
+            "name": "Gardner-Webb Bulldogs",
+            "price": 1200
+          }
+        ]
+      },
+      {
+        "id": "5621581942c6b80b6498b1f5723d5371",
+        "home": "Buffalo Bulls",
+        "away": "Northern Illinois Huskies",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Buffalo Bulls",
+            "price": -425
+          },
+          {
+            "name": "Northern Illinois Huskies",
+            "price": 334
+          }
+        ]
+      },
+      {
+        "id": "58531bf2b287bec48da2b40b998c6ef2",
+        "home": "Eastern Michigan Eagles",
+        "away": "Central Michigan Chippewas",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Central Michigan Chippewas",
+            "price": 200
+          },
+          {
+            "name": "Eastern Michigan Eagles",
+            "price": -240
+          }
+        ]
+      },
+      {
+        "id": "74c82fb23fb57e46926072c4d0d56cd0",
+        "home": "Xavier Musketeers",
+        "away": "Villanova Wildcats",
+        "time": "2026-02-17T23:30:00Z",
+        "h2h": [
+          {
+            "name": "Villanova Wildcats",
+            "price": -185
+          },
+          {
+            "name": "Xavier Musketeers",
+            "price": 154
+          }
+        ]
+      },
+      {
+        "id": "66a984c47de28d4de36aee6afcadcceb",
+        "home": "Purdue Boilermakers",
+        "away": "Michigan Wolverines",
+        "time": "2026-02-17T23:30:23Z",
+        "h2h": [
+          {
+            "name": "Michigan Wolverines",
+            "price": -146
+          },
+          {
+            "name": "Purdue Boilermakers",
+            "price": 122
+          }
+        ]
+      },
+      {
+        "id": "df71900f3d765d68e0152d6b498b8679",
+        "home": "Western Michigan Broncos",
+        "away": "Akron Zips",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Akron Zips",
+            "price": -1400
+          },
+          {
+            "name": "Western Michigan Broncos",
+            "price": 836
+          }
+        ]
+      },
+      {
+        "id": "d7813eb4e5e8d9402e5b026bd5678038",
+        "home": "Ohio Bobcats",
+        "away": "Ball State Cardinals",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Ball State Cardinals",
+            "price": 383
+          },
+          {
+            "name": "Ohio Bobcats",
+            "price": -500
+          }
+        ]
+      },
+      {
+        "id": "08fe5da673f6b36d3aa3329c8ab8a4ff",
+        "home": "Bowling Green Falcons",
+        "away": "Kent State Golden Flashes",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Bowling Green Falcons",
+            "price": -152
+          },
+          {
+            "name": "Kent State Golden Flashes",
+            "price": 132
+          }
+        ]
+      },
+      {
+        "id": "46a8b84e814bcfa39dc2d6189e9682b1",
+        "home": "Florida Gators",
+        "away": "South Carolina Gamecocks",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Florida Gators",
+            "price": -6500
+          },
+          {
+            "name": "South Carolina Gamecocks",
+            "price": 2000
+          }
+        ]
+      },
+      {
+        "id": "dcea6ccdcbb9724ba8ab1adcaf5c0a88",
+        "home": "SMU Mustangs",
+        "away": "Louisville Cardinals",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Louisville Cardinals",
+            "price": -185
+          },
+          {
+            "name": "SMU Mustangs",
+            "price": 154
+          }
+        ]
+      },
+      {
+        "id": "185cc5fe17e5cfa9173c035ea3336871",
+        "home": "Massachusetts Minutemen",
+        "away": "Miami (OH) RedHawks",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Massachusetts Minutemen",
+            "price": 140
+          },
+          {
+            "name": "Miami (OH) RedHawks",
+            "price": -166
+          }
+        ]
+      },
+      {
+        "id": "6eca5f4d74c19c605747c3f2fca9cdf2",
+        "home": "NC State Wolfpack",
+        "away": "North Carolina Tar Heels",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "NC State Wolfpack",
+            "price": -275
+          },
+          {
+            "name": "North Carolina Tar Heels",
+            "price": 226
+          }
+        ]
+      },
+      {
+        "id": "e8669a7c2754aa549f5774aff497d59b",
+        "home": "Rhode Island Rams",
+        "away": "Saint Louis Billikens",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "Rhode Island Rams",
+            "price": 455
+          },
+          {
+            "name": "Saint Louis Billikens",
+            "price": -625
+          }
+        ]
+      },
+      {
+        "id": "395476c72b82f8e034979c5f18bede1d",
+        "home": "UCF Knights",
+        "away": "TCU Horned Frogs",
+        "time": "2026-02-18T00:00:00Z",
+        "h2h": [
+          {
+            "name": "TCU Horned Frogs",
+            "price": 110
+          },
+          {
+            "name": "UCF Knights",
+            "price": -130
+          }
+        ]
+      },
+      {
+        "id": "e245b8ddb0eac5d67672bd34566275bd",
+        "home": "VCU Rams",
+        "away": "GW Revolutionaries",
+        "time": "2026-02-18T01:00:00Z",
+        "h2h": [
+          {
+            "name": "GW Revolutionaries",
+            "price": 235
+          },
+          {
+            "name": "VCU Rams",
+            "price": -290
+          }
+        ]
+      },
+      {
+        "id": "2cf928f4e1171ec0d1cef58f8a5c1118",
+        "home": "Miami Hurricanes",
+        "away": "Virginia Tech Hokies",
+        "time": "2026-02-18T01:00:00Z",
+        "h2h": [
+          {
+            "name": "Miami Hurricanes",
+            "price": -360
+          },
+          {
+            "name": "Virginia Tech Hokies",
+            "price": 289
+          }
+        ]
+      },
+      {
+        "id": "bb1321af76b324142bc572f5f62dde5a",
+        "home": "Wyoming Cowboys",
+        "away": "Fresno St Bulldogs",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Fresno St Bulldogs",
+            "price": 350
+          },
+          {
+            "name": "Wyoming Cowboys",
+            "price": -450
+          }
+        ]
+      },
+      {
+        "id": "9e8b4942533f665ef5757aa7a045dc60",
+        "home": "Michigan St Spartans",
+        "away": "UCLA Bruins",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Michigan St Spartans",
+            "price": -455
+          },
+          {
+            "name": "UCLA Bruins",
+            "price": 350
+          }
+        ]
+      },
+      {
+        "id": "cfd8b8c4d3b8c81d9097b6f3c0dd9264",
+        "home": "Ohio State Buckeyes",
+        "away": "Wisconsin Badgers",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "Ohio State Buckeyes",
+            "price": 102
+          },
+          {
+            "name": "Wisconsin Badgers",
+            "price": -122
+          }
+        ]
+      },
+      {
+        "id": "489d663c0183761cf515b7887d61ff9b",
+        "home": "Tenn-Martin Skyhawks",
+        "away": "SE Missouri St Redhawks",
+        "time": "2026-02-18T01:30:00Z",
+        "h2h": [
+          {
+            "name": "SE Missouri St Redhawks",
+            "price": 125
+          },
+          {
+            "name": "Tenn-Martin Skyhawks",
+            "price": -145
+          }
+        ]
+      },
+      {
+        "id": "d24d0e4b2e6fea28ddd5a3cb0d4f6c32",
+        "home": "New Mexico Lobos",
+        "away": "Air Force Falcons",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Air Force Falcons",
+            "price": 2000
+          },
+          {
+            "name": "New Mexico Lobos",
+            "price": -6500
+          }
+        ]
+      },
+      {
+        "id": "900aa0dab3f0c801711765e352c3374f",
+        "home": "Kansas St Wildcats",
+        "away": "Baylor Bears",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Baylor Bears",
+            "price": -180
+          },
+          {
+            "name": "Kansas St Wildcats",
+            "price": 150
+          }
+        ]
+      },
+      {
+        "id": "845cb9de00d05e6094e934a50989e91d",
+        "home": "Kentucky Wildcats",
+        "away": "Georgia Bulldogs",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Georgia Bulldogs",
+            "price": 250
+          },
+          {
+            "name": "Kentucky Wildcats",
+            "price": -310
+          }
+        ]
+      },
+      {
+        "id": "ea7780fe99a91e917987557769331431",
+        "home": "Iowa Hawkeyes",
+        "away": "Nebraska Cornhuskers",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "Iowa Hawkeyes",
+            "price": -122
+          },
+          {
+            "name": "Nebraska Cornhuskers",
+            "price": 102
+          }
+        ]
+      },
+      {
+        "id": "a6dc038cae4af947c2334d9a41acda9b",
+        "home": "Texas Longhorns",
+        "away": "LSU Tigers",
+        "time": "2026-02-18T02:00:00Z",
+        "h2h": [
+          {
+            "name": "LSU Tigers",
+            "price": 550
+          },
+          {
+            "name": "Texas Longhorns",
+            "price": -800
+          }
+        ]
+      },
+      {
+        "id": "fba2ac1b8d8689b928fb134a3c29acba",
+        "home": "San Diego St Aztecs",
+        "away": "Grand Canyon Antelopes",
+        "time": "2026-02-18T03:00:00Z",
+        "h2h": [
+          {
+            "name": "Grand Canyon Antelopes",
+            "price": 310
+          },
+          {
+            "name": "San Diego St Aztecs",
+            "price": -395
+          }
+        ]
+      },
+      {
+        "id": "59ded394d77bbd940d0b3093e639da06",
+        "home": "San José St Spartans",
+        "away": "Nevada Wolf Pack",
+        "time": "2026-02-18T03:00:00Z",
+        "h2h": [
+          {
+            "name": "Nevada Wolf Pack",
+            "price": -700
+          },
+          {
+            "name": "San José St Spartans",
+            "price": 500
+          }
+        ]
+      },
+      {
+        "id": "08bb7e3d200edc45748efb1dc0c1a910",
+        "home": "Oregon Ducks",
+        "away": "Minnesota Golden Gophers",
+        "time": "2026-02-18T03:30:00Z",
+        "h2h": [
+          {
+            "name": "Minnesota Golden Gophers",
+            "price": 164
+          },
+          {
+            "name": "Oregon Ducks",
+            "price": -198
+          }
+        ]
+      },
+      {
+        "id": "f0415f93b38f4f03598cbd79368a4c6d",
+        "home": "Arizona St Sun Devils",
+        "away": "Texas Tech Red Raiders",
+        "time": "2026-02-18T04:00:00Z",
+        "h2h": [
+          {
+            "name": "Arizona St Sun Devils",
+            "price": 310
+          },
+          {
+            "name": "Texas Tech Red Raiders",
+            "price": -395
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "sport": "icehockey_nhl",
+    "gamesCount": 0,
+    "matchups": []
+  },
+  {
+    "sport": "soccer_epl",
+    "gamesCount": 11,
+    "matchups": [
+      {
+        "id": "5b648e6c89d56257cb38abb4a76cee72",
+        "home": "Wolverhampton Wanderers",
+        "away": "Arsenal",
+        "time": "2026-02-18T20:00:00Z",
+        "h2h": [
+          {
+            "name": "Arsenal",
+            "price": -370
+          },
+          {
+            "name": "Wolverhampton Wanderers",
+            "price": 1000
+          },
+          {
+            "name": "Draw",
+            "price": 470
+          }
+        ]
+      },
+      {
+        "id": "121455e2f00d446f83bf2939263ff388",
+        "home": "Aston Villa",
+        "away": "Leeds United",
+        "time": "2026-02-21T15:00:00Z",
+        "h2h": [
+          {
+            "name": "Aston Villa",
+            "price": -135
+          },
+          {
+            "name": "Leeds United",
+            "price": 350
+          },
+          {
+            "name": "Draw",
+            "price": 260
+          }
+        ]
+      },
+      {
+        "id": "f38e853e6d4accab249a51501f2806ef",
+        "home": "Brentford",
+        "away": "Brighton and Hove Albion",
+        "time": "2026-02-21T15:00:00Z",
+        "h2h": [
+          {
+            "name": "Brentford",
+            "price": -105
+          },
+          {
+            "name": "Brighton and Hove Albion",
+            "price": 260
+          },
+          {
+            "name": "Draw",
+            "price": 270
+          }
+        ]
+      },
+      {
+        "id": "7b0c7dd2f5e825fc904d669a946e3a74",
+        "home": "Chelsea",
+        "away": "Burnley",
+        "time": "2026-02-21T15:00:00Z",
+        "h2h": [
+          {
+            "name": "Burnley",
+            "price": 1000
+          },
+          {
+            "name": "Chelsea",
+            "price": -550
+          },
+          {
+            "name": "Draw",
+            "price": 600
+          }
+        ]
+      },
+      {
+        "id": "13c335daab252110beaa73f1dbf3ae1f",
+        "home": "West Ham United",
+        "away": "Bournemouth",
+        "time": "2026-02-21T17:30:00Z",
+        "h2h": [
+          {
+            "name": "Bournemouth",
+            "price": 164
+          },
+          {
+            "name": "West Ham United",
+            "price": 136
+          },
+          {
+            "name": "Draw",
+            "price": 260
+          }
+        ]
+      },
+      {
+        "id": "cf641a7ccfddaeccd926ca123d72a4b5",
+        "home": "Manchester City",
+        "away": "Newcastle United",
+        "time": "2026-02-21T20:00:00Z",
+        "h2h": [
+          {
+            "name": "Manchester City",
+            "price": -234
+          },
+          {
+            "name": "Newcastle United",
+            "price": 480
+          },
+          {
+            "name": "Draw",
+            "price": 380
+          }
+        ]
+      },
+      {
+        "id": "0674c077e5225c0795ebb7866e06ac4c",
+        "home": "Crystal Palace",
+        "away": "Wolverhampton Wanderers",
+        "time": "2026-02-22T14:00:00Z",
+        "h2h": [
+          {
+            "name": "Crystal Palace",
+            "price": -190
+          },
+          {
+            "name": "Wolverhampton Wanderers",
+            "price": 470
+          },
+          {
+            "name": "Draw",
+            "price": 300
+          }
+        ]
+      },
+      {
+        "id": "9da0932d1255c3f7d4156ec7730ffa75",
+        "home": "Sunderland",
+        "away": "Fulham",
+        "time": "2026-02-22T14:00:00Z",
+        "h2h": [
+          {
+            "name": "Fulham",
+            "price": 170
+          },
+          {
+            "name": "Sunderland",
+            "price": 170
+          },
+          {
+            "name": "Draw",
+            "price": 220
+          }
+        ]
+      },
+      {
+        "id": "55754da4f841e3997e766dd7ff5eafe2",
+        "home": "Nottingham Forest",
+        "away": "Liverpool",
+        "time": "2026-02-22T14:00:00Z",
+        "h2h": [
+          {
+            "name": "Liverpool",
+            "price": -128
+          },
+          {
+            "name": "Nottingham Forest",
+            "price": 295
+          },
+          {
+            "name": "Draw",
+            "price": 275
+          }
+        ]
+      },
+      {
+        "id": "ea3c0df9b0c96cc6a4c80022bbf85720",
+        "home": "Tottenham Hotspur",
+        "away": "Arsenal",
+        "time": "2026-02-22T16:30:00Z",
+        "h2h": [
+          {
+            "name": "Arsenal",
+            "price": -190
+          },
+          {
+            "name": "Tottenham Hotspur",
+            "price": 480
+          },
+          {
+            "name": "Draw",
+            "price": 295
+          }
+        ]
+      },
+      {
+        "id": "b2dfd255beca9618d6796a7e79a4b398",
+        "home": "Everton",
+        "away": "Manchester United",
+        "time": "2026-02-23T20:00:00Z",
+        "h2h": [
+          {
+            "name": "Everton",
+            "price": 260
+          },
+          {
+            "name": "Manchester United",
+            "price": -105
+          },
+          {
+            "name": "Draw",
+            "price": 280
+          }
+        ]
+      }
+    ]
+  }
+]
