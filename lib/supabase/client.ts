@@ -6,11 +6,16 @@ export function createClient() {
 
     // Fallback for static build when env vars are missing
     if (!url || !key) {
+        console.error('Supabase Client: Missing Environment Variables!', { url: !!url, key: !!key });
         return {
             auth: {
                 getUser: () => Promise.resolve({ data: { user: null }, error: null }),
                 getSession: () => Promise.resolve({ data: { session: null }, error: null }),
                 onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+                signUp: () => Promise.reject(new Error('Supabase client: Missing environment variables!')),
+                signInWithPassword: () => Promise.reject(new Error('Supabase client: Missing environment variables!')),
+                signInWithOAuth: () => Promise.reject(new Error('Supabase client: Missing environment variables!')),
+                signOut: () => Promise.resolve({ error: null }),
             },
             from: () => ({ select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) }) }),
         } as any
