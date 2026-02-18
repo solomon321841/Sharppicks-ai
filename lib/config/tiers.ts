@@ -1,5 +1,7 @@
 export type Tier = 'free' | 'starter' | 'pro' | 'whale';
 
+// ...existing code...
+// ...existing code...
 export const TIERS: Record<Tier, {
     name: string;
     label: string;
@@ -7,16 +9,20 @@ export const TIERS: Record<Tier, {
     canBuildParlay: boolean;
     canAccessDailyPicks: boolean;
     canTrackBets: boolean;
-    parlayLimit: number; // -1 for unlimited
+    parlayLimit: number;
+    customBuilderLimit: number;
+    stripePriceId: string; // Added for Checkout
 }> = {
     free: {
         name: 'free',
         label: 'Free Trial',
-        features: ['1 AI Parlay/Day', 'Standard Odds'],
-        canBuildParlay: false,
+        features: ['1 AI Parlay/Day', '2 Custom Builder Credits', 'Standard Odds'],
+        canBuildParlay: true,
         canAccessDailyPicks: true,
         canTrackBets: false,
-        parlayLimit: 1
+        parlayLimit: 1,
+        customBuilderLimit: 2,
+        stripePriceId: '' // Free tier has no price ID
     },
     starter: {
         name: 'starter',
@@ -25,7 +31,9 @@ export const TIERS: Record<Tier, {
         canBuildParlay: false,
         canAccessDailyPicks: true,
         canTrackBets: true,
-        parlayLimit: 3
+        parlayLimit: 3,
+        customBuilderLimit: 0,
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || 'price_1PxyzStarterPlaceholder'
     },
     pro: {
         name: 'pro',
@@ -34,7 +42,9 @@ export const TIERS: Record<Tier, {
         canBuildParlay: true,
         canAccessDailyPicks: true,
         canTrackBets: true,
-        parlayLimit: -1
+        parlayLimit: -1,
+        customBuilderLimit: -1,
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1PxyzProPlaceholder'
     },
     whale: {
         name: 'whale',
@@ -43,7 +53,9 @@ export const TIERS: Record<Tier, {
         canBuildParlay: true,
         canAccessDailyPicks: true,
         canTrackBets: true,
-        parlayLimit: -1
+        parlayLimit: -1,
+        customBuilderLimit: -1,
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1PxyzWhalePlaceholder'
     }
 };
 

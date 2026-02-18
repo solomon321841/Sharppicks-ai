@@ -1,19 +1,26 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Check, X, Zap } from "lucide-react"
 import { FadeIn } from "./FadeIn"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 const tiers = [
     {
         name: 'Free Trial',
+        id: 'free',
         price: '$0',
         description: 'Test the waters with limited access.',
-        features: ['3 Days Full Access', '1 Daily Pick (Safe)', 'Standard Odds Data', 'Community Support'],
-        limitations: ['No Custom Builder', 'No Bet Tracking'],
+        features: ['2 Custom Parlay Credits', '3 Days Full Access', '1 Daily Pick (Safe)', 'Standard Odds Data', 'Community Support'],
+        limitations: ['No Bet Tracking', 'Limited Risk Models'],
         cta: 'Start Free Trial',
         popular: false,
     },
     {
         name: 'Starter',
+        id: 'starter',
         price: '$9',
         period: '/mo',
         description: 'Perfect for casual bettors.',
@@ -24,6 +31,7 @@ const tiers = [
     },
     {
         name: 'Pro',
+        id: 'pro',
         price: '$24',
         period: '/mo',
         description: 'For serious bettors who want control.',
@@ -34,6 +42,7 @@ const tiers = [
     },
     {
         name: 'Whale',
+        id: 'whale',
         price: '$49',
         period: '/mo',
         description: 'Maximum edge with exclusive insights.',
@@ -45,6 +54,47 @@ const tiers = [
 ]
 
 export function Pricing() {
+    const [loading, setLoading] = useState<string | null>(null)
+    const router = useRouter()
+    const { toast } = useToast()
+
+    const handleSubscribe = async (tier: any) => {
+        if (tier.id === 'free') {
+            router.push('/login')
+            return
+        }
+
+        setLoading(tier.id)
+        try {
+            const response = await fetch('/api/stripe/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tier: tier.name.toLowerCase() })
+            })
+
+            const data = await response.json()
+
+            if (!response.ok) throw new Error(data.error || 'Checkout failed')
+
+            if (data.url) {
+                window.location.href = data.url
+            }
+        } catch (error: any) {
+            console.error('Subscription error:', error)
+            if (error.message.includes('Unauthorized')) {
+                router.push('/login')
+            } else {
+                toast({
+                    title: "Error",
+                    description: error.message || "Something went wrong. Please try again.",
+                    variant: "destructive"
+                })
+            }
+        } finally {
+            setLoading(null)
+        }
+    }
+
     return (
         <section id="pricing" className="py-20 bg-black relative overflow-hidden flex justify-center">
             {/* Background Gradients - Optimized */}
@@ -113,8 +163,11 @@ export function Pricing() {
                                         ))}
                                     </div>
 
-                                    <Button className={`w-full h-12 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${tier.popular ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5' : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'}`}>
-                                        {tier.cta}
+                                    <Button
+                                        onClick={() => handleSubscribe(tier)}
+                                        disabled={loading !== null}
+                                        className={`w-full h-12 rounded-xl text-sm font-bold tracking-wide transition-all duration-300 ${tier.popular ? 'bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5' : 'bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20'}`}>
+                                        {loading === tier.id ? 'Processing...' : tier.cta}
                                     </Button>
                                 </div>
                             </div>
