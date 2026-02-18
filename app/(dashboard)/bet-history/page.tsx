@@ -132,7 +132,7 @@ export default function BetHistoryPage() {
                     </motion.div>
 
                     <div className="space-y-0">
-                        <h2 className="text-4xl md:text-5xl lg:text-5xl font-black tracking-custom text-white uppercase italic leading-[1]">
+                        <h2 className="text-3xl md:text-5xl lg:text-5xl font-black tracking-custom text-white uppercase italic leading-[1]">
                             Bet <span className="text-emerald-500/90">Archive</span>
                         </h2>
                         <p className="text-zinc-600 font-bold tracking-[0.2em] uppercase text-[9px] mt-1 border-l border-emerald-500/30 pl-3">
@@ -160,7 +160,7 @@ export default function BetHistoryPage() {
             <div className="flex-1 min-h-0 relative z-10 px-4 md:px-0">
                 <div
                     ref={setContainer}
-                    className="h-full overflow-y-auto pr-4 lg:pl-12 custom-scrollbar pb-20 pt-2"
+                    className="h-full overflow-y-auto lg:pl-12 custom-scrollbar pb-20 pt-2"
                 >
                     {bets.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center space-y-6">
