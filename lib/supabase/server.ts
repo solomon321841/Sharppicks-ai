@@ -4,10 +4,24 @@ import { cookies } from 'next/headers'
 export function createClient() {
     const cookieStore = cookies()
 
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    // Fallback for static build when env vars are missing
+    if (!url || !key) {
+        return {
+            auth: {
+                getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+                getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+            },
+            from: () => ({ select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: null }) }) }) }),
+        } as any
+    }
+
     try {
         return createServerClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            url,
+            key,
             {
                 cookies: {
                     getAll() {
@@ -28,7 +42,7 @@ export function createClient() {
             }
         )
     } catch (error) {
-        // Fallback for static build when env vars are missing
+        // Double safety fallback
         return {
             auth: {
                 getUser: () => Promise.resolve({ data: { user: null }, error: null }),
