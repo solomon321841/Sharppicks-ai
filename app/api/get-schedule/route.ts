@@ -12,7 +12,8 @@ const SUPPORTED_SPORTS = [
     'soccer_uefa_champs_league'
 ]
 
-export const revalidate = 3600 // Cache at edge for 1 hour too
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET() {
     try {

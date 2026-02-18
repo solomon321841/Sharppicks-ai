@@ -18,7 +18,7 @@ export type SportSchedule = {
 }
 
 export async function getSchedule(sports: string[]): Promise<SportSchedule[]> {
-    const apiKey = process.env.ODDS_API_KEY
+    const apiKey = '5a09e10850e12620758a1b6f4504d87f'
     if (!apiKey) {
         console.warn('Missing ODDS_API_KEY, returning empty schedule')
         return []
