@@ -33,7 +33,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: 3,
         customBuilderLimit: 0,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || 'price_1PxyzStarterPlaceholder'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || 'price_1T2E3mKk1uA6nY1UgfbBCPtV'
     },
     pro: {
         name: 'pro',
@@ -44,7 +44,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: -1,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1PxyzProPlaceholder'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1T2E4XKk1uA6nY1USvhpgpF8'
     },
     whale: {
         name: 'whale',
@@ -55,7 +55,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: -1,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1PxyzWhalePlaceholder'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1T2E5DKk1uA6nY1Ukksi2zLI'
     }
 };
 
