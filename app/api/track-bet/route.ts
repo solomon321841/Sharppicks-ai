@@ -32,7 +32,8 @@ export async function POST(request: Request) {
         // For simplicity in this demo, we'll assume we construct a new parlay record to house this bet
 
         // Derive unique sports from legs
-        const uniqueSports = [...new Set(legs.map((l: any) => l.sport || 'Mixed'))];
+        // Derive unique sports from legs
+        const uniqueSports = Array.from(new Set(legs.map((l: any) => l.sport || 'Mixed'))) as string[];
 
         const newParlay = await prisma.parlay.create({
             data: {
