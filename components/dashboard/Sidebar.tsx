@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation'
 import { canAccessFeature } from '@/lib/config/tiers'
 import { useNotification } from '@/contexts/NotificationContext'
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     const pathname = usePathname()
     const router = useRouter()
     const supabase = createClient()
@@ -87,6 +87,8 @@ export function Sidebar() {
                             if (isLocked) {
                                 e.preventDefault();
                                 // Optional: Trigger upgrade modal here
+                            } else if (onNavigate) {
+                                onNavigate();
                             }
                         }}>
                             <Button
@@ -118,7 +120,10 @@ export function Sidebar() {
                 <div className="px-2 py-1.5 text-xs text-muted-foreground font-mono">
                     Plan: <span className="uppercase text-emerald font-bold">{loading ? '...' : tier}</span>
                 </div>
-                <Button variant="ghost" className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground" onClick={handleSignOut}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground" onClick={() => {
+                    handleSignOut();
+                    if (onNavigate) onNavigate();
+                }}>
                     <LogOut className="h-4 w-4" />
                     Sign Out
                 </Button>
