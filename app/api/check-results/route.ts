@@ -11,6 +11,8 @@ import { getScores, findMatchingGame, getWinner, getTotalScore, getTeamScore, Ga
  * 2. When the dashboard loads (for fresh data)
  * 3. Manually via the bet history page
  */
+export const dynamic = 'force-dynamic'
+
 export async function POST(request: Request) {
     try {
         // Optional: Verify cron secret for automated calls
