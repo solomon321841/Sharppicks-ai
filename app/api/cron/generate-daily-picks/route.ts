@@ -27,9 +27,17 @@ export async function GET(request: NextRequest) {
 
         console.log('[Cron] Starting daily picks generation...');
 
-        // 2. Get today's date (EST timezone)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // 2. Get today's date (EST timezone represented as UTC midnight)
+        const now = new Date();
+        const estString = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+        const estNow = new Date(estString);
+        let today = new Date(Date.UTC(estNow.getFullYear(), estNow.getMonth(), estNow.getDate()));
+
+        // If it's before 9 AM EST, we might be running the cron early manually, or it's a timezone issue.
+        // We do the exact same logic to keep it identical to the getter logic.
+        if (estNow.getHours() < 9) {
+            today.setUTCDate(today.getUTCDate() - 1);
+        }
 
         // 3. Delete existing picks for today (fresh start)
         const deleted = await prisma.dailyPick.deleteMany({
