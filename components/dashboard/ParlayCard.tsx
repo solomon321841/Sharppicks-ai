@@ -133,35 +133,39 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                     const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-2 py-3 px-1 border-b border-white/5 last:border-0 transition-colors hover:bg-white/[0.02]">
+                        <div key={i} className="group relative flex flex-col gap-1.5 py-2.5 px-3 rounded-xl border border-white/5 hover:border-emerald-500/20 bg-emerald-500/[0.02] hover:bg-emerald-500/[0.05] transition-all duration-300">
                             <div className="flex justify-between items-start">
-                                <div className="flex gap-3">
-                                    <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0">
-                                        <TeamLogo name={leg.team} className="w-5 h-5 grayscale group-hover:grayscale-0 transition-all duration-500" />
+                                <div className="flex gap-2.5 items-center">
+                                    <div className="relative w-7 h-7 rounded-full overflow-hidden bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0 shadow-lg">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent" />
+                                        <TeamLogo name={leg.team} className="w-4 h-4 relative z-10" />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm font-bold text-white tracking-tight truncate">
-                                                {leg.player || leg.team}
+                                        <span className="text-[13px] font-black text-white tracking-tight truncate group-hover:text-emerald-300 transition-colors">
+                                            {leg.player || leg.team}
+                                        </span>
+                                        <div className="flex items-center gap-1.5 text-[9px] font-bold">
+                                            <span className="text-zinc-500 uppercase tracking-wider">{leg.bet_type}</span>
+                                            <span className="w-0.5 h-0.5 rounded-full bg-white/20" />
+                                            <span className="text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md font-black">
+                                                {leg.line === 'Yes' ? 'Scorer' : leg.line}
                                             </span>
-                                            <Badge variant="outline" className="text-[9px] font-black py-0 px-1.5 h-4 border-emerald-500/30 text-emerald-400 bg-emerald-500/5">
-                                                {leg.odds}
-                                            </Badge>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-medium">
-                                            <span className="capitalize">{leg.bet_type.replace('_', ' ')}</span>
-                                            <span className="w-1 h-1 rounded-full bg-zinc-800" />
-                                            <span className="text-emerald-500/80 font-bold">{leg.line === 'Yes' ? 'Anytime Scorer' : leg.line}</span>
-                                            <span className="w-1 h-1 rounded-full bg-zinc-800" />
-                                            <span className="truncate italic opacity-60">@{leg.sportsbook}</span>
                                         </div>
                                     </div>
                                 </div>
+                                <div className="flex flex-col items-end gap-0.5">
+                                    <Badge variant="secondary" className="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 h-5 shadow-[0_0_10px_-2px_rgba(16,185,129,0.3)]">
+                                        {leg.odds}
+                                    </Badge>
+                                    <span className="text-[8px] text-zinc-500 font-black tracking-widest uppercase opacity-40">
+                                        {leg.sportsbook}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div className="relative pl-3">
-                                <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-emerald-500/20 group-hover:bg-emerald-500/50 transition-colors rounded-full" />
-                                <p className="text-[10px] leading-[1.4] text-zinc-400 group-hover:text-zinc-300 transition-colors font-medium max-w-[95%]">
+                            <div className="relative pl-3 bg-black/20 p-2 rounded-lg border border-white/5 group-hover:border-emerald-500/10 transition-colors">
+                                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-emerald-500/40 group-hover:bg-emerald-500/80 group-hover:shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all rounded-full" />
+                                <p className="text-[10px] leading-[1.3] text-zinc-300 group-hover:text-white transition-colors font-medium">
                                     {leg.reasoning}
                                 </p>
                             </div>
