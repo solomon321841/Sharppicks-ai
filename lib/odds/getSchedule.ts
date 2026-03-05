@@ -41,19 +41,15 @@ export async function getSchedule(sports: string[]): Promise<SportSchedule[]> {
         console.log('[Schedule] Skipping cache - KV credentials missing')
     }
 
-    console.log('[Schedule] Fetching fresh schedule from API (Sequential)...')
+    console.log('[Schedule] Fetching fresh schedule from API (Parallel - Paid Key)...')
 
-    const results: SportSchedule[] = []
-
-    for (const sport of sports) {
+    const promises = sports.map(async (sport) => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 250)) // Delay to prevent 429 rate limit
             const response = await fetch(`${BASE_URL}/${sport}/odds?apiKey=${apiKey}&regions=us&markets=h2h&oddsFormat=american`)
 
             if (!response.ok) {
                 console.warn(`[Schedule] Failed to fetch ${sport}: ${response.status}`)
-                results.push({ sport, gamesCount: 0, matchups: [] })
-                continue
+                return { sport, gamesCount: 0, matchups: [] }
             }
 
             const data: any[] = await response.json()
@@ -121,17 +117,19 @@ export async function getSchedule(sports: string[]): Promise<SportSchedule[]> {
                 })
                 .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
 
-            results.push({
+            return {
                 sport,
                 gamesCount: matchups.length,
                 matchups
-            })
+            }
 
         } catch (error) {
             console.error(`[Schedule] Error fetching ${sport}`, error)
-            results.push({ sport, gamesCount: 0, matchups: [] })
+            return { sport, gamesCount: 0, matchups: [] }
         }
-    }
+    })
+
+    const results = await Promise.all(promises)
 
     // Cache the results
     if (results.length > 0 && process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {

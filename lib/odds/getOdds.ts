@@ -13,12 +13,8 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
     const isProps = markets.includes('player') || markets.includes('prop');
 
     try {
-        const allGames = [];
-        for (const sport of sports) {
+        const fetchPromises = sports.map(async (sport) => {
             console.log(`[API] Fetching odds for ${sport} (Region: ${region})...`);
-
-            // Add 250ms delay between sport requests to be safe from rate limits
-            await new Promise(resolve => setTimeout(resolve, 250));
 
             // Time window for relevant games
             const now = new Date()
@@ -41,7 +37,7 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     let games: any[] = await scheduleResp.json();
 
-                    if (!Array.isArray(games)) continue;
+                    if (!Array.isArray(games)) return [];
 
                     // Filter games FIRST to verify relevance and save API calls
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,26 +49,21 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
 
                     if (games.length === 0) {
                         console.log(`[API] No relevant games found for ${sport} in window.`);
-                        continue;
+                        return [];
                     }
 
                     console.log(`[API] Found ${games.length} games for ${sport}. Fetching props for each...`);
 
-                    // 2. Fetch Props for each game individually
-                    // 2. Fetch Props for each game individually (SEQUENTIAL to avoid 429)
-                    // LIMIT to top 10 games to prevent execution timeout on busy days
-                    const gamesToFetch = games.slice(0, 10);
-                    if (games.length > 10) {
-                        console.log(`[API] Limiting props fetch to top 10 games (out of ${games.length}) to avoid timeout.`);
+                    // LIMIT to top 15 games to prevent execution timeout on busy days with props
+                    const gamesToFetch = games.slice(0, 15);
+                    if (games.length > 15) {
+                        console.log(`[API] Limiting props fetch to top 15 games (out of ${games.length}) to avoid timeout.`);
                     }
 
-                    const gamesWithProps = [];
-                    for (const game of gamesToFetch) {
+                    // 2. Fetch Props for each game individually in parallel
+                    const propsPromises = gamesToFetch.map(async (game) => {
                         const eventUrl = `https://api.the-odds-api.com/v4/sports/${sport}/events/${game.id}/odds?apiKey=${apiKey}&regions=${region}&markets=${markets}&oddsFormat=american`;
                         try {
-                            // Add 250ms delay between requests to be safe
-                            await new Promise(resolve => setTimeout(resolve, 250));
-
                             const eventResp = await fetchWithTimeout(eventUrl, { next: { revalidate: 300 }, timeout: 5000 });
                             if (!eventResp.ok) {
                                 const errorBody = await eventResp.json().catch(() => ({}));
@@ -80,16 +71,17 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
                                     throw new Error('The Odds API key has reached its usage limit (Credits Empty).');
                                 }
                                 console.warn(`[API] Failed to fetch props for game ${game.id}: ${eventResp.status}`);
-                                continue;
+                                return null;
                             }
-                            const data = await eventResp.json();
-                            gamesWithProps.push(data);
+                            return await eventResp.json();
                         } catch (e) {
                             console.error(`[API] Error fetching game ${game.id}`, e);
+                            return null;
                         }
-                    }
+                    });
 
-                    allGames.push(...gamesWithProps);
+                    const gamesWithProps = (await Promise.all(propsPromises)).filter(Boolean);
+                    return gamesWithProps;
 
                 } else {
                     // Standard Bulk Fetch
@@ -105,25 +97,28 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
                             console.warn(`[API] Bulk fetch 422. Market might require event-based fetch.`);
                         }
                         console.warn(`[API] Failed to fetch ${sport}: ${response.statusText} (${response.status}). Returning empty.`);
-                        continue;
+                        return [];
                     }
                     const data = await response.json();
 
                     if (Array.isArray(data)) {
                         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        allGames.push(...data.filter((game: any) => {
+                        return data.filter((game: any) => {
                             if (disableTimeFilter) return true;
                             const gameTime = new Date(game.commence_time)
                             return gameTime >= timeWindowStart && gameTime <= timeWindowEnd
-                        }));
-                    } else {
-                        allGames.push(data);
+                        });
                     }
+                    return data;
                 }
             } catch (err) {
                 console.error(`[API] Error fetching ${sport}:`, err);
+                return [];
             }
-        }
+        });
+
+        const results = await Promise.all(fetchPromises);
+        const allGames = results.flat();
 
         if (allGames.length === 0) {
             console.warn(`No games available for any selected sports: ${sports.join(', ')}`);
