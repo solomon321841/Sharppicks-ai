@@ -210,8 +210,7 @@ export async function analyzePicks(request: ParlayRequest) {
        - If you don't know the player's team, DO NOT USE THE PROP.
        - **LINE FIELD for Props:** MUST be the 'point' from data + the type (e.g. "Over 2.5 Shots", "Under 0.5 Goals"). NEVER put odds here.
        - **BOOKMAKER:** You must include the "sportsbook" field in the leg, using the 'book' field from the data (e.g. "DraftKings", "FanDuel").
-       10. **REASONING (STRICT):** Provide a sharp, analytical, data-driven insight for why this pick has a mathematical edge. Sound like a professional sports bettor/analyst. Mention a specific situational advantage, matchup metric, or line value. Keep it around 1-2 concise sentences. Avoid generic filler like "heavy favorites" or "safe pick". Use sharp betting terminology.
-
+       10. **REASONING (STRICT):** You must act as an elite, data-driven sports handicapper and provide deep, structural analysis for your pick. DO NOT use generic phrases like "He is a star player", "They face a weaker defense", or "The odds offer strong value". Instead, provide high-level, sharp betting terminology. Discuss specific tactical advantages (e.g., "high pick-and-roll usage rate against a drop-coverage defense", "exploiting a low-block defensive scheme", "elite target share with the primary defender injured"). Synthesize plausible metrics, form-trends, and statistical matchup discrepancies that prove exactly why this specific line is mispriced and provides mathematical positive expected value (+EV). Make it sound like a sharp insider giving high-stakes quantitative betting advice. Use 2 to 3 concise, extremely detailed sentences.
     Return JSON format:
     {
       "legs": [
@@ -472,14 +471,14 @@ export async function analyzePicks(request: ParlayRequest) {
 
             // Handle Credit Balance / Billing Issues
             if (error.status === 400 && error.error?.type === 'invalid_request_error' && error.error?.message?.includes('credit balance')) {
-                console.warn('[AI] Insufficient credits detected. Falling back to MOCK DATA.');
-                return getMockAIResponse(request);
+                console.warn('[AI] Insufficient credits detected. Falling back to error state.');
+                return getMockAIResponse(request, 'Insufficient credits');
             }
 
             // Handle Overloaded / Server Errors with Fallback
-            if (error.status >= 500) {
-                console.warn('[AI] Anthropic Server Error. Falling back to MOCK DATA.');
-                return getMockAIResponse(request);
+            if (error.status >= 500 || error.status === 529) {
+                console.warn('[AI] Anthropic Server Error. Falling back to error state.');
+                return getMockAIResponse(request, 'Server Error');
             }
 
             if (error instanceof SyntaxError) {
@@ -492,15 +491,37 @@ export async function analyzePicks(request: ParlayRequest) {
     }
 
     // Final Fallback if all attempts fail
-    console.error(`[AI] Failed to generate valid parlay after ${maxAttempts} attempts. Falling back to MOCK DATA.`);
-    return getMockAIResponse(request);
-    // throw new Error(`AI failed validation after max attempts (${maxAttempts}). Last Error: ${lastError}`);
+    console.error(`[AI] Failed to generate valid parlay after ${maxAttempts} attempts. Last Error: ${lastError}`);
+    return getMockAIResponse(request, lastError);
 }
 
-function getMockAIResponse(request: ParlayRequest) {
-    // Instead of returning fake/mock data, return an error so the UI shows a message
+function getMockAIResponse(request: ParlayRequest, lastError?: string) {
+    let errorMessage = 'AI analysis is temporarily unavailable. Please try again in a moment.';
+
+    if (lastError) {
+        if (lastError.includes('Risk Level')) {
+            errorMessage = `Unable to find enough games matching Risk Level ${request.riskLevel}. Try adjusting the risk slider or selecting more sports.`;
+        } else if (lastError.includes('Missing or invalid odds')) {
+            errorMessage = 'Not enough odds data available for the selected sports right now. Try selecting different sports or bet types.';
+        } else if (lastError.includes('Duplicate exact leg')) {
+            errorMessage = `Not enough unique bets available to build a ${request.numLegs}-leg parlay with these settings. Please reduce the number of legs or select more sports.`;
+        } else if (lastError.includes('Wrong bet_type')) {
+            errorMessage = 'Couldn\'t find enough bets matching your selected bet types. Try enabling more bet types.';
+        } else if (lastError.includes('Hallucinated Game ID') || lastError.includes('Team mismatch') || lastError.includes('Opponent mismatch')) {
+            errorMessage = 'The AI struggled to find valid matchups. Try broadening your criteria by selecting more sports or bet types.';
+        } else if (lastError.includes('Insufficient credits')) {
+            errorMessage = 'The AI service is currently out of credits. Please try again later or contact support.';
+        } else if (lastError.includes('Server Error')) {
+            errorMessage = 'The AI analysis servers are currently overloaded. Please try again in a few moments.';
+        } else {
+            // Generic fallback but actionable
+            errorMessage = `We couldn't generate a valid parlay with your exact criteria. Try adjusting your risk level, number of legs, or sports.`;
+        }
+    }
+
+    // Instead of returning fake/mock data, return an error so the UI shows an actionable message
     return {
-        error: 'AI analysis is temporarily unavailable. Please try again in a moment.',
+        error: errorMessage,
         legs: [],
         totalOdds: '+0',
         confidence: 0
