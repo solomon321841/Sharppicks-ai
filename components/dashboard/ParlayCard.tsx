@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Copy, Lock, Loader2, Activity } from "lucide-react"
+import { Copy, Lock, Loader2, Activity, ChevronRight } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { TeamLogo } from "./TeamLogo"
 import {
@@ -169,11 +169,18 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                                         Line: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-200">{leg.line === 'Yes' ? 'To Score' : leg.line}</span>
                                     </span>
                                 </div>
-                                <div className="relative bg-black/40 px-2.5 py-1.5 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
+                                <div className="relative bg-black/40 p-3 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
                                     <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/30 rounded-l-lg group-hover:bg-emerald-400/80 group-hover:shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all" />
-                                    <p className="text-[10px] text-white/70 group-hover:text-white/90 leading-tight whitespace-normal break-words font-medium">
-                                        {leg.reasoning}
-                                    </p>
+                                    <div className="space-y-1.5 ml-1">
+                                        {(leg.reasoning || '').split('. ').filter((s: string) => s.trim().length > 0).map((sentence: string, idx: number) => (
+                                            <div key={idx} className="flex gap-2 items-start">
+                                                <ChevronRight className="w-3 h-3 text-emerald-500/70 mt-[2px] shrink-0 group-hover:text-emerald-400 transition-colors" />
+                                                <p className="text-[10px] text-white/70 group-hover:text-white/90 leading-[1.3] whitespace-normal break-words font-medium">
+                                                    {sentence.trim()}{sentence.trim().endsWith('.') ? '' : '.'}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
