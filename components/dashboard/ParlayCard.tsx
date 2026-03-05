@@ -102,10 +102,10 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
             {/* Top Glow Border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-80" />
 
-            <div className="absolute top-4 right-4 z-10">
-                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)] px-3 py-1 flex items-center gap-1.5`}>
-                    <Activity className="w-3.5 h-3.5" />
-                    {confidence}% Confidence
+            <div className="absolute top-3 right-3 z-10">
+                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md border-emerald-500/20 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] px-2.5 py-0.5 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tighter`}>
+                    <Activity className="w-3 h-3 animate-pulse" />
+                    {confidence}%
                 </Badge>
             </div>
 
@@ -133,39 +133,37 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                     const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-1.5 py-2.5 px-3 rounded-xl border border-white/5 hover:border-emerald-500/20 bg-emerald-500/[0.02] hover:bg-emerald-500/[0.05] transition-all duration-300">
-                            <div className="flex justify-between items-start">
-                                <div className="flex gap-2.5 items-center">
-                                    <div className="relative w-7 h-7 rounded-full overflow-hidden bg-zinc-900 border border-white/10 flex items-center justify-center shrink-0 shadow-lg">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent" />
-                                        <TeamLogo name={leg.team} className="w-4 h-4 relative z-10" />
+                        <div key={i} className="group relative flex flex-col gap-1.5 py-2 px-2.5 rounded-xl border border-white/[0.03] hover:border-emerald-500/30 bg-white/[0.01] hover:bg-emerald-500/[0.04] transition-all duration-300">
+                            <div className="flex justify-between items-center relative z-10">
+                                <div className="flex gap-2.5 items-center min-w-0">
+                                    <div className="relative w-7 h-7 rounded-full overflow-hidden bg-zinc-950 border border-white/10 flex items-center justify-center shrink-0 shadow-2xl">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent opacity-40" />
+                                        <TeamLogo name={leg.team} className="w-4 h-4 relative z-10 drop-shadow-[0_0_3px_rgba(0,0,0,0.5)]" />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-[13px] font-black text-white tracking-tight truncate group-hover:text-emerald-300 transition-colors">
+                                        <span className="text-[12px] font-black text-white tracking-tight truncate group-hover:text-emerald-400 transition-colors">
                                             {leg.player || leg.team}
                                         </span>
-                                        <div className="flex items-center gap-1.5 text-[9px] font-bold">
-                                            <span className="text-zinc-500 uppercase tracking-wider">{leg.bet_type}</span>
-                                            <span className="w-0.5 h-0.5 rounded-full bg-white/20" />
-                                            <span className="text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md font-black">
-                                                {leg.line === 'Yes' ? 'Scorer' : leg.line}
-                                            </span>
+                                        <div className="flex items-center gap-1.5 text-[8px] font-bold">
+                                            <span className="text-zinc-500 font-black tracking-widest uppercase truncate max-w-[60px]">{leg.bet_type}</span>
+                                            <span className="w-0.5 h-0.5 rounded-full bg-white/10 shrink-0" />
+                                            <span className="text-zinc-600 font-medium truncate italic max-w-[100px]">{subText}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-0.5">
-                                    <Badge variant="secondary" className="text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 h-5 shadow-[0_0_10px_-2px_rgba(16,185,129,0.3)]">
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
+                                        {leg.line === 'Yes' ? 'SCORER' : leg.line}
+                                    </span>
+                                    <span className="text-[10px] font-mono font-black text-white/90 min-w-[40px] text-right">
                                         {leg.odds}
-                                    </Badge>
-                                    <span className="text-[8px] text-zinc-500 font-black tracking-widest uppercase opacity-40">
-                                        {leg.sportsbook}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="relative pl-3 bg-black/20 p-2 rounded-lg border border-white/5 group-hover:border-emerald-500/10 transition-colors">
-                                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-emerald-500/40 group-hover:bg-emerald-500/80 group-hover:shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all rounded-full" />
-                                <p className="text-[10px] leading-[1.3] text-zinc-300 group-hover:text-white transition-colors font-medium">
+                            <div className="relative pl-3 bg-black/40 py-1.5 px-2 rounded-lg border border-white/[0.02] group-hover:border-emerald-500/10 transition-colors">
+                                <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-emerald-500/30 group-hover:bg-emerald-500/80 transition-all rounded-full" />
+                                <p className="text-[9px] leading-[1.3] text-zinc-400 group-hover:text-white/90 transition-colors font-semibold">
                                     {leg.reasoning}
                                 </p>
                             </div>
