@@ -137,3 +137,105 @@ html {
   mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
 }
+
+/* Aurora gradient animation for hero background */
+@keyframes aurora {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  25% {
+    background-position: 50% 100%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  75% {
+    background-position: 50% 0%;
+  }
+}
+
+.animate-aurora {
+  background-size: 300% 300%;
+  animation: aurora 8s ease-in-out infinite;
+}
+
+/* Rotating gradient border */
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rotate-gradient {
+  animation: rotate-gradient 4s linear infinite;
+}
+
+/* Floating particles */
+@keyframes float-particle {
+
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(-40px) translateX(10px);
+  }
+}
+
+.animate-float-particle {
+  animation: float-particle 3s ease-in-out infinite;
+}
+
+/* Pulse glow for CTA */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.4),
+      0 0 40px -10px rgba(16, 185, 129, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.6),
+      0 0 60px -10px rgba(16, 185, 129, 0.3);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient text shimmer */
+@keyframes text-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-text-shimmer {
+  background-size: 200% auto;
+  animation: text-shimmer 3s linear infinite;
+}
