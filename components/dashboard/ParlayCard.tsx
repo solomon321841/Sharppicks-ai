@@ -146,13 +146,17 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                                         <span className="text-[12px] font-black text-white group-hover:text-emerald-300 transition-colors leading-none truncate max-w-[120px]">
                                             {headerText}
                                         </span>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <span className="text-[8px] text-muted-foreground/80 uppercase tracking-widest font-bold">
+                                        <div className="flex items-center gap-1.5 mt-0.5 whitespace-nowrap overflow-hidden">
+                                            <span className="text-[8px] text-muted-foreground/80 font-bold">
                                                 {leg.bet_type}
                                             </span>
-                                            <span className="w-0.5 h-0.5 bg-white/20 rounded-full" />
-                                            <span className="text-[9px] font-black text-emerald-400">
+                                            <span className="w-0.5 h-0.5 bg-white/20 rounded-full shrink-0" />
+                                            <span className="text-[9px] font-black text-emerald-400 shrink-0">
                                                 {leg.line === 'Yes' ? 'To Score' : leg.line}
+                                            </span>
+                                            <span className="w-0.5 h-0.5 bg-white/20 rounded-full shrink-0" />
+                                            <span className="text-[8px] text-muted-foreground/40 font-medium truncate italic max-w-[80px]">
+                                                {subText}
                                             </span>
                                         </div>
                                     </div>
