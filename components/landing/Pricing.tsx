@@ -108,10 +108,10 @@ export function Pricing() {
                     <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-full px-6 py-2">
                         <span className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Pricing Plans</span>
                     </div>
-                    <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
+                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-white">
                         Simple, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Transparent</span> Pricing
                     </h2>
-                    <p className="max-w-[700px] text-zinc-400 text-xl font-light">
+                    <p className="max-w-[700px] text-zinc-400 text-lg md:text-xl font-light">
                         Choose the plan that fits your betting style. Cancel anytime.
                     </p>
                 </FadeIn>

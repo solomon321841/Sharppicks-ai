@@ -40,9 +40,9 @@ export function HowItWorks() {
     })
 
     return (
-        <section ref={ref} id="how-it-works" className="relative bg-black pt-12 pb-24">
+        <section ref={ref} id="how-it-works" className="relative bg-black pt-8 md:pt-12 pb-16 md:pb-24">
             {/* Section Header */}
-            <FadeIn className="text-center mb-24 relative z-10">
+            <FadeIn className="text-center mb-12 md:mb-24 relative z-10 px-4">
                 <div className="inline-flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-full px-5 py-2 mb-6 shadow-xl">
                     <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -50,10 +50,10 @@ export function HowItWorks() {
                     </span>
                     <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">The Process</span>
                 </div>
-                <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6">
+                <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-4 md:mb-6">
                     How We <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-600">Win</span>
                 </h2>
-                <p className="text-lg text-zinc-400 max-w-xl mx-auto">
+                <p className="text-base md:text-lg text-zinc-400 max-w-xl mx-auto">
                     A three-step quantitative approach to beating the books.
                 </p>
             </FadeIn>
@@ -84,10 +84,10 @@ export function HowItWorks() {
                             <Globe className="w-4 h-4 text-emerald-400" />
                             <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Global Reach</span>
                         </div>
-                        <h3 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter loading-none">
+                        <h3 className="text-4xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tighter loading-none">
                             Comprehensive <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Coverage</span>
                         </h3>
-                        <p className="text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">
+                        <p className="text-lg md:text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">
                             Elite data analytics for the world's most competitive leagues. We track every line movement across the globe.
                         </p>
                     </div>
@@ -125,17 +125,17 @@ export function HowItWorks() {
                     </div>
 
                     {/* Coming Soon Banner */}
-                    <div className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/50 backdrop-blur-xl p-8 md:p-12 text-center">
+                    <div className="relative group overflow-hidden rounded-3xl border border-white/5 bg-zinc-900/50 backdrop-blur-xl p-6 md:p-12 text-center">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
 
-                        <h4 className="text-2xl font-bold text-white mb-6 flex items-center justify-center gap-3">
+                        <h4 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 flex items-center justify-center gap-3">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                             Coming Soon to ProfitPicks
                         </h4>
 
                         <div className="flex flex-wrap justify-center gap-3 md:gap-6">
                             {["College Football", "UEFA Europa League", "UFC / MMA", "PGA Tour Golf", "ATP Tennis"].map((league) => (
-                                <div key={league} className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-sm font-bold uppercase tracking-wider hover:bg-white/10 hover:border-white/20 hover:text-white transition-all cursor-default">
+                                <div key={league} className="px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-white/5 border border-white/10 text-zinc-400 text-xs md:text-sm font-bold uppercase tracking-wider hover:bg-white/10 hover:border-white/20 hover:text-white transition-all cursor-default">
                                     {league}
                                 </div>
                             ))}
@@ -236,10 +236,10 @@ const Card = ({ i, title, description, icon: Icon, color, stats, progress, range
     const scale = useTransform(smoothProgress, range, [1, targetScale])
 
     return (
-        <div ref={container} className="h-[80vh] flex items-center justify-center sticky top-24">
+        <div ref={container} className="h-[60vh] md:h-[80vh] flex items-center justify-center sticky top-24">
             <motion.div
                 style={{ scale, top: `calc(-5vh + ${i * 40}px)` }}
-                className="flex flex-col relative w-full max-w-[900px] mx-4 md:mx-0 bg-[#09090b] border border-white/10 rounded-[2.5rem] p-8 md:p-12 origin-top shadow-2xl overflow-hidden will-change-transform"
+                className="flex flex-col relative w-full max-w-[900px] mx-4 md:mx-0 bg-[#09090b] border border-white/10 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-12 origin-top shadow-2xl overflow-hidden will-change-transform"
             >
                 {/* Background Ambient Light */}
                 <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b ${color} opacity-5 pointer-events-none`} />
@@ -249,8 +249,8 @@ const Card = ({ i, title, description, icon: Icon, color, stats, progress, range
                     {/* Floating Icon */}
                     <div className="mb-10 relative">
                         <div className={`absolute inset-0 bg-gradient-to-r ${color} blur-2xl opacity-40 animate-pulse`} />
-                        <div className="relative w-24 h-24 rounded-3xl bg-black border border-white/20 flex items-center justify-center shadow-2xl">
-                            <Icon className="w-10 h-10 text-white" />
+                        <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-3xl bg-black border border-white/20 flex items-center justify-center shadow-2xl">
+                            <Icon className="w-7 h-7 md:w-10 md:h-10 text-white" />
                         </div>
                         {/* Connecting Line */}
                         {i < 2 && (
@@ -258,8 +258,8 @@ const Card = ({ i, title, description, icon: Icon, color, stats, progress, range
                         )}
                     </div>
 
-                    <h2 className="text-5xl font-black text-white tracking-tighter mb-6">{title}</h2>
-                    <p className="text-zinc-400 text-xl leading-relaxed max-w-2xl mb-12">{description}</p>
+                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter mb-4 md:mb-6">{title}</h2>
+                    <p className="text-zinc-400 text-base md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-12">{description}</p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
                         {stats.map((s: string, idx: number) => (

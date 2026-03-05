@@ -132,7 +132,7 @@ export function Hero() {
     const edge = aiProb - impliedProb
 
     return (
-        <section className="relative overflow-hidden flex flex-col items-center pt-32 pb-20 md:pt-48 md:pb-32 min-h-screen">
+        <section className="relative overflow-hidden flex flex-col items-center pt-24 pb-12 md:pt-48 md:pb-32 min-h-screen">
 
             <AnimatedGridPattern />
 
@@ -148,13 +148,13 @@ export function Hero() {
                     </div>
 
                     {/* Headline */}
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.1] text-white">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-[1.1] text-white">
                         Outsmart the <br className="hidden sm:inline" />
                         <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-700">Sportsbooks</span>
                     </h1>
 
                     {/* Subtext */}
-                    <p className="mx-auto max-w-[650px] text-zinc-400 text-lg md:text-xl leading-relaxed font-light">
+                    <p className="mx-auto max-w-[650px] text-zinc-400 text-base md:text-xl leading-relaxed font-light px-2">
                         ProfitPicks leverages advanced machine learning to identify positive EV opportunities in real-time. Stop guessing, start <span className="text-emerald-400 font-medium">winning</span>.
                     </p>
 
@@ -180,7 +180,7 @@ export function Hero() {
                 </FadeIn>
 
                 {/* 3D Mockup */}
-                <FadeIn delay={0.2} className="mt-24 w-full max-w-5xl relative perspective-1000 group">
+                <FadeIn delay={0.2} className="mt-12 md:mt-24 w-full max-w-5xl relative perspective-1000 group">
                     {/* Glow behind card */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none opacity-50 group-hover:opacity-75 transition-opacity duration-700" />
 
@@ -200,8 +200,8 @@ export function Hero() {
                                 {/* Subtle Noise Texture */}
                                 <div className="absolute inset-0 opacity-20 bg-[url('/noise.png')] mix-blend-overlay pointer-events-none" />
 
-                                <div className="p-6 sm:p-8 md:p-12 grid md:grid-cols-2 gap-8 md:gap-12 items-center relative z-10">
-                                    <div className="space-y-6 md:space-y-8">
+                                <div className="p-4 sm:p-8 md:p-12 grid md:grid-cols-2 gap-6 md:gap-12 items-center relative z-10">
+                                    <div className="space-y-4 md:space-y-8">
                                         {/* Badge */}
                                         <div className="inline-flex items-center gap-2 text-emerald-400 text-[10px] font-mono font-bold tracking-widest uppercase bg-emerald-950/50 px-3 py-1.5 rounded border border-emerald-500/30 shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]">
                                             <span className="relative flex h-2 w-2">
@@ -212,7 +212,7 @@ export function Hero() {
                                         </div>
 
                                         <div className="space-y-4">
-                                            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9]">
+                                            <h3 className="text-2xl sm:text-4xl md:text-5xl font-black text-white tracking-tighter leading-[0.9]">
                                                 Value <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Edge</span><br />
                                                 Detected
                                             </h3>
@@ -226,7 +226,7 @@ export function Hero() {
                                             <div className="absolute -top-4 -left-4 w-4 h-4 border-t-2 border-l-2 border-emerald-500/20" />
                                             <div className="absolute -bottom-4 -right-4 w-4 h-4 border-b-2 border-r-2 border-emerald-500/20" />
 
-                                            <div className="space-y-3 pt-2 h-[220px] overflow-hidden relative mask-linear-fade">
+                                            <div className="space-y-3 pt-2 h-[160px] md:h-[220px] overflow-hidden relative mask-linear-fade">
                                                 {/* Scanline */}
                                                 <div className="absolute inset-0 z-20 pointer-events-none bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.2)_50%)] bg-[size:100%_4px] opacity-20" />
 
