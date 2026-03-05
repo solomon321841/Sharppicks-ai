@@ -286,17 +286,15 @@ export function ParlayBuilder() {
                         <h3 className="text-xl font-bold text-white mb-2">
                             {(() => {
                                 const err = errorState?.toLowerCase() || '';
-                                if (err.includes('no games')) return 'No Games Available';
-                                if (err.includes('risk') || err.includes('validation')) return 'No Risky Parlays Found';
+                                if (err.includes('no games') || err.includes('not enough odds data') || err.includes('unique bets available')) return 'Not Enough Data';
+                                if (err.includes('risk') || err.includes('validation') || err.includes('bet types')) return 'Constraints Too Strict';
+                                if (err.includes('credits')) return 'Out of Credits';
+                                if (err.includes('server')) return 'System Overloaded';
                                 return 'Generation Issue';
                             })()}
                         </h3>
                         <p className="text-zinc-400 text-sm max-w-sm mx-auto mb-6 leading-relaxed">
-                            {(() => {
-                                const err = errorState?.toLowerCase() || '';
-                                if (err.includes('risk')) return "We couldn't find a parlay that matched your strict risk criteria. Try lowering the risk level or selecting more sports.";
-                                return errorState;
-                            })()}
+                            {errorState}
                         </p>
                         <Button
                             variant="outline"
