@@ -90,8 +90,8 @@ export default function DailyPicksPage() {
             </div>
 
             <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1600px] w-full items-start ${loading ? '' : 'justify-center mx-auto'}`}>
-                {PARLAY_TYPES.map((config, idx) => {
-                    const pick = picks[idx];
+                {PARLAY_TYPES.map((config) => {
+                    const pick = loading ? null : picks.find(p => p.parlay_type === config.type);
                     const Icon = config.icon;
                     const isLocked = config.locked;
 
