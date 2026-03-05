@@ -88,7 +88,7 @@ export function HowItWorks() {
                             Comprehensive <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Coverage</span>
                         </h3>
                         <p className="text-lg md:text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">
-                            Elite data analytics for the world's most competitive leagues. We track every line movement across the globe.
+                            Elite data analytics for the world&apos;s most competitive leagues. We track every line movement across the globe.
                         </p>
                     </div>
 

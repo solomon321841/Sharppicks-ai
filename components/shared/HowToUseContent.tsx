@@ -1,7 +1,7 @@
 'use client'
 
 import { DashboardCard } from "@/components/dashboard/DashboardCard"
-import { Brain, CalendarDays, PlusCircle, History, Zap, Trophy, Target, Sparkles, HelpCircle } from "lucide-react"
+import { Brain, CalendarDays, PlusCircle, History, Target, Sparkles, HelpCircle } from "lucide-react"
 import { motion } from "framer-motion"
 
 const sections = [
@@ -124,7 +124,7 @@ export function HowToUseContent({ isPublic = false }: { isPublic?: boolean }) {
                                 </p>
                             </div>
                             <p className="text-sm text-zinc-300 leading-relaxed max-w-3xl font-medium">
-                                For the most consistent long-term results, we recommend keeping your Risk Level <span className="text-amber-400 font-bold">below 5</span>. This "Sweet Spot" is engineered to balance high-probability plays with sustainable bankroll growth, optimizing your ROI while minimizing the volatility of high-variance outcomes.
+                                For the most consistent long-term results, we recommend keeping your Risk Level <span className="text-amber-400 font-bold">below 5</span>. This &quot;Sweet Spot&quot; is engineered to balance high-probability plays with sustainable bankroll growth, optimizing your ROI while minimizing the volatility of high-variance outcomes.
                             </p>
                         </div>
                     </div>

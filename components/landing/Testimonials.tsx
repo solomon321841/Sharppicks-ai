@@ -72,7 +72,7 @@ export function Testimonials() {
                     </h2>
 
                     <p className="text-zinc-400 text-lg md:text-xl leading-relaxed font-light">
-                        The world's most advanced sports analytics platform. <br className="hidden md:block" />
+                        The world&apos;s most advanced sports analytics platform. <br className="hidden md:block" />
                         Engineered to give you an unfair mathematical advantage.
                     </p>
                 </FadeIn>
@@ -158,7 +158,7 @@ export function Testimonials() {
                                             <Trophy key={i} className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
                                         ))}
                                     </div>
-                                    <p className="text-zinc-300 italic mb-6">"{t.quote}"</p>
+                                    <p className="text-zinc-300 italic mb-6">&quot;{t.quote}&quot;</p>
                                     <div>
                                         <p className="text-white font-bold">{t.name}</p>
                                         <p className="text-zinc-500 text-xs">{t.role}</p>

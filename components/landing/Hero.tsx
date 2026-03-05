@@ -9,31 +9,6 @@ import { motion, useMotionValue, useTransform, animate } from "framer-motion"
 import { useEffect, useState, useRef } from "react"
 import { TeamLogo, getTeamLogoUrl } from "@/components/dashboard/TeamLogo"
 
-// Animated counter hook
-function useAnimatedCounter(target: number, duration: number = 2, delay: number = 0.5) {
-    const [count, setCount] = useState(0)
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            const motionVal = useMotionValue(0)
-            const unsubscribe = motionVal.on("change", (v) => {
-                setCount(parseFloat(v.toFixed(1)))
-            })
-
-            animate(motionVal, target, {
-                duration,
-                ease: "easeOut",
-            })
-
-            return () => unsubscribe()
-        }, delay * 1000)
-
-        return () => clearTimeout(timeout)
-    }, [target, duration, delay])
-
-    return count
-}
-
 // Floating particles component
 function FloatingParticles() {
     return (
@@ -410,13 +385,13 @@ export function Hero() {
                     <div className="relative">
                         <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/40 to-teal-500/40 blur-lg rounded-2xl animate-pulse-glow pointer-events-none" />
                         <Button size="lg" className="relative w-full btn-shimmer bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-black h-[52px] text-[15px] rounded-2xl border border-emerald-400/30 tracking-wide shadow-2xl" asChild>
-                            <Link href="/login">
+                            <Link href="/how-it-works">
                                 Generate Parlay <ArrowRight className="ml-2 h-5 w-5" />
                             </Link>
                         </Button>
                     </div>
                     <Button size="lg" variant="outline" className="h-11 text-sm rounded-2xl border-white/10 bg-white/[0.03] text-white hover:bg-white/10 hover:text-white transition-all backdrop-blur-md font-bold" asChild>
-                        <Link href="#how-it-works">
+                        <Link href="/how-it-works">
                             See How It Works
                         </Link>
                     </Button>

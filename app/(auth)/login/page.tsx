@@ -33,15 +33,33 @@ export default function LoginPage() {
                     },
                 })
                 if (error) throw error
-                toast({ title: 'Check your email', description: 'We sent you a confirmation link.' })
+                toast({ title: 'Check your email', description: 'We sent you a confirmation link. After verifying, you\'ll be taken to choose a plan.' })
             } else {
-                const { error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabase.auth.signInWithPassword({
                     email,
                     password,
                 })
                 if (error) throw error
-                router.refresh()
-                router.push('/dashboard')
+
+                // Check if user has a paid subscription
+                if (data.user) {
+                    const { data: profile } = await supabase
+                        .from('users')
+                        .select('subscription_tier, subscription_status')
+                        .eq('id', data.user.id)
+                        .single()
+
+                    router.refresh()
+                    // Free users go to pricing, paid users go to dashboard
+                    if (!profile || (profile.subscription_tier === 'free' && profile.subscription_status !== 'active')) {
+                        router.push('/#pricing')
+                    } else {
+                        router.push('/dashboard')
+                    }
+                } else {
+                    router.refresh()
+                    router.push('/dashboard')
+                }
             }
         } catch (error: any) {
             toast({
