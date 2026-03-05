@@ -109,23 +109,23 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                 </Badge>
             </div>
 
-            <CardHeader className="pb-2 pt-6">
+            <CardHeader className="pb-1 pt-4 px-4">
                 <CardTitle className="flex items-center gap-2">
-                    <span className="bg-emerald/10 p-2 rounded-lg ring-1 ring-emerald/20">
-                        <Activity className="w-5 h-5 text-emerald" />
+                    <span className="bg-emerald/10 p-1.5 rounded-lg ring-1 ring-emerald/20">
+                        <Activity className="w-4 h-4 text-emerald" />
                     </span>
-                    <span className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+                    <span className="text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
                         AI PARLAY
                     </span>
                 </CardTitle>
-                <CardDescription className="flex items-center gap-2 text-base font-medium text-emerald/90">
+                <CardDescription className="flex items-center gap-2 text-sm font-medium text-emerald/90">
                     <span className="font-bold text-white">{legs.length} Legs</span>
                     <span className="w-1 h-1 bg-white/30 rounded-full" />
                     <span className="font-mono text-emerald-400 font-bold">{totalOdds} Odds</span>
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-3 relative z-10 px-4">
+            <CardContent className="space-y-2 relative z-10 px-4 pb-2">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
                     const headerText = isProp ? leg.player : leg.team;
@@ -133,45 +133,45 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                     const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group flex flex-col gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald/40 transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.15)] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors" />
+                        <div key={i} className="group flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald/40 transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.15)] relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors" />
 
                             <div className="flex justify-between items-start relative z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="relative w-12 h-12 bg-black/40 rounded-full ring-2 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="relative w-8 h-8 bg-black/40 rounded-full ring-1 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
                                         <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-                                        <TeamLogo name={leg.team} className="w-8 h-8 relative z-10" />
+                                        <TeamLogo name={leg.team} className="w-5 h-5 relative z-10" />
                                     </div>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="text-[15px] font-black text-white group-hover:text-emerald-300 transition-colors leading-tight drop-shadow-sm">
+                                    <div className="flex flex-col gap-0">
+                                        <span className="text-[13px] font-black text-white group-hover:text-emerald-300 transition-colors leading-tight drop-shadow-sm">
                                             {headerText}
                                         </span>
-                                        <span className="text-[10px] text-muted-foreground/80 uppercase tracking-[0.15em] font-bold">
+                                        <span className="text-[9px] text-muted-foreground/80 uppercase tracking-widest font-bold">
                                             {leg.bet_type} • {subText}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-1.5 pt-0.5">
-                                    <Badge variant="secondary" className="font-mono text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
+                                <div className="flex flex-col items-end gap-1 pt-0">
+                                    <Badge variant="secondary" className="font-mono text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
                                         {leg.odds}
                                     </Badge>
                                     {leg.sportsbook && (
-                                        <span className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-black">
+                                        <span className="text-[8px] text-muted-foreground/50 uppercase tracking-widest font-black">
                                             via {leg.sportsbook}
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="mt-1 pl-[3.75rem] relative z-10 space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm font-black text-white uppercase tracking-wide">
+                            <div className="mt-0 pl-[2.75rem] relative z-10 space-y-1.5">
+                                <div className="flex items-center gap-1">
+                                    <span className="text-[11px] font-black text-white uppercase tracking-wide">
                                         Line: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-200">{leg.line === 'Yes' ? 'To Score' : leg.line}</span>
                                     </span>
                                 </div>
-                                <div className="relative bg-black/40 px-3.5 py-3 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
+                                <div className="relative bg-black/40 px-2.5 py-1.5 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
                                     <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/30 rounded-l-lg group-hover:bg-emerald-400/80 group-hover:shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all" />
-                                    <p className="text-[11.5px] text-white/70 group-hover:text-white/90 leading-relaxed whitespace-normal break-words font-medium">
+                                    <p className="text-[10px] text-white/70 group-hover:text-white/90 leading-tight whitespace-normal break-words font-medium">
                                         {leg.reasoning}
                                     </p>
                                 </div>
@@ -181,30 +181,30 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-4 pt-6 pb-8 px-6 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20">
-                <div className="flex w-full gap-4">
+            <CardFooter className="flex flex-col gap-3 pt-3 pb-4 px-4 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20">
+                <div className="flex w-full gap-3">
                     <Button
                         onClick={handleCopy}
                         variant="outline"
-                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-xs h-12 uppercase tracking-widest font-bold backdrop-blur-sm"
+                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-[10px] h-10 uppercase tracking-widest font-bold backdrop-blur-sm"
                     >
                         {copied ? (
-                            <span className="text-emerald-400 flex items-center gap-2 animate-in fade-in zoom-in duration-300">
-                                Copied <span className="text-lg">✓</span>
+                            <span className="text-emerald-400 flex items-center gap-1.5 animate-in fade-in zoom-in duration-300">
+                                Copied <span className="text-sm">✓</span>
                             </span>
                         ) : (
-                            <span className="flex items-center gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
-                                <Copy className="h-3.5 w-3.5" /> Copy Link
+                            <span className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
+                                <Copy className="h-3 w-3" /> Copy Link
                             </span>
                         )}
                     </Button>
 
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                            <Button className="flex-[1.8] relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 text-white border-0 shadow-[0_0_40px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_60px_-15px_rgba(16,185,129,0.7)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.02] text-sm h-12 uppercase tracking-widest font-black group">
+                            <Button className="flex-[1.8] relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 text-white border-0 shadow-[0_0_30px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.7)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.02] text-[11px] h-10 uppercase tracking-widest font-black group">
                                 <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 transform skew-x-12" />
-                                <span className="relative z-10 flex items-center gap-2">
-                                    <Lock className="h-4 w-4 transition-transform group-hover:scale-110" />
+                                <span className="relative z-10 flex items-center gap-1.5">
+                                    <Lock className="h-3.5 w-3.5 transition-transform group-hover:scale-110" />
                                     Lock In Parlay
                                 </span>
                             </Button>
