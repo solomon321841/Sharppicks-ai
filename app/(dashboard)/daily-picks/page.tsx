@@ -89,18 +89,18 @@ export default function DailyPicksPage() {
     }, [])
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-2xl sm:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+        <div className="flex flex-col min-h-[calc(100vh-6rem)] space-y-6 animate-in fade-in duration-700 pb-8">
+            <div className="flex flex-col gap-2 shrink-0">
+                <h2 className="text-3xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
                     Daily Picks <span className="text-emerald-500">.</span>
                 </h2>
-                <p className="text-muted-foreground font-medium flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-yellow-400" />
+                <p className="text-muted-foreground font-medium flex items-center gap-2 text-sm sm:text-base">
+                    <Zap className="w-5 h-5 text-yellow-400" />
                     High-confidence AI selections dropped daily at 9:00 AM EST.
                 </p>
             </div>
 
-            <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-[1600px] w-full items-start ${loading ? '' : 'justify-center mx-auto'}`}>
+            <div className={`grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-[1600px] w-full flex-1 items-stretch ${loading ? '' : 'justify-center mx-auto'}`}>
                 {PARLAY_TYPES.map((config) => {
                     const pick = loading ? null : picks.find(p => p.parlay_type === config.type);
                     const Icon = config.icon;
@@ -115,9 +115,9 @@ export default function DailyPicksPage() {
                             <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${config.borderGlow} opacity-80`} />
 
                             {/* Top Right Confidence Badge */}
-                            <div className="absolute top-3 right-3 z-10">
-                                <Badge variant="outline" className={`${config.badge} backdrop-blur-md px-2.5 py-0.5 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tighter ${config.shadowText}`}>
-                                    <Icon className="w-3 h-3 animate-pulse" />
+                            <div className="absolute top-4 right-4 z-10">
+                                <Badge variant="outline" className={`${config.badge} backdrop-blur-md px-3 py-1 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-tighter ${config.shadowText}`}>
+                                    <Icon className="w-4 h-4 animate-pulse" />
                                     {loading ? '--' : (pick?.ai_confidence || 85)}%
                                 </Badge>
                             </div>
@@ -135,24 +135,24 @@ export default function DailyPicksPage() {
                                 </div>
                             )}
 
-                            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-3 px-4 relative z-20 border-b border-white/5">
-                                <CardTitle className="text-sm font-black text-white tracking-widest uppercase flex items-center justify-between">
+                            <CardHeader className="flex flex-col space-y-1 pb-4 pt-5 px-6 relative z-20 border-b border-white/5 bg-white/[0.02]">
+                                <CardTitle className="text-base font-black text-white tracking-widest uppercase flex items-center justify-between">
                                     <span className="flex items-center gap-2">
-                                        <Icon className={`w-3 h-3 ${config.text}`} /> {config.title} PARLAY
+                                        <Icon className={`w-4 h-4 ${config.text}`} /> {config.title} PARLAY
                                     </span>
                                 </CardTitle>
-                                <CardDescription className="flex items-center gap-2 text-[9px] font-bold text-white/50 leading-none">
+                                <CardDescription className="flex items-center gap-2 text-[11px] font-bold text-white/50 leading-none">
                                     <span className="text-white/80">{loading ? '3' : (pick?.num_legs || 3)} LEGS</span>
-                                    <span className="w-1 h-1 bg-white/20 rounded-full" />
+                                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full" />
                                     <span className={`${config.text}`}>{loading ? '+Odds' : (pick?.total_odds || '+400')}</span>
                                 </CardDescription>
                             </CardHeader>
 
-                            <CardContent className="space-y-1 relative z-10 px-2 py-1 flex-1 overflow-hidden">
+                            <CardContent className="space-y-4 relative z-10 px-5 py-5 flex-1 overflow-y-auto">
                                 {loading ? (
-                                    <div className="flex flex-col items-center justify-center py-12 gap-3">
-                                        <Loader2 className={`h-8 w-8 animate-spin ${config.text}`} />
-                                        <span className="text-xs text-zinc-500 animate-pulse">Running AI Simulations...</span>
+                                    <div className="flex flex-col items-center justify-center py-24 gap-4">
+                                        <Loader2 className={`h-10 w-10 animate-spin ${config.text}`} />
+                                        <span className="text-sm font-medium text-zinc-500 animate-pulse">Running AI Simulations...</span>
                                     </div>
                                 ) : pick ? (
                                     pick.legs.map((leg: any, i: number) => {
@@ -160,47 +160,38 @@ export default function DailyPicksPage() {
                                         const subText = isProp ? `${leg.team} vs ${leg.opponent}` : `vs ${leg.opponent}`;
 
                                         return (
-                                            <div key={i} className={`group relative flex flex-col gap-1 py-1.5 px-2 rounded-xl border border-white/[0.03] bg-zinc-900/40 ${config.bgHover} transition-all duration-300`}>
-                                                <div className="relative z-10 flex justify-between items-center gap-2">
-                                                    <div className="flex gap-2 items-center min-w-0">
-                                                        <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-                                                            <div className="absolute inset-0 bg-white/5 rounded-full blur-[1px]" />
-                                                            <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden">
-                                                                <TeamLogo name={leg.team} className="w-3.5 h-3.5 relative z-10" />
-                                                            </div>
-                                                        </div>
+                                            <div key={i} className={`group relative flex flex-col p-4 mb-2 rounded-[16px] bg-zinc-900/40 border border-transparent hover:bg-zinc-900/80 hover:border-white/5 transition-all duration-300`}>
+                                                <div className="flex gap-4 items-center relative z-10">
+                                                    <div className="relative w-10 h-10 rounded-full bg-zinc-950 border border-white/10 shadow-inner flex items-center justify-center shrink-0 overflow-hidden">
+                                                        <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.1] to-transparent pointer-events-none" />
+                                                        <TeamLogo name={leg.team} className="w-6 h-6 relative z-10 drop-shadow-md" />
+                                                    </div>
 
-                                                        <div className="flex flex-col min-w-0">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className="text-[11px] font-black text-white tracking-tight truncate">
-                                                                    {isProp ? leg.player : leg.team}
-                                                                </span>
+                                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                                        <div className="flex items-center justify-between mb-0.5 gap-2">
+                                                            <span className="text-[13px] font-bold text-white tracking-tight flex items-center gap-1.5 truncate">
+                                                                {isProp ? leg.player : leg.team}
                                                                 {isProp && (
-                                                                    <Badge className={`${config.badge} bg-opacity-10 border-none text-[7px] h-3 px-1 font-black leading-none`}>
+                                                                    <Badge className={`${config.badge} bg-opacity-20 border-none text-[8px] h-4 px-1.5 font-black uppercase tracking-widest shrink-0`}>
                                                                         PROP
                                                                     </Badge>
                                                                 )}
-                                                            </div>
-                                                            <p className="text-[8px] font-bold text-zinc-500 truncate uppercase mt-[-1px]">
-                                                                {(leg.bet_type || '').replace('_', ' ')} <span className="text-zinc-700 italic lowercase font-medium">({subText})</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex flex-col items-end shrink-0">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <span className="text-[10px] font-black text-white tracking-tighter">
-                                                                {leg.line === 'Yes' ? 'WIN' : (leg.line || leg.bet_type)}
                                                             </span>
-                                                            <Badge variant="outline" className={`text-[10px] font-mono font-black h-4 px-1.5 ${config.badge}`}>
+                                                            <Badge variant="outline" className={`text-[11px] font-mono font-black h-5 px-1.5 ${config.badge} bg-opacity-10 py-0 leading-[0] flex items-center shrink-0`}>
                                                                 {leg.odds}
                                                             </Badge>
                                                         </div>
+                                                        <span className="text-[11px] text-zinc-400 font-medium truncate uppercase tracking-tight">
+                                                            {(leg.bet_type || '').replace('_', ' ')} <span className="text-zinc-600 lowercase mx-0.5">({subText})</span>
+                                                            <span className="text-white/90 ml-1.5 font-black tracking-tighter">
+                                                                {leg.line === 'Yes' ? 'WIN' : (leg.line || '')}
+                                                            </span>
+                                                        </span>
                                                     </div>
                                                 </div>
 
-                                                <div className="relative z-10 bg-black/30 py-1.5 px-2 rounded-lg border border-white/[0.02]">
-                                                    <p className="text-[9px] leading-[1.25] text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
+                                                <div className="relative z-10 mt-3.5 bg-black/40 p-3.5 rounded-xl border border-white/5 group-hover:bg-black/60 transition-colors">
+                                                    <p className="text-[12px] leading-relaxed text-zinc-400 group-hover:text-zinc-300 transition-colors font-medium">
                                                         {leg.ai_reasoning || leg.reasoning}
                                                     </p>
                                                 </div>
@@ -211,15 +202,15 @@ export default function DailyPicksPage() {
                             </CardContent>
 
                             {pick && !loading && !isLocked && (
-                                <CardFooter className="flex flex-col gap-3 pt-3 pb-5 px-4 bg-gradient-to-t from-black/50 to-transparent border-t border-white/5 relative z-20 mt-auto">
-                                    <Button className={`w-full relative overflow-hidden bg-gradient-to-r ${config.gradient} text-white border-0 shadow-[0_0_40px_-10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.2)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.02] text-xs h-10 uppercase tracking-widest font-black group`}>
+                                <CardFooter className="flex flex-col gap-3 pt-5 pb-7 px-6 bg-gradient-to-t from-black/60 via-black/40 to-transparent border-t border-white/5 relative z-20 mt-auto">
+                                    <Button className={`w-full relative overflow-hidden bg-gradient-to-r ${config.gradient} text-white border-0 shadow-[0_0_40px_-10px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_-15px_rgba(255,255,255,0.2)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.02] text-[13px] h-12 rounded-xl uppercase tracking-widest font-black group`}>
                                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 transform skew-x-12" />
                                         <span className="relative z-10 flex items-center gap-2">
-                                            <Icon className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+                                            <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
                                             Bet This Parlay
                                         </span>
                                     </Button>
-                                    <p className="text-[9px] text-center text-muted-foreground/40 font-mono uppercase tracking-widest">
+                                    <p className="text-[10px] text-center text-zinc-500 font-mono uppercase tracking-widest mt-1">
                                         Track & Analyze Your Performance
                                     </p>
                                 </CardFooter>
