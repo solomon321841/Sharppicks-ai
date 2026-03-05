@@ -133,37 +133,61 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                     const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-1.5 py-2 px-2.5 rounded-xl border border-white/[0.03] hover:border-emerald-500/30 bg-white/[0.01] hover:bg-emerald-500/[0.04] transition-all duration-300">
-                            <div className="flex justify-between items-center relative z-10">
-                                <div className="flex gap-2.5 items-center min-w-0">
-                                    <div className="relative w-7 h-7 rounded-full overflow-hidden bg-zinc-950 border border-white/10 flex items-center justify-center shrink-0 shadow-2xl">
-                                        <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent opacity-40" />
-                                        <TeamLogo name={leg.team} className="w-4 h-4 relative z-10 drop-shadow-[0_0_3px_rgba(0,0,0,0.5)]" />
+                        <div key={i} className="group relative flex flex-col gap-2.5 py-3.5 px-3.5 rounded-2xl border border-white/[0.04] bg-gradient-to-br from-zinc-900/40 via-zinc-900/20 to-transparent hover:from-emerald-500/[0.03] transition-all duration-500 overflow-hidden">
+                            {/* Inner Glow Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+                            <div className="relative z-10 flex justify-between items-start gap-4">
+                                <div className="flex gap-3.5 items-center min-w-0">
+                                    <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
+                                        <div className="absolute inset-0 bg-white/5 rounded-full blur-[2px] group-hover:bg-emerald-500/20 group-hover:blur-md transition-all duration-500" />
+                                        <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl">
+                                            <TeamLogo name={leg.team} className="w-5 h-5 relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                                        </div>
                                     </div>
+
                                     <div className="flex flex-col min-w-0">
-                                        <span className="text-[12px] font-black text-white tracking-tight truncate group-hover:text-emerald-400 transition-colors">
-                                            {leg.player || leg.team}
-                                        </span>
-                                        <div className="flex items-center gap-1.5 text-[8px] font-bold">
-                                            <span className="text-zinc-500 font-black tracking-widest uppercase truncate max-w-[60px]">{leg.bet_type}</span>
-                                            <span className="w-0.5 h-0.5 rounded-full bg-white/10 shrink-0" />
-                                            <span className="text-zinc-600 font-medium truncate italic max-w-[100px]">{subText}</span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[14px] font-black text-white tracking-tight truncate">
+                                                {leg.player || leg.team}
+                                            </span>
+                                            {isProp && (
+                                                <Badge className="bg-emerald-500/10 text-emerald-500 border-none text-[8px] h-4 px-1.5 font-black uppercase tracking-widest">
+                                                    PROP
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                            <p className="text-[9px] font-bold text-zinc-500 truncate uppercase tracking-wider flex items-center gap-1.5">
+                                                {leg.bet_type.replace('_', ' ')}
+                                                <span className="w-1 h-1 rounded-full bg-zinc-800 shrink-0" />
+                                                <span className="text-zinc-600 italic lowercase font-medium">{subText}</span>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
-                                        {leg.line === 'Yes' ? 'SCORER' : leg.line}
-                                    </span>
-                                    <span className="text-[10px] font-mono font-black text-white/90 min-w-[40px] text-right">
-                                        {leg.odds}
-                                    </span>
+
+                                <div className="flex flex-col items-end gap-1.5 shrink-0 text-right">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="flex flex-col items-end">
+                                            <span className="text-[11px] font-black text-white leading-none tracking-tight">
+                                                {leg.line === 'Yes' ? 'Winner' : leg.line}
+                                            </span>
+                                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mt-0.5">
+                                                {leg.sportsbook}
+                                            </span>
+                                        </div>
+                                        <div className="h-7 w-px bg-white/10 mx-0.5" />
+                                        <span className="text-[13px] font-mono font-black text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]">
+                                            {leg.odds}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="relative pl-3 bg-black/40 py-1.5 px-2 rounded-lg border border-white/[0.02] group-hover:border-emerald-500/10 transition-colors">
-                                <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-emerald-500/30 group-hover:bg-emerald-500/80 transition-all rounded-full" />
-                                <p className="text-[9px] leading-[1.3] text-zinc-400 group-hover:text-white/90 transition-colors font-semibold">
+                            <div className="relative z-10 bg-black/40 rounded-xl p-2.5 border border-white/[0.03] group-hover:border-emerald-500/20 transition-all duration-300">
+                                <Activity className="absolute right-2 top-2 w-2.5 h-2.5 text-emerald-500/20 group-hover:text-emerald-500 animate-pulse transition-colors" />
+                                <p className="text-[10px] leading-[1.45] text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
                                     {leg.reasoning}
                                 </p>
                             </div>
