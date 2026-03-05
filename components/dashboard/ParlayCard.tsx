@@ -109,85 +109,69 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                 </Badge>
             </div>
 
-            <CardHeader className="pb-0.5 pt-3 px-3">
-                <CardTitle className="flex items-center gap-1.5">
-                    <span className="bg-emerald/10 p-1.5 rounded-lg ring-1 ring-emerald/20">
-                        <Activity className="w-4 h-4 text-emerald" />
-                    </span>
-                    <span className="text-lg font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
-                        AI PARLAY
+            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-3 px-4 relative z-20 border-b border-white/5">
+                <CardTitle className="text-sm font-black text-white tracking-widest uppercase flex items-center justify-between">
+                    <span className="flex items-center gap-2">
+                        <Activity className="w-3 h-3 text-emerald-400" /> AI PARLAY
                     </span>
                 </CardTitle>
-                <CardDescription className="flex items-center gap-2 text-[10px] font-medium text-emerald/90 leading-none mt-1">
-                    <span className="font-bold text-white">{legs.length} Legs</span>
-                    <span className="w-1 h-1 bg-white/30 rounded-full" />
-                    <span className="font-mono text-emerald-400 font-bold">{totalOdds} Odds</span>
+                <CardDescription className="flex items-center gap-2 text-[9px] font-bold text-emerald/70 leading-none">
+                    <span className="text-white/80">{legs.length} LEGS</span>
+                    <span className="w-1 h-1 bg-white/20 rounded-full" />
+                    <span className="text-emerald-400">{totalOdds}</span>
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-1 relative z-10 px-3 pb-1">
+            <CardContent className="space-y-1 relative z-10 px-2 py-1 flex-1 overflow-hidden">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
-                    const headerText = isProp ? leg.player : leg.team;
                     const subText = isProp ? `${leg.team} vs ${leg.opponent}` : `vs ${leg.opponent}`;
-                    const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-2.5 py-3.5 px-3.5 rounded-2xl border border-white/[0.04] bg-gradient-to-br from-zinc-900/40 via-zinc-900/20 to-transparent hover:from-emerald-500/[0.03] transition-all duration-500 overflow-hidden">
-                            {/* Inner Glow Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-
-                            <div className="relative z-10 flex justify-between items-start gap-4">
-                                <div className="flex gap-3.5 items-center min-w-0">
-                                    <div className="relative w-9 h-9 flex items-center justify-center shrink-0">
-                                        <div className="absolute inset-0 bg-white/5 rounded-full blur-[2px] group-hover:bg-emerald-500/20 group-hover:blur-md transition-all duration-500" />
-                                        <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl">
-                                            <TeamLogo name={leg.team} className="w-5 h-5 relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]" />
+                        <div key={i} className="group relative flex flex-col gap-1 py-1.5 px-2 rounded-xl border border-white/[0.03] bg-zinc-900/40 hover:bg-emerald-500/[0.04] transition-all duration-300">
+                            <div className="relative z-10 flex justify-between items-center gap-2">
+                                <div className="flex gap-2 items-center min-w-0">
+                                    <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
+                                        <div className="absolute inset-0 bg-white/5 rounded-full blur-[1px]" />
+                                        <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden">
+                                            <TeamLogo name={leg.team} className="w-3.5 h-3.5 relative z-10" />
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-[14px] font-black text-white tracking-tight truncate">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[11px] font-black text-white tracking-tight truncate">
                                                 {leg.player || leg.team}
                                             </span>
                                             {isProp && (
-                                                <Badge className="bg-emerald-500/10 text-emerald-500 border-none text-[8px] h-4 px-1.5 font-black uppercase tracking-widest">
+                                                <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[7px] h-3 px-1 font-black leading-none">
                                                     PROP
                                                 </Badge>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <p className="text-[9px] font-bold text-zinc-500 truncate uppercase tracking-wider flex items-center gap-1.5">
-                                                {leg.bet_type.replace('_', ' ')}
-                                                <span className="w-1 h-1 rounded-full bg-zinc-800 shrink-0" />
-                                                <span className="text-zinc-600 italic lowercase font-medium">{subText}</span>
-                                            </p>
-                                        </div>
+                                        <p className="text-[8px] font-bold text-zinc-500 truncate uppercase mt-[-1px]">
+                                            {leg.bet_type.replace('_', ' ')} <span className="text-zinc-700 italic lowercase font-medium">({subText})</span>
+                                        </p>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-end gap-1.5 shrink-0 text-right">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="flex flex-col items-end">
-                                            <span className="text-[11px] font-black text-white leading-none tracking-tight">
-                                                {leg.line === 'Yes' ? 'Winner' : leg.line}
-                                            </span>
-                                            <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mt-0.5">
-                                                {leg.sportsbook}
-                                            </span>
-                                        </div>
-                                        <div className="h-7 w-px bg-white/10 mx-0.5" />
-                                        <span className="text-[13px] font-mono font-black text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]">
-                                            {leg.odds}
+                                <div className="flex flex-col items-end shrink-0">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-[10px] font-black text-white tracking-tighter">
+                                            {leg.line === 'Yes' ? 'WIN' : leg.line}
                                         </span>
+                                        <Badge variant="outline" className="text-[10px] font-mono font-black h-4 px-1.5 border-emerald-500/20 text-emerald-400 bg-emerald-500/5">
+                                            {leg.odds}
+                                        </Badge>
                                     </div>
+                                    <span className="text-[7px] font-black text-zinc-600 uppercase tracking-tighter">
+                                        {leg.sportsbook}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="relative z-10 bg-black/40 rounded-xl p-2.5 border border-white/[0.03] group-hover:border-emerald-500/20 transition-all duration-300">
-                                <Activity className="absolute right-2 top-2 w-2.5 h-2.5 text-emerald-500/20 group-hover:text-emerald-500 animate-pulse transition-colors" />
-                                <p className="text-[10px] leading-[1.45] text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
+                            <div className="relative z-10 bg-black/30 py-1.5 px-2 rounded-lg border border-white/[0.02]">
+                                <p className="text-[9px] leading-[1.25] text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
                                     {leg.reasoning}
                                 </p>
                             </div>
@@ -196,31 +180,21 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-2 pt-2 pb-3 px-3 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20">
-                <div className="flex w-full gap-3">
+            <CardFooter className="flex flex-col gap-2 pt-1.5 pb-2 px-2.5 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20 shrink-0">
+                <div className="flex w-full gap-2">
                     <Button
                         onClick={handleCopy}
                         variant="outline"
-                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-[9px] h-8 uppercase tracking-widest font-bold backdrop-blur-sm"
+                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white transition-all text-[8px] h-7 uppercase tracking-widest font-bold"
                     >
-                        {copied ? (
-                            <span className="text-emerald-400 flex items-center gap-1.5 animate-in fade-in zoom-in duration-300">
-                                Copied <span className="text-sm">✓</span>
-                            </span>
-                        ) : (
-                            <span className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
-                                <Copy className="h-3 w-3" /> Copy Link
-                            </span>
-                        )}
+                        {copied ? 'COPIED ✓' : 'COPY'}
                     </Button>
 
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                            <Button className="flex-[1.8] relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 text-white border-0 shadow-[0_0_30px_-10px_rgba(16,185,129,0.5)] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.7)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-[1.02] text-[11px] h-10 uppercase tracking-widest font-black group">
-                                <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 transform skew-x-12" />
+                            <Button className="flex-[2] relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 text-white border-0 shadow-lg text-[10px] h-8 uppercase tracking-widest font-black group">
                                 <span className="relative z-10 flex items-center gap-1.5">
-                                    <Lock className="h-3.5 w-3.5 transition-transform group-hover:scale-110" />
-                                    Lock In Parlay
+                                    <Lock className="w-3 h-3" /> LOCK IN
                                 </span>
                             </Button>
                         </DialogTrigger>
