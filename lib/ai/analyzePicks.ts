@@ -362,18 +362,18 @@ export async function analyzePicks(request: ParlayRequest) {
             }
 
             if (valid) {
-                // Check for duplicate games AND Valid Game IDs
-                const gameIds = new Set();
+                const legSignatures = new Set();
                 const validGameIds = new Set(request.oddsData.map(g => g.id));
                 const allTeams = new Set(request.oddsData.flatMap(g => [g.home_team, g.away_team]));
 
                 const hasIssues = result.legs.some((l: any) => {
-                    // Check 1: Duplicate Game (Same Game ID)
-                    if (gameIds.has(l.game_id)) {
-                        lastError = `Duplicate game picked: ${l.game_id}`;
+                    // Check 1: Duplicate Leg (Same Game + Same Bet + Same Line/Player)
+                    const sig = `${l.game_id}-${l.bet_type}-${l.player || l.team}-${l.line}`;
+                    if (legSignatures.has(sig)) {
+                        lastError = `Duplicate exact leg picked: ${sig}`;
                         return true;
                     }
-                    gameIds.add(l.game_id);
+                    legSignatures.add(sig);
 
                     // Check 2: Existence (Must be in provided data)
                     if (!validGameIds.has(l.game_id)) {
