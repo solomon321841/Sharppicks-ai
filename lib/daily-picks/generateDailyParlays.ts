@@ -163,7 +163,7 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
                             odds: l.odds,
                             opponent: l.opponent,
                             player: l.player || null,
-                            line: l.line || null,
+                            line: (l.line !== undefined && l.line !== null) ? String(l.line) : null,
                             ai_reasoning: l.reasoning || null,
                             result: 'pending'
                         }))
