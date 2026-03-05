@@ -18,14 +18,14 @@ export type SportSchedule = {
 }
 
 export async function getSchedule(sports: string[]): Promise<SportSchedule[]> {
-    const apiKey = '5a09e10850e12620758a1b6f4504d87f'
+    const apiKey = process.env.ODDS_API_KEY;
     if (!apiKey) {
         console.warn('Missing ODDS_API_KEY, returning empty schedule')
         return []
     }
 
     // Try to get from cache first
-    const cacheKey = `schedule_v2_${sports.sort().join('_')}` // Incremented version to clear old cache
+    const cacheKey = `schedule_v4_${sports.sort().join('_')}` // Incremented version to clear old cache
 
     if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
         try {

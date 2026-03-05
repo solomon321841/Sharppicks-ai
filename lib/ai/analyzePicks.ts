@@ -422,6 +422,7 @@ export async function analyzePicks(request: ParlayRequest) {
 
                 if (hasIssues) {
                     valid = false;
+                    console.log('[AI Validation Failure]', lastError);
                 }
             }
 
