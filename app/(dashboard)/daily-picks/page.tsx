@@ -125,8 +125,8 @@ export default function DailyPicksPage() {
                                 </CardDescription>
                             </CardHeader>
 
-                            {/* Content — scrollable within card if needed */}
-                            <CardContent className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2 relative z-10">
+                            {/* Content — legs distribute evenly */}
+                            <CardContent className="flex-1 min-h-0 overflow-hidden px-3 py-2 flex flex-col justify-evenly relative z-10">
                                 {loading ? (
                                     <div className="flex flex-col items-center justify-center h-full gap-2">
                                         <Loader2 className={`h-7 w-7 animate-spin ${config.text}`} />
@@ -141,7 +141,7 @@ export default function DailyPicksPage() {
                                         const shortReasoning = reasoning.length > 90 ? reasoning.slice(0, 90) + '…' : reasoning;
 
                                         return (
-                                            <div key={i} className="group rounded-xl bg-zinc-900/50 border border-white/[0.04] hover:border-white/10 p-3 transition-all duration-200">
+                                            <div key={i} className="group rounded-xl bg-zinc-900/50 border border-white/[0.04] hover:border-white/10 p-3 transition-all duration-200 flex-1 flex flex-col justify-center">
                                                 {/* Top row: Logo + Name + Odds */}
                                                 <div className="flex items-center gap-2.5">
                                                     <div className="relative w-8 h-8 rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center shrink-0 overflow-hidden">
