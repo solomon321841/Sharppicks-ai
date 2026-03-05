@@ -133,42 +133,48 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                     const items = [leg.team, leg.opponent];
 
                     return (
-                        <div key={i} className="group flex flex-col gap-2 p-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald/30 transition-all duration-300 shadow-lg hover:shadow-[0_0_15px_-5px_rgba(16,185,129,0.1)]">
-                            <div className="flex justify-between items-start">
+                        <div key={i} className="group flex flex-col gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald/40 transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.15)] relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors" />
+
+                            <div className="flex justify-between items-start relative z-10">
                                 <div className="flex items-center gap-3">
-                                    <div className="relative w-10 h-10 bg-white/5 rounded-full ring-1 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden">
-                                        <TeamLogo name={leg.team} className="w-7 h-7" />
+                                    <div className="relative w-12 h-12 bg-black/40 rounded-full ring-2 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+                                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
+                                        <TeamLogo name={leg.team} className="w-8 h-8 relative z-10" />
                                     </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-bold text-white group-hover:text-emerald-300 transition-colors leading-tight">
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-[15px] font-black text-white group-hover:text-emerald-300 transition-colors leading-tight drop-shadow-sm">
                                             {headerText}
                                         </span>
-                                        <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">
+                                        <span className="text-[10px] text-muted-foreground/80 uppercase tracking-[0.15em] font-bold">
                                             {leg.bet_type} • {subText}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-1">
-                                    <Badge variant="secondary" className="font-mono text-xs bg-black/40 text-emerald-400 border border-emerald/20 px-2 py-0.5">
+                                <div className="flex flex-col items-end gap-1.5 pt-0.5">
+                                    <Badge variant="secondary" className="font-mono text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
                                         {leg.odds}
                                     </Badge>
                                     {leg.sportsbook && (
-                                        <span className="text-[9px] text-muted-foreground/60 uppercase tracking-wider font-bold">
+                                        <span className="text-[9px] text-muted-foreground/50 uppercase tracking-widest font-black">
                                             via {leg.sportsbook}
                                         </span>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="mt-1 pl-[3.25rem]">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-sm font-black text-white/90">
-                                        {leg.line === 'Yes' ? 'To Score' : leg.line}
+                            <div className="mt-1 pl-[3.75rem] relative z-10 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sm font-black text-white uppercase tracking-wide">
+                                        Line: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-200">{leg.line === 'Yes' ? 'To Score' : leg.line}</span>
                                     </span>
                                 </div>
-                                <p className="text-[10px] text-muted-foreground/80 italic mt-1.5 leading-relaxed bg-black/20 p-2 rounded-lg border border-white/5 whitespace-normal break-words">
-                                    "{leg.reasoning}"
-                                </p>
+                                <div className="relative bg-black/40 px-3.5 py-3 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
+                                    <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/30 rounded-l-lg group-hover:bg-emerald-400/80 group-hover:shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all" />
+                                    <p className="text-[11.5px] text-white/70 group-hover:text-white/90 leading-relaxed whitespace-normal break-words font-medium">
+                                        {leg.reasoning}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     )

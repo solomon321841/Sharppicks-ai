@@ -210,7 +210,7 @@ export async function analyzePicks(request: ParlayRequest) {
        - If you don't know the player's team, DO NOT USE THE PROP.
        - **LINE FIELD for Props:** MUST be the 'point' from data + the type (e.g. "Over 2.5 Shots", "Under 0.5 Goals"). NEVER put odds here.
        - **BOOKMAKER:** You must include the "sportsbook" field in the leg, using the 'book' field from the data (e.g. "DraftKings", "FanDuel").
-       10. **REASONING (STRICT):** MAX 15 WORDS. One sentence only. direct and punchy. DO NOT start with "Risk X/10". Focus on the "why".
+       10. **REASONING (STRICT):** Provide a sharp, analytical, data-driven insight for why this pick has a mathematical edge. Sound like a professional sports bettor/analyst. Mention a specific situational advantage, matchup metric, or line value. Keep it around 1-2 concise sentences. Avoid generic filler like "heavy favorites" or "safe pick". Use sharp betting terminology.
 
     Return JSON format:
     {
