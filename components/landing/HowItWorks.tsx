@@ -236,7 +236,7 @@ const Card = ({ i, title, description, icon: Icon, color, stats, progress, range
     const scale = useTransform(smoothProgress, range, [1, targetScale])
 
     return (
-        <div ref={container} className="h-[60vh] md:h-[80vh] flex items-center justify-center sticky top-24">
+        <div ref={container} className="h-auto md:h-[80vh] flex items-center justify-center md:sticky md:top-24 py-4 md:py-0">
             <motion.div
                 style={{ scale, top: `calc(-5vh + ${i * 40}px)` }}
                 className="flex flex-col relative w-full max-w-[900px] mx-4 md:mx-0 bg-[#09090b] border border-white/10 rounded-[1.5rem] md:rounded-[2.5rem] p-6 md:p-12 origin-top shadow-2xl overflow-hidden will-change-transform"
@@ -247,25 +247,25 @@ const Card = ({ i, title, description, icon: Icon, color, stats, progress, range
 
                 <div className="relative z-10 flex flex-col items-center text-center">
                     {/* Floating Icon */}
-                    <div className="mb-10 relative">
+                    <div className="mb-6 md:mb-10 relative">
                         <div className={`absolute inset-0 bg-gradient-to-r ${color} blur-2xl opacity-40 animate-pulse`} />
                         <div className="relative w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-3xl bg-black border border-white/20 flex items-center justify-center shadow-2xl">
                             <Icon className="w-7 h-7 md:w-10 md:h-10 text-white" />
                         </div>
                         {/* Connecting Line */}
                         {i < 2 && (
-                            <div className="absolute top-full left-1/2 w-px h-32 bg-gradient-to-b from-white/20 to-transparent -translate-x-1/2 -z-10" />
+                            <div className="hidden md:block absolute top-full left-1/2 w-px h-32 bg-gradient-to-b from-white/20 to-transparent -translate-x-1/2 -z-10" />
                         )}
                     </div>
 
-                    <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter mb-4 md:mb-6">{title}</h2>
-                    <p className="text-zinc-400 text-base md:text-xl leading-relaxed max-w-2xl mb-8 md:mb-12">{description}</p>
+                    <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter mb-3 md:mb-6">{title}</h2>
+                    <p className="text-zinc-400 text-sm md:text-xl leading-relaxed max-w-2xl mb-6 md:mb-12">{description}</p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-4 w-full max-w-3xl">
                         {stats.map((s: string, idx: number) => (
-                            <div key={idx} className="flex flex-col items-center justify-center p-4 rounded-xl bg-white/5 border border-white/10">
-                                <Check className="w-5 h-5 text-emerald-400 mb-2" />
-                                <span className="text-sm font-mono font-bold text-zinc-300 uppercase tracking-wider">{s}</span>
+                            <div key={idx} className="flex flex-col items-center justify-center p-2 md:p-4 rounded-xl bg-white/5 border border-white/10">
+                                <Check className="w-4 h-4 md:w-5 md:h-5 text-emerald-400 mb-1 md:mb-2" />
+                                <span className="text-[10px] md:text-sm font-mono font-bold text-zinc-300 uppercase tracking-wider">{s}</span>
                             </div>
                         ))}
                     </div>

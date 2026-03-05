@@ -6,7 +6,6 @@ import Image from "next/image"
 const leagues = [
     { name: "NBA", logo: "https://a.espncdn.com/i/teamlogos/leagues/500/nba.png" },
     { name: "NHL", logo: "https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png" },
-    { name: "NCAAB", logo: "https://a.espncdn.com/i/teamlogos/leagues/500/ncaa.png" },
     { name: "EPL", logo: "https://a.espncdn.com/i/leaguelogos/soccer/500/23.png" },
     { name: "Champions League", logo: "https://a.espncdn.com/i/leaguelogos/soccer/500/2.png" },
     { name: "La Liga", logo: "https://a.espncdn.com/i/leaguelogos/soccer/500/15.png" },
