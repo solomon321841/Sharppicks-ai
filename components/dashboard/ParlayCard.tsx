@@ -109,8 +109,8 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                 </Badge>
             </div>
 
-            <CardHeader className="pb-1 pt-4 px-4">
-                <CardTitle className="flex items-center gap-2">
+            <CardHeader className="pb-0.5 pt-3 px-3">
+                <CardTitle className="flex items-center gap-1.5">
                     <span className="bg-emerald/10 p-1.5 rounded-lg ring-1 ring-emerald/20">
                         <Activity className="w-4 h-4 text-emerald" />
                     </span>
@@ -118,14 +118,14 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                         AI PARLAY
                     </span>
                 </CardTitle>
-                <CardDescription className="flex items-center gap-2 text-sm font-medium text-emerald/90">
+                <CardDescription className="flex items-center gap-2 text-[10px] font-medium text-emerald/90 leading-none mt-1">
                     <span className="font-bold text-white">{legs.length} Legs</span>
                     <span className="w-1 h-1 bg-white/30 rounded-full" />
                     <span className="font-mono text-emerald-400 font-bold">{totalOdds} Odds</span>
                 </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-2 relative z-10 px-4 pb-2">
+            <CardContent className="space-y-1 relative z-10 px-3 pb-1">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
                     const headerText = isProp ? leg.player : leg.team;
@@ -136,64 +136,54 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                         <div key={i} className="group flex flex-col gap-1.5 p-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald/40 transition-all duration-300 shadow-xl hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.15)] relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-emerald-500/10 transition-colors" />
 
-                            <div className="flex justify-between items-start relative z-10">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="relative w-8 h-8 bg-black/40 rounded-full ring-1 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
-                                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent shadow-[inset_0_2px_4px_rgba(255,255,255,0.1)]" />
-                                        <TeamLogo name={leg.team} className="w-5 h-5 relative z-10" />
+                            <div className="flex justify-between items-center relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <div className="relative w-7 h-7 bg-black/40 rounded-full ring-1 ring-white/10 group-hover:ring-emerald/40 transition-colors flex items-center justify-center shrink-0 overflow-hidden shadow-inner">
+                                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+                                        <TeamLogo name={leg.team} className="w-4 h-4 relative z-10" />
                                     </div>
-                                    <div className="flex flex-col gap-0">
-                                        <span className="text-[13px] font-black text-white group-hover:text-emerald-300 transition-colors leading-tight drop-shadow-sm">
+                                    <div className="flex flex-col">
+                                        <span className="text-[12px] font-black text-white group-hover:text-emerald-300 transition-colors leading-none truncate max-w-[120px]">
                                             {headerText}
                                         </span>
-                                        <span className="text-[9px] text-muted-foreground/80 uppercase tracking-widest font-bold">
-                                            {leg.bet_type} • {subText}
-                                        </span>
+                                        <div className="flex items-center gap-1.5 mt-0.5">
+                                            <span className="text-[8px] text-muted-foreground/80 uppercase tracking-widest font-bold">
+                                                {leg.bet_type}
+                                            </span>
+                                            <span className="w-0.5 h-0.5 bg-white/20 rounded-full" />
+                                            <span className="text-[9px] font-black text-emerald-400">
+                                                {leg.line === 'Yes' ? 'To Score' : leg.line}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end gap-1 pt-0">
-                                    <Badge variant="secondary" className="font-mono text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0 shadow-[0_0_10px_-2px_rgba(16,185,129,0.2)]">
+                                <div className="flex flex-col items-end gap-0.5">
+                                    <Badge variant="secondary" className="font-mono text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1.5 py-0">
                                         {leg.odds}
                                     </Badge>
-                                    {leg.sportsbook && (
-                                        <span className="text-[8px] text-muted-foreground/50 uppercase tracking-widest font-black">
-                                            via {leg.sportsbook}
-                                        </span>
-                                    )}
+                                    <span className="text-[7px] text-muted-foreground/30 uppercase tracking-tighter font-bold">
+                                        {leg.sportsbook}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="mt-0 pl-[2.75rem] relative z-10 space-y-1.5">
-                                <div className="flex items-center gap-1">
-                                    <span className="text-[11px] font-black text-white uppercase tracking-wide">
-                                        Line: <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-emerald-200">{leg.line === 'Yes' ? 'To Score' : leg.line}</span>
-                                    </span>
-                                </div>
-                                <div className="relative bg-black/40 p-3 rounded-lg border border-white/5 backdrop-blur-md shadow-inner group-hover:bg-emerald-950/20 group-hover:border-emerald-500/20 transition-all duration-300">
-                                    <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/30 rounded-l-lg group-hover:bg-emerald-400/80 group-hover:shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all" />
-                                    <div className="space-y-1.5 ml-1">
-                                        {(leg.reasoning || '').split('. ').filter((s: string) => s.trim().length > 0).map((sentence: string, idx: number) => (
-                                            <div key={idx} className="flex gap-2 items-start">
-                                                <ChevronRight className="w-3 h-3 text-emerald-500/70 mt-[2px] shrink-0 group-hover:text-emerald-400 transition-colors" />
-                                                <p className="text-[10px] text-white/70 group-hover:text-white/90 leading-[1.3] whitespace-normal break-words font-medium">
-                                                    {sentence.trim()}{sentence.trim().endsWith('.') ? '' : '.'}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                            <div className="relative bg-black/60 px-2 py-1.5 rounded-lg border border-white/5 group-hover:border-emerald-500/10 transition-all duration-300">
+                                <div className="absolute top-0 left-0 w-0.5 h-full bg-emerald-500/20 rounded-l-lg group-hover:bg-emerald-400/60 transition-all" />
+                                <p className="text-[9px] text-white/50 group-hover:text-white/80 leading-[1.2] font-medium ml-1">
+                                    {leg.reasoning}
+                                </p>
                             </div>
                         </div>
                     )
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-3 pt-3 pb-4 px-4 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20">
+            <CardFooter className="flex flex-col gap-2 pt-2 pb-3 px-3 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20">
                 <div className="flex w-full gap-3">
                     <Button
                         onClick={handleCopy}
                         variant="outline"
-                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-[10px] h-10 uppercase tracking-widest font-bold backdrop-blur-sm"
+                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all text-[9px] h-8 uppercase tracking-widest font-bold backdrop-blur-sm"
                     >
                         {copied ? (
                             <span className="text-emerald-400 flex items-center gap-1.5 animate-in fade-in zoom-in duration-300">
