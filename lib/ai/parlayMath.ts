@@ -94,22 +94,11 @@ export function enforceLegCount(riskLevel: number, requestedLegs: number): numbe
 }
 
 export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): string[] {
-    const hasProps = requestedTypes.some(t => t.toLowerCase().includes('prop') || t.toLowerCase().includes('player'));
-    const hasTotals = requestedTypes.some(t => t.toLowerCase().includes('total'));
-
+    // We will now honor exactly what the user requested.
+    // If they ask for props at Risk 1, they get props at Risk 1.
+    // The AI will handle picking lines that fit the risk boundary.
     let allowedTypes = [...requestedTypes];
 
-    if (riskLevel <= 5) {
-        // No props for risks 1-5
-        allowedTypes = allowedTypes.filter(t => !t.toLowerCase().includes('prop') && !t.toLowerCase().includes('player'));
-    }
-
-    if (riskLevel <= 3) {
-        // Only ML + Spreads for risks 1-3
-        allowedTypes = allowedTypes.filter(t => !t.toLowerCase().includes('total'));
-    }
-
-    // Always fallback to moneyline/spreads if we filtered everything out
     if (allowedTypes.length === 0) {
         allowedTypes = ['moneyline', 'spread'];
     }
