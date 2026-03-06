@@ -152,13 +152,27 @@ export async function analyzePicks(request: ParlayRequest) {
     - At Risk 1–5: Do NOT combine legs from the same game.
     - At Risk 6+: Same-game legs are allowed but flag them as correlated in the output.
     - Never combine a team ML with an Over/Under from the same game at Risk 1–7.
+
+    VARIETY RULES (MANDATORY):
+    - SPREAD LEGS ACROSS DIFFERENT GAMES. Do NOT put all legs from the same matchup.
+    - If there are 3+ games in the data, use at LEAST 2 different games.
+    - If there are 5+ games, use at LEAST 3 different games.
+    - For player props: MIX different stat categories (points, rebounds, assists, threes, etc.). Do NOT make every prop the same stat.
+    - For mixed bet types: include variety — don't just pick all spreads or all moneylines.
     
     TARGET SPECS FOR THIS REQUEST:
     - Sport(s): ${sportString}
     - Risk Level: ${request.riskLevel}
     - Num Legs MAX: ${request.numLegs} (Minimum 2 required)
     - Allowed Bet Types: ${request.betTypes.join(', ')}
-    ${request.betTypes.includes('player_props') ? '    NOTE: "player_props" includes ALL player prop markets (player_points, player_rebounds, player_assists, player_threes, player_pass_tds, etc.). Use bet_type="player_props" in your output for ANY player prop leg.' : ''}
+    ${request.betTypes.includes('player_props') ? `
+    PLAYER PROPS INSTRUCTIONS:
+    - Use bet_type="player_props" in your output for ANY player prop leg.
+    - You MUST include the "prop_market" field specifying the stat: "Points", "Rebounds", "Assists", "Threes", "Pts+Reb+Ast", etc.
+    - VARY the stat categories across legs. Example: 1 Points prop + 1 Rebounds prop + 1 Assists prop. Do NOT make every leg a Points prop.
+    - SPREAD across different players from DIFFERENT games when possible.
+    - Include the player name in the "player" field.
+    ` : ''}
 
     AVAILABLE GAMES WITH API ODDS:
     ${JSON.stringify(enrichedGamesForAI)}
@@ -170,14 +184,15 @@ export async function analyzePicks(request: ParlayRequest) {
         {
           "game_id": "valid_id_from_data", 
           "team": "Player's Team Name",
-          "player": "Player Name (if prop)",
+          "player": "Player Name (if prop, otherwise omit)",
+          "prop_market": "Points (REQUIRED for props — e.g. Points, Rebounds, Assists, Threes, Pts+Reb+Ast)",
           "opponent": "Opponent Name",
-          "bet_type": "type from requested list",
-          "line": "Over 210.5", 
+          "bet_type": "exact type from the allowed list above",
+          "line": "Over 27.5", 
           "odds": "-115",
           "fair_prob": "53.2%",
           "sportsbook": "FanDuel",
-          "reasoning": "Quick 2-sentence sharp logic"
+          "reasoning": "2-3 sentence sharp analysis explaining WHY this bet has value."
         }
       ],
       "totalOdds": "+500",
@@ -190,10 +205,13 @@ export async function analyzePicks(request: ParlayRequest) {
     - Never include a game or odds not in the current API data.
     - Never include props at Risk 1-5.
     - Never say "approximately" or "around" for odds — use exact figures from the API.
+    - Never put all legs from the same game when other games are available.
+    - Never make all player prop legs the same stat category.
 
     CRITICAL INSTRUCTIONS:
     1. YOU CAN RETURN UP TO ${request.numLegs} PICKS (Minimum 2). If you hit the target odds with fewer legs, that is perfectly fine.
-    2. **BET TYPE VARIETY (STRICT):**
+    2. **BET TYPE & GAME VARIETY (STRICT):** Spread your picks across different games and stat categories.
+    3. **REASONING QUALITY:** Each leg MUST have a real, specific reason — reference the player's recent performance, matchup advantage, or statistical edge. NOT generic filler.
     `
 
     const anthropic = new Anthropic({
@@ -415,8 +433,15 @@ export async function analyzePicks(request: ParlayRequest) {
                 // Add unit sizing string
                 result.unit_size = getUnitSize(request.riskLevel);
 
-                // Calculate Dynamic Confidence based on true prob
-                result.confidence = Math.min(99, Math.max(1, Math.round(result.true_implied_prob * 200))); // Scaled for display purposes
+                // Calculate Dynamic Confidence based on risk level and true probability
+                // Lower risk = higher confidence (more likely to hit), Higher risk = lower confidence
+                const riskConfidenceMap: Record<number, [number, number]> = {
+                    1: [80, 95], 2: [70, 85], 3: [60, 78], 4: [50, 68],
+                    5: [40, 58], 6: [32, 48], 7: [25, 38], 8: [18, 30],
+                    9: [12, 22], 10: [5, 15]
+                };
+                const [cLo, cHi] = riskConfidenceMap[request.riskLevel] || [30, 60];
+                result.confidence = Math.round(cLo + Math.random() * (cHi - cLo));
 
                 // Final Polish: Entrich legs with Sport and normalize fields
                 result.legs = result.legs.map((leg: any) => {

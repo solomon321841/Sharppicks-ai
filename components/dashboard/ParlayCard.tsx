@@ -93,9 +93,10 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
     }
 
     // Determine badge color based on confidence
-    const confidenceColor = confidence >= 75 ? "bg-emerald text-emerald-foreground border-emerald/50" :
-        confidence >= 60 ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/50" :
-            "bg-red-500/20 text-red-500 border-red-500/50";
+    const confidenceColor = confidence >= 70 ? "bg-emerald text-emerald-foreground border-emerald/50" :
+        confidence >= 40 ? "bg-yellow-500/20 text-yellow-500 border-yellow-500/50" :
+            confidence >= 20 ? "bg-orange-500/20 text-orange-400 border-orange-500/50" :
+                "bg-red-500/20 text-red-500 border-red-500/50";
 
     return (
         <Card className="w-full bg-gradient-to-b from-zinc-900 to-black border-zinc-800 shadow-2xl relative overflow-hidden group/card">
@@ -105,7 +106,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
             <div className="absolute top-3 right-3 z-10">
                 <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md border-emerald-500/20 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] px-2.5 py-0.5 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tighter`}>
                     <Activity className="w-3 h-3 animate-pulse" />
-                    {confidence}%
+                    {confidence >= 70 ? 'SHARP EDGE' : confidence >= 40 ? 'SOLID VALUE' : confidence >= 20 ? 'HIGH RISK PLAY' : 'MOONSHOT'}
                 </Badge>
             </div>
 
@@ -150,7 +151,19 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel }: ParlayCar
                                             )}
                                         </div>
                                         <p className="text-[8px] font-bold text-zinc-500 truncate uppercase mt-[-1px]">
-                                            {leg.bet_type.replace('_', ' ')} <span className="text-zinc-700 italic lowercase font-medium">({subText})</span>
+                                            {isProp && leg.prop_market ? (
+                                                <>
+                                                    <span className="text-emerald-500/80">{leg.prop_market}</span>
+                                                    {' '}
+                                                    <span className="text-zinc-700 italic lowercase font-medium">({leg.team.toLowerCase()} vs {leg.opponent.toLowerCase()})</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {leg.bet_type === 'moneyline' ? 'MONEYLINE' : leg.bet_type === 'spread' ? 'SPREAD' : leg.bet_type === 'totals' ? 'GAME TOTAL' : leg.bet_type.replace('_', ' ')}
+                                                    {' '}
+                                                    <span className="text-zinc-700 italic lowercase font-medium">(vs {leg.opponent.toLowerCase()})</span>
+                                                </>
+                                            )}
                                         </p>
                                     </div>
                                 </div>
