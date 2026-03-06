@@ -158,6 +158,7 @@ export async function analyzePicks(request: ParlayRequest) {
     - Risk Level: ${request.riskLevel}
     - Num Legs MAX: ${request.numLegs} (Minimum 2 required)
     - Allowed Bet Types: ${request.betTypes.join(', ')}
+    ${request.betTypes.includes('player_props') ? '    NOTE: "player_props" includes ALL player prop markets (player_points, player_rebounds, player_assists, player_threes, player_pass_tds, etc.). Use bet_type="player_props" in your output for ANY player prop leg.' : ''}
 
     AVAILABLE GAMES WITH API ODDS:
     ${JSON.stringify(enrichedGamesForAI)}
@@ -251,10 +252,16 @@ export async function analyzePicks(request: ParlayRequest) {
             if (request.betTypes.length > 0) {
                 const hasWrongType = result.legs.some((l: any) => {
                     let actual = l.bet_type;
-                    // Normalize AI output
+                    // Normalize AI output — the AI may return specific prop market names
                     if (actual === 'prop' || actual === 'player_prop') actual = 'player_props';
                     if (actual === 'total' || actual === 'over/under') actual = 'totals';
                     if (actual === 'spreads') actual = 'spread';
+                    if (actual === 'h2h' || actual === 'money_line') actual = 'moneyline';
+                    // Map ALL specific prop markets to the umbrella "player_props"
+                    if (actual && actual.startsWith('player_')) actual = 'player_props';
+
+                    // Write back normalized value so downstream checks work
+                    l.bet_type = actual;
 
                     return !request.betTypes.includes(actual);
                 });
