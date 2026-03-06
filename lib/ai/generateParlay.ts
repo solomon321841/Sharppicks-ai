@@ -128,7 +128,7 @@ export async function generateParlay(params: Omit<ParlayRequest, 'oddsData'> & {
 
     // 2. AI Analysis with retry for leg count
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     let aiResult;
 
     while (attempts < maxAttempts) {

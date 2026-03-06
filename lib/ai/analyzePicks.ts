@@ -200,7 +200,7 @@ export async function analyzePicks(request: ParlayRequest) {
     })
 
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     let lastError = '';
 
     while (attempts < maxAttempts) {
@@ -314,8 +314,19 @@ export async function analyzePicks(request: ParlayRequest) {
                     // 4. Strict Range Gate Check (Spec Rule 2 & 3.5)
                     const rangeValid = validateRiskLevel(request.riskLevel, calcAmerican);
                     if (!rangeValid) {
-                        lastError = `Risk Level Boundary Violation. Expected Risk Level ${request.riskLevel} target range. Calculated true American odds are ${calcAmerican > 0 ? '+' + calcAmerican : calcAmerican}. This parlay was rejected by the engine.`;
+                        // Give the AI actionable, directional feedback for retry
+                        const targetRanges: Record<number, [number, number]> = {
+                            1: [120, 300], 2: [180, 480], 3: [300, 720], 4: [450, 960],
+                            5: [600, 1500], 6: [800, 2200], 7: [1200, 3000], 8: [1600, 4800],
+                            9: [2500, 8000], 10: [4000, 20000]
+                        };
+                        const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999];
+                        const direction = calcAmerican < lo
+                            ? `TOO LOW (+${calcAmerican}). You need LONGER odds legs (more underdogs or add a leg). Target: +${lo} to +${hi}.`
+                            : `TOO HIGH (+${calcAmerican}). You need SHORTER odds legs (more favorites or remove a leg). Target: +${lo} to +${hi}.`;
+                        lastError = `Risk Level ${request.riskLevel} Boundary Miss. Math engine calculated +${calcAmerican}. ${direction}`;
                         valid = false;
+                        console.warn(`[MATH GATE REJECT] Risk ${request.riskLevel}: +${calcAmerican} not in [+${lo}, +${hi}]`);
                     } else {
                         // Trust math engine, not AI's estimation
                         result.totalOdds = calcAmerican > 0 ? `+${calcAmerican}` : `${calcAmerican}`;
