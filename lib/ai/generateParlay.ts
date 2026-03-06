@@ -1,12 +1,18 @@
-import { getOdds } from '@/lib/odds/getOdds'
-import { analyzePicks, ParlayRequest } from '@/lib/ai/analyzePicks'
+import { getOdds } from '../odds/getOdds';
+import { analyzePicks } from './analyzePicks';
+import { enforceLegCount, enforceBetTypes } from './parlayMath';
 
-export async function generateParlay(params: Omit<ParlayRequest, 'oddsData'> & { oddsData?: any[] }) {
+export async function generateParlay(params: {
+    sports: string[],
+    riskLevel: number,
+    numLegs: number,
+    betTypes: string[],
+    oddsData?: any[] // Optional manual injection for tests
+}) {
     let oddsData = params.oddsData;
+    const sports = params.sports;
 
-    // 1. Fetch Odds only if not provided
-    const sports = Array.isArray(params.sport) ? params.sport : [params.sport];
-
+    // 1. Fetch live odds if not provided
     if (!oddsData) {
         // Determine markets to fetch based on user selection
         let markets = 'h2h,spreads,totals';
@@ -66,143 +72,63 @@ export async function generateParlay(params: Omit<ParlayRequest, 'oddsData'> & {
                     return { error: `Player props are currently unavailable for this sport. Please select Moneyline or Spread.` };
                 }
             }
-            // Fail fast if no bet types remain (User only selected props)
-            if (params.betTypes.length === 0) {
-                return { error: `Player props are currently unavailable for this sport. Please select Moneyline or Spread.` };
-            }
         }
     }
 
     if (!oddsData || oddsData.length === 0) {
-        console.warn(`No odds data available for ${sports.join(', ')}. Skipping AI analysis.`);
-
-        // Generate a specific helpful message based on the sport
-        const sportNames = sports.map(s => {
-            if (s.includes('nfl')) return 'NFL Football';
-            if (s.includes('nba')) return 'NBA Basketball';
-            if (s.includes('nhl')) return 'NHL Hockey';
-            if (s.includes('la_liga')) return 'La Liga Soccer';
-            if (s.includes('epl')) return 'EPL Soccer';
-            if (s.includes('ncaab')) return 'NCAAB Basketball';
-            if (s.includes('champs_league')) return 'Champions League';
-            if (s.includes('soccer')) return 'Soccer';
-            return 'Selected Sport';
-        });
-
-        const isNFL = sports.some(s => s.includes('nfl'));
-        const isNBA = sports.some(s => s.includes('nba'));
-
-        let message = `No games scheduled for ${sportNames.join(' & ')} today.`;
-
-        if (isNFL) {
-            message = "NFL is currently in the off-season. Please select another sport.";
-        } else if (isNBA) {
-            message = "No NBA games scheduled today (likely All-Star break or off-day). Try NHL or EPL!";
-        } else {
-            message = `No games available for ${sportNames.join(' & ')} at this time. Please try another sport.`;
-        }
-
-        return { error: message };
+        return { error: "No live games found. Sportsbooks may not have lines up yet for today's games." };
     }
-    // 1.5 Shuffle oddsData to ensure variety across generations (CLONE FIRST)
-    // We clone to avoid side-effects since oddsData is passed by reference
-    let processedOdds = [...oddsData].sort(() => Math.random() - 0.5);
 
-    // 1.6 Apply Risk-Based Filtering (Crucial for distinct Safe vs Risky picks)
-    // If we only have standard markets (Moneyline/Spread), we MUST filter to force diversity.
-    const isStandardOnly = !params.betTypes.some(t => t.includes('prop') || t.includes('player'));
+    // Shuffle games to ensure variety on each generate hit
+    const processedOdds = [...oddsData].sort(() => Math.random() - 0.5);
 
-    if (isStandardOnly) {
-        if (params.riskLevel <= 4) {
-            // SAFE/BALANCED: Prefer Favorites
-            // Filter outcomes > +150 (Keep favorites/moderate dogs)
-            processedOdds = filterOddsForRisk(processedOdds, -10000, 150);
-            console.log(`[ParlayGen] Safe Filtering: Kept ${countTotalOutcomes(processedOdds)} outcomes < +150`);
-        } else if (params.riskLevel >= 7) {
-            // RISKY/LOTTO: Prefer Underdogs
-            // Filter outcomes < +100 (Remove favorites)
-            processedOdds = filterOddsForRisk(processedOdds, 100, 10000);
-            console.log(`[ParlayGen] Risky Filtering: Kept ${countTotalOutcomes(processedOdds)} outcomes > +100`);
+    // 1. Enforce Leg Count and Bet Types
+    let targetLegs = enforceLegCount(params.riskLevel, params.numLegs);
+    const allowedBetTypes = enforceBetTypes(params.riskLevel, params.betTypes);
+
+    // EXTRA PROTECTION: If we don't allow same-game parlays (Risk 1-5), 
+    // we can't have more legs than unique games.
+    if (params.riskLevel <= 5 && processedOdds.length > 0) {
+        const numUniqueGames = processedOdds.length;
+        if (targetLegs > numUniqueGames) {
+            console.warn(`[ParlayGen] Reducing legs from ${targetLegs} to ${numUniqueGames} because only ${numUniqueGames} games match selection without correlation.`);
+            targetLegs = numUniqueGames;
         }
     }
 
-    // 2. AI Analysis with retry for leg count
+    // 2. AI Analysis with retry loop
     let attempts = 0;
     const maxAttempts = 5;
-    let aiResult;
+    let aiResult: any;
 
     while (attempts < maxAttempts) {
         aiResult = await analyzePicks({
             ...params,
-            sport: sports.join('+'), // Pass as string for logging
-            oddsData: processedOdds // Pass the CLONED and SHUFFLED data
-        })
+            numLegs: targetLegs,
+            betTypes: allowedBetTypes,
+            sport: sports.join('+'),
+            oddsData: processedOdds
+        });
 
-        // If the AI returned an error (e.g., API unavailable, missing key), stop retrying
+        // If the AI returned an error (e.g., API unavailable), stop retrying
         if (aiResult.error) {
             console.warn(`[ParlayGen] AI returned error: ${aiResult.error}`);
             return aiResult;
         }
 
-        // 3. Validate leg count and logic
-        // Allow fewer legs than target AS LONG AS math boundaries passed (min 2 legs for parlay)
-        if (aiResult.legs && aiResult.legs.length <= params.numLegs && aiResult.legs.length >= 2) {
-            // 3.1 VALIDATE DUPLICATE PICKS (Basic Check)
-            // If we are generating multiple parlays, we rely on the shuffle.
-            break; // Success
+        // If validation passed, return the result
+        if (aiResult.legs && aiResult.legs.length >= 2) {
+            console.log(`[ParlayGen] Success after ${attempts + 1} attempts`);
+            return aiResult;
         }
 
         attempts++;
-        console.warn(`AI returned ${aiResult.legs?.length || 0} legs instead of ${params.numLegs}. Attempt ${attempts}/${maxAttempts}`);
-
-        if (attempts >= maxAttempts) {
-            console.error(`Failed to generate ${params.numLegs}-leg parlay after ${maxAttempts} attempts`);
-            return {
-                ...aiResult,
-                error: `Could not generate ${params.numLegs}-leg parlay. Try fewer legs or add more sports.`
-            };
-        }
+        console.warn(`[ParlayGen] Retry attempt ${attempts}/${maxAttempts}...`);
     }
 
-    return aiResult
-}
-
-// Helper: Filter odds outcomes based on price range
-function filterOddsForRisk(games: any[], minPrice: number, maxPrice: number): any[] {
-    return games.map(game => {
-        // Deep clone game to avoid mutation
-        const newGame = JSON.parse(JSON.stringify(game));
-
-        if (newGame.bookmakers) {
-            newGame.bookmakers = newGame.bookmakers.map((bookie: any) => {
-                bookie.markets = bookie.markets.map((market: any) => {
-                    market.outcomes = market.outcomes.filter((outcome: any) => {
-                        const price = outcome.price;
-                        // Check if price valid number
-                        if (typeof price !== 'number') return false;
-                        return price >= minPrice && price <= maxPrice;
-                    });
-                    return market;
-                }).filter((market: any) => market.outcomes.length > 0); // Remove empty markets
-                return bookie;
-            }).filter((bookie: any) => bookie.markets.length > 0); // Remove empty bookies
-        }
-
-        // Also handle "props" style flat structure if present (though usually standard markets use bookmakers)
-        // If our enrichment flattened it? getOdds returns raw structure usually.
-
-        return newGame;
-    }).filter(game => game.bookmakers && game.bookmakers.length > 0); // Remove games with no valid outcomes
-}
-
-function countTotalOutcomes(games: any[]): number {
-    let count = 0;
-    games.forEach(g => {
-        g.bookmakers?.forEach((b: any) => {
-            b.markets?.forEach((m: any) => {
-                count += m.outcomes?.length || 0;
-            });
-        });
-    });
-    return count;
+    // If we've exhausted retries, return the last failure description
+    return {
+        error: "Constraints Too Strict",
+        details: "Unable to find enough games matching your selected risk and bet types. Try selecting more sports or lower your risk."
+    };
 }
