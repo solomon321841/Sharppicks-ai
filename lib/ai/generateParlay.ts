@@ -144,8 +144,9 @@ export async function generateParlay(params: Omit<ParlayRequest, 'oddsData'> & {
             return aiResult;
         }
 
-        // 3. Validate leg count
-        if (aiResult.legs && aiResult.legs.length === params.numLegs) {
+        // 3. Validate leg count and logic
+        // Allow fewer legs than target AS LONG AS math boundaries passed (min 2 legs for parlay)
+        if (aiResult.legs && aiResult.legs.length <= params.numLegs && aiResult.legs.length >= 2) {
             // 3.1 VALIDATE DUPLICATE PICKS (Basic Check)
             // If we are generating multiple parlays, we rely on the shuffle.
             break; // Success

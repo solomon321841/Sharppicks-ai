@@ -1,4 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk'
+import {
+    calculateCombinedParlayMetrics,
+    validateRiskLevel,
+    enforceLegCount,
+    enforceBetTypes,
+    checkCorrelation,
+    getUnitSize
+} from './parlayMath'
 
 export type ParlayRequest = {
     sport: string | string[] // Support both single and multi-sport
@@ -9,6 +17,10 @@ export type ParlayRequest = {
 }
 
 export async function analyzePicks(request: ParlayRequest) {
+    // 1. Enforce Spec Constraints dynamically before hitting AI
+    request.numLegs = enforceLegCount(request.riskLevel, request.numLegs);
+    request.betTypes = enforceBetTypes(request.riskLevel, request.betTypes);
+
     if (!process.env.ANTHROPIC_API_KEY) {
         console.warn('Missing ANTHROPIC_API_KEY, returning mock AI response')
         return getMockAIResponse(request)
@@ -108,110 +120,50 @@ export async function analyzePicks(request: ParlayRequest) {
     }));
 
     const prompt = `
-    You are an elite sports betting analyst with deep expertise in risk assessment and player performance analysis.
+    You are the SharpPicks AI parlay engine. You generate sports betting parlay recommendations using ONLY verified data from The Odds API. You follow these rules with zero exceptions:
+
+    DATA INTEGRITY:
+    - You ONLY use odds, teams, and games that exist in the current API response.
+    - You NEVER invent, estimate, or hallucinate any odds or game data.
+    - If no games are available for the requested sport, return: "No games currently available for [sport]. Try again later."
+    - If you cannot build a parlay within the risk range, return: "No qualifying parlays available at Risk [X] for [sport] with [bet type]. Try adjusting your settings."
+
+    RISK CALIBRATION (NON-NEGOTIABLE):
+    - Risk 1: Combined odds +120 to +300 | Max 3 legs | ML + Spreads only
+    - Risk 2: Combined odds +180 to +480 | Max 3 legs | ML + Spreads only
+    - Risk 3: Combined odds +300 to +720 | Max 3 legs | ML + Spreads only
+    - Risk 4: Combined odds +450 to +960 | Max 4 legs | ML + Spreads + Totals
+    - Risk 5: Combined odds +600 to +1500 | Max 4 legs | ML + Spreads + Totals
+    - Risk 6: Combined odds +800 to +2200 | Max 5 legs | All bet types
+    - Risk 7: Combined odds +1200 to +3000 | Max 5 legs | All bet types
+    - Risk 8: Combined odds +1600 to +4800 | Max 6 legs | All bet types
+    - Risk 9: Combined odds +2500 to +8000 | Max 7 legs | All bet types
+    - Risk 10: Combined odds +4000 to +20000 | Max 7+ legs | All bet types
+
+    ODDS CALCULATION PROCEDURE:
+    1. For each potential leg, calculate implied probability from the American odds.
+    2. Remove the vig by normalizing both sides of the market to sum to 100%.
+    3. Multiply no-vig fair probabilities of all selected legs to get combined probability.
+    4. Convert combined probability back to American odds.
+    5. VERIFY the combined odds fall within the target range for the selected risk level.
+    6. If out of range: swap legs, add/remove a leg, or return "no qualifying parlays."
+
+    CORRELATION RULES:
+    - At Risk 1–5: Do NOT combine legs from the same game.
+    - At Risk 6+: Same-game legs are allowed but flag them as correlated in the output.
+    - Never combine a team ML with an Over/Under from the same game at Risk 1–7.
     
-    **YOUR MISSION:**
-    Build a ${request.numLegs}-leg parlay with Risk Level ${request.riskLevel}/10 that demonstrates strategic intelligence.
-    
-    **AVAILABLE DATA:**
-    Sport(s): ${sportString}
-    Bet Types: ${request.betTypes.join(', ')}
-    Games: ${enrichedGamesForAI.length} available
-    
-    ${isMultiSport ? `
-    **MULTI-SPORT STRATEGY:**
-    - You have ${sportsList.length} sports: ${sportsList.join(', ')}
-    - Distribute picks across sports for variety
-    - Include at least 1 pick from each sport if possible
-    ` : ''}
-    
-    **RISK PHILOSOPHY (CRITICAL - APPLIES TO ALL SPORTS):**
-    
-    **Risk 1-3 (Safe/Conservative):**
-    - Goal: High probability outcomes
-    - Moneyline: Heavy favorites (-300 to -150)
-    - Props: LOW thresholds for ELITE players
-      * ⚽ Soccer: "Mbappe Over 0.5 Shots" (playerRole: star, difficulty: very_easy)
-      * 🏀 Basketball: "LeBron Over 15.5 Points" (playerRole: star, difficulty: very_easy)
-      * 🏈 Football: "Mahomes Over 225.5 Passing Yards" (playerRole: star, difficulty: very_easy)
-      * ⚾ Baseball: "Judge Over 0.5 Hits" (playerRole: star, difficulty: very_easy)
-      * 🏒 Hockey: "McDavid Over 0.5 Points" (playerRole: star, difficulty: very_easy)
-    - Reasoning: Stars consistently hit low bars
-    
-    **Risk 4-7 (Balanced):**
-    - Goal: Mix safe anchors with moderate challenges
-    - Moneyline: Moderate favorites or slight underdogs (-150 to +150)
-    - Props: MID thresholds for good players OR low thresholds for starters
-      * ⚽ Soccer: "Mbappe Over 2.5 Shots" (playerRole: star, difficulty: moderate)
-      * 🏀 Basketball: "LeBron Over 28.5 Points" (playerRole: star, difficulty: moderate)
-      * 🏈 Football: "Mahomes Over 325.5 Passing Yards" (playerRole: star, difficulty: moderate)
-      * ⚾ Baseball: "Judge Over 1.5 Hits" (playerRole: star, difficulty: easy)
-      * 🏒 Hockey: "McDavid Over 1.5 Points" (playerRole: star, difficulty: easy)
-    - Reasoning: Balanced risk/reward
-    
-    **Risk 8-10 (High Reward/Aggressive):**
-    - Goal: Long-shot value with upside
-    - Moneyline: Underdogs (+150 to +400)
-    - Props: HIGH thresholds for stars OR challenging thresholds for bench players
-      * ⚽ Soccer: "Mbappe Over 5.5 Shots" (playerRole: star, difficulty: very_hard)
-      * 🏀 Basketball: "LeBron Over 35.5 Points" OR "Bench Player Over 15.5 Points" (difficulty: hard)
-      * 🏈 Football: "Mahomes Over 375.5 Passing Yards" OR "Backup RB Over 75.5 Rushing Yards" (difficulty: hard)
-      * ⚾ Baseball: "Judge Over 1.5 Home Runs" OR "Bench Player Over 0.5 Home Runs" (difficulty: hard)
-      * 🏒 Hockey: "McDavid Over 3.5 Points" OR "4th Line Player Over 0.5 Goals" (difficulty: very_hard)
-    - Reasoning: High risk = high reward. Look for unlikely but possible outcomes.
-    
-    **STRATEGIC ANALYSIS FRAMEWORK:**
-    For each pick, consider:
-    1. **Player Quality:** Is this a star, starter, or bench player? (Use playerRole field)
-    2. **Line Difficulty:** How challenging is this threshold? (Use difficulty field)
-    3. **Matchup Context:** Home/away advantage, opponent strength
-    4. **Correlation:** Avoid conflicting outcomes from the same game
-    
-    **THINK STEP-BY-STEP (SPORT-SPECIFIC):**
-    - For Risk 1 (Soccer): "I need very safe picks. Mbappe Over 0.5 Shots is marked 'very_easy' and he's a 'star'. Perfect."
-    - For Risk 1 (Basketball): "LeBron Over 15.5 Points is 'very_easy' for a star. Safe anchor."
-    - For Risk 1 (Football): "Mahomes Over 225.5 Passing Yards is 'very_easy' for an elite QB. Lock it in."
-    - For Risk 10 (Soccer): "I need long-shots. Mbappe Over 5.5 Shots is 'very_hard' even for a star. High odds, high reward."
-    - For Risk 10 (Basketball): "LeBron Over 35.5 Points is 'hard' but possible. Or find a bench player with a low threshold but long odds."
-    - For Risk 10 (Football): "Mahomes Over 375.5 Passing Yards is 'hard'. Or backup RB Over 75.5 Rushing Yards for long-shot value."
-    
-    **AVAILABLE GAMES WITH AI CONTEXT:**
+    TARGET SPECS FOR THIS REQUEST:
+    - Sport(s): ${sportString}
+    - Risk Level: ${request.riskLevel}
+    - Num Legs MAX: ${request.numLegs} (Minimum 2 required)
+    - Allowed Bet Types: ${request.betTypes.join(', ')}
+
+    AVAILABLE GAMES WITH API ODDS:
     ${JSON.stringify(enrichedGamesForAI)}
 
-    CRITICAL INSTRUCTIONS:
-    1. YOU MUST RETURN EXACTLY ${request.numLegs} PICKS.
-    2. **BET TYPE VARIETY (STRICT):**
-       - You MUST mix different bet types from the requested list: ${request.betTypes.join(', ')}.
-       - DO NOT return a parlay where all legs are the same bet type (e.g., all Moneyline) if multiple types are available.
-       - Aim for a balance, e.g., 1 Moneyline, 1 Player Prop, and 1 Total.
-       - This is crucial for compatibility with platforms like PrizePicks that require variety.
-    3. **MULTI-SPORT DISTRIBUTION:**
-       - If multiple sports are provided (${sportString}), you MUST include at least one leg from each sport in every parlay.
-    4. Use "price" from data as "odds".
-    5. DATA INTEGRITY (STRICT):
-       - ONLY USE THE ODDS DATA PROVIDED ABOVE.
-       - DO NOT INVENT, HALUCCINATE, OR SIMULATE PLAYER PROPS.
-       - IF A PLAYER PROP IS REQUESTED BUT NOT IN THE DATA, **DO NOT** CREATE ONE. PICK A DIFFERENT AVAILABLE BET (Spread/Total/Moneyline) OR FAIL IF NO DATA MATCHES.
-       - It is better to use a Moneyline/Spread than to invent a fake Player Prop.
-    6. For Spreads/Totals/Props, YOU MUST include the "line" field.
-       - **IMPORTANT**: The "line" is the THRESHOLD (e.g. "Over 2.5", "-5.5", "Under 210.5"). 
-       - It is NOT the price/odds (e.g. -110, -2000).
-       - Look for the "point" field in the data outcomes.
-    7. For Moneyline, "line" can be null or empty string.
-    8. EVERY LEG must include the "game_id" from the provided data.
-       - Use the 'id' field from the input game object. DO NOT use "N/A".
-       - If you cannot find the ID, do not pick the game.
-    9. **PLAYER PROP RULES (CRITICAL):**
-       - If selecting a player prop, you MUST identify which team the player belongs to.
-       - 'team' field MUST be the team you are betting on (or player's team).
-       - 'opponent' field MUST be the OTHER team in the match.
-       - YOU MUST INCLUDE 'opponent' FOR ALL BET TYPES (Moneyline, Spread, Total, Props).
-       - NEVER list the player's own team as the opponent.
-       - If you don't know the player's team, DO NOT USE THE PROP.
-       - **LINE FIELD for Props:** MUST be the 'point' from data + the type (e.g. "Over 2.5 Shots", "Under 0.5 Goals"). NEVER put odds here.
-       - **BOOKMAKER:** You must include the "sportsbook" field in the leg, using the 'book' field from the data (e.g. "DraftKings", "FanDuel").
-       10. **REASONING (STRICT):** You must act as an elite, data-driven sports handicapper and provide deep, structural analysis for your pick. DO NOT use generic phrases like "He is a star player", "They face a weaker defense", or "The odds offer strong value". Instead, provide high-level, sharp betting terminology. Discuss specific tactical advantages (e.g., "high pick-and-roll usage rate against a drop-coverage defense", "exploiting a low-block defensive scheme", "elite target share with the primary defender injured"). Synthesize plausible metrics, form-trends, and statistical matchup discrepancies that prove exactly why this specific line is mispriced and provides mathematical positive expected value (+EV). Make it sound like a sharp insider giving high-stakes quantitative betting advice. Use exactly 2 extremely detailed, concise sentences.
-    Return JSON format:
+    OUTPUT FORMAT:
+    You MUST output valid JSON ONLY matching exactly this schema:
     {
       "legs": [
         {
@@ -219,18 +171,29 @@ export async function analyzePicks(request: ParlayRequest) {
           "team": "Player's Team Name",
           "player": "Player Name (if prop)",
           "opponent": "Opponent Name",
-          "bet_type": "${request.betTypes[0]}",
+          "bet_type": "type from requested list",
           "line": "Over 210.5", 
           "odds": "-115",
-          "player_image_url": "https://a.espncdn.com/...",
+          "fair_prob": "53.2%",
           "sportsbook": "FanDuel",
-          "reasoning": "Quick logic"
+          "reasoning": "Quick 2-sentence sharp logic"
         }
       ],
       "totalOdds": "+500",
-      "confidence": 85
+      "combined_fair_prob": "16.7%",
+      "risk_confirmation": "Risk 4/10 — VERIFIED: +500 is within +500 to +800"
     }
-  `
+
+    WHAT YOU MUST NEVER DO:
+    - Never generate a parlay with combined odds outside the risk level range.
+    - Never include a game or odds not in the current API data.
+    - Never include props at Risk 1-5.
+    - Never say "approximately" or "around" for odds — use exact figures from the API.
+
+    CRITICAL INSTRUCTIONS:
+    1. YOU CAN RETURN UP TO ${request.numLegs} PICKS (Minimum 2). If you hit the target odds with fewer legs, that is perfectly fine.
+    2. **BET TYPE VARIETY (STRICT):**
+    `
 
     const anthropic = new Anthropic({
         apiKey: process.env.ANTHROPIC_API_KEY,
@@ -321,43 +284,45 @@ export async function analyzePicks(request: ParlayRequest) {
             }
 
             if (valid) {
-                // Strict Risk Validation
-                const hasBadRisk = result.legs.some((l: any) => {
-                    const val = parseInt(String(l.odds));
-                    if (request.riskLevel <= 3) {
-                        // Safe: Must be favorites (-120 or worse, meaning -150, -200 etc) OR slight underdogs (< +150)
-                        // Note: For negative odds, "smaller" number is stronger favorite (e.g. -200 < -120). 
-                        // Safe: Must be favorites (-125 or worse)
-                        // e.g. -150, -200, -500 are good. -110 is too balanced to be "Safe".
-                        return val > -125; // Reject if > -125 (e.g. -110, +100)
-                    }
-                    if (request.riskLevel >= 4 && request.riskLevel <= 7) {
-                        // Balanced: Reject EXTREME favorites. Allow anything better than -1000.
-                        // e.g. -340 is ok, -900 is ok. -4000 is not (no value).
-                        return val < -1000;
-                    }
-                    if (request.riskLevel >= 8) {
-                        // Risky: Positive underdogs OR Spreads/Totals (which are usually -110)
-                        if (l.bet_type === 'spread' || l.bet_type === 'totals') return false;
-                        // OLD: return val < 100; // Reject if < +100
-                        // NEW: Allow standard lines (-115, -120) but reject strong favorites
-                        return val < -130;
-                    }
-                    return false;
-                });
+                // Strict Risk Validation Module Checks
+                const validLegs = result.legs.map((l: any) => ({
+                    game_id: l.game_id,
+                    bet_type: l.bet_type,
+                    odds: parseInt(String(l.odds).replace('+', ''))
+                }));
 
-                // DISABLED: Trust AI strategic reasoning instead of hard-coded odds validation
-                /*
-                if (hasBadRisk) {
-                    let range = "Unknown";
-                    if (request.riskLevel <= 3) range = "Favorites (>-500)";
-                    else if (request.riskLevel <= 7) range = "Balanced (>-500)";
-                    else range = "Underdogs (>+100)";
-                
-                    lastError = `Risk Level ${request.riskLevel} violation. Expected ${range}. Got odds: ${result.legs.map((l: any) => l.odds).join(', ')}`;
+                // 1. Check Leg Limits again just in case
+                if (validLegs.length > request.numLegs) {
+                    lastError = `Generated too many legs (${validLegs.length}). Spec limit is ${request.numLegs} for Risk Level ${request.riskLevel}.`;
                     valid = false;
                 }
-                */
+
+                // 2. Correlation Detector (Spec Rule 6)
+                if (valid) {
+                    const correlationCheck = checkCorrelation(validLegs, request.riskLevel);
+                    if (!correlationCheck.valid) {
+                        lastError = `Correlation Violation: ${correlationCheck.reason}`;
+                        valid = false;
+                    }
+                }
+
+                // 3. Mathematical Odds Calculation (Spec Rule 3)
+                if (valid) {
+                    const mathCalc = calculateCombinedParlayMetrics(validLegs);
+                    const calcAmerican = mathCalc.combinedAmericanOdds;
+
+                    // 4. Strict Range Gate Check (Spec Rule 2 & 3.5)
+                    const rangeValid = validateRiskLevel(request.riskLevel, calcAmerican);
+                    if (!rangeValid) {
+                        lastError = `Risk Level Boundary Violation. Expected Risk Level ${request.riskLevel} target range. Calculated true American odds are ${calcAmerican > 0 ? '+' + calcAmerican : calcAmerican}. This parlay was rejected by the engine.`;
+                        valid = false;
+                    } else {
+                        // Trust math engine, not AI's estimation
+                        result.totalOdds = calcAmerican > 0 ? `+${calcAmerican}` : `${calcAmerican}`;
+                        result.true_implied_prob = mathCalc.combinedFairProb;
+                        console.log(`[VALIDATION PASSED] Risk ${request.riskLevel}. Math Engine Output: ${result.totalOdds}`);
+                    }
+                }
             }
 
             if (valid) {
@@ -421,28 +386,19 @@ export async function analyzePicks(request: ParlayRequest) {
 
                 if (hasIssues) {
                     valid = false;
-                    console.log('[AI Validation Failure]', lastError);
+                    console.log(`[AI Validation Failure Attempt ${attempts + 1}]:`, lastError);
+                } else if (!valid) {
+                    // It was already invalid before the team/location check
+                    console.log(`[AI Validation Failure Attempt ${attempts + 1}]:`, lastError);
                 }
             }
 
             if (valid) {
-                // Calculate ACTUAL Total Odds mathematically
-                const totalDecimal = result.legs.reduce((acc: number, leg: any) => {
-                    const odds = parseInt(String(leg.odds));
-                    if (odds > 0) return acc * (1 + odds / 100);
-                    return acc * (1 + 100 / Math.abs(odds));
-                }, 1);
+                // Add unit sizing string
+                result.unit_size = getUnitSize(request.riskLevel);
 
-                const finalTotal = totalDecimal > 2
-                    ? `+${Math.round((totalDecimal - 1) * 100)}`
-                    : `-${Math.round(100 / (totalDecimal - 1))}`;
-
-                result.totalOdds = finalTotal;
-
-                // Calculate Dynamic Confidence
-                const baseConfidence = request.riskLevel <= 3 ? 85 : request.riskLevel >= 8 ? 65 : 75;
-                // Randomize slightly
-                result.confidence = Math.min(95, Math.max(50, baseConfidence + Math.floor(Math.random() * 10) - 5));
+                // Calculate Dynamic Confidence based on true prob
+                result.confidence = Math.min(99, Math.max(1, Math.round(result.true_implied_prob * 200))); // Scaled for display purposes
 
                 // Final Polish: Entrich legs with Sport and normalize fields
                 result.legs = result.legs.map((leg: any) => {
@@ -486,6 +442,7 @@ export async function analyzePicks(request: ParlayRequest) {
             } else {
                 lastError = error.message || "Unknown error";
             }
+            console.warn(`[AI Attempt ${attempts + 1} Failed]: ${lastError}`);
             attempts++;
         }
     }

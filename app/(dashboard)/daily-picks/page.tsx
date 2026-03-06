@@ -43,6 +43,18 @@ const PARLAY_TYPES = [
         button: 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20 hover:border-orange-500/40 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]',
         orb: 'bg-orange-500/10',
     },
+    {
+        type: 'lotto',
+        title: 'Moonshot Lotto',
+        icon: Zap,
+        accent: 'purple',
+        text: 'text-purple-400',
+        bg: 'bg-purple-500',
+        glow: 'shadow-[0_0_30px_-5px_rgba(168,85,247,0.15)]',
+        border: 'border-purple-500/20',
+        button: 'bg-purple-500/10 border-purple-500/20 text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/40 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]',
+        orb: 'bg-purple-500/10',
+    },
 ];
 
 export default function DailyPicksPage() {
@@ -101,8 +113,8 @@ export default function DailyPicksPage() {
                 </div>
             </div>
 
-            {/* Main Cards Grid */}
-            <div className="relative z-10 grid lg:grid-cols-3 gap-5 flex-1 min-h-0 pb-2">
+            {/* Grid layout for cards - updated to 4 columns to fit Lotto */}
+            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 pb-2">
                 {PARLAY_TYPES.map((config, index) => {
                     const pick = loading ? null : picks.find(p => p.parlay_type === config.type);
                     const Icon = config.icon;

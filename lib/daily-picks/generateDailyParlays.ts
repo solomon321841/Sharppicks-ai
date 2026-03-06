@@ -30,8 +30,14 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
     {
         type: 'risky',
         risk: 8,
-        betTypes: ['moneyline', 'player_props', 'totals'],
+        betTypes: ['moneyline', 'player_props', 'totals', 'spread'],
         description: 'Underdogs and high-reward player performance props'
+    },
+    {
+        type: 'lotto',
+        risk: 10,
+        betTypes: ['moneyline', 'player_props', 'totals', 'spread'],
+        description: 'Extreme long-shots for massive potential payouts'
     }
 ];
 
@@ -127,11 +133,17 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
             // Or better: If `config.betTypes` has props, and we suspect data is missing, we could swap?
             // For now, let's trust the data we verified.
 
+            // Configure leg count based on risk level to ensure compliance and variety
+            let numLegs = 3;
+            if (config.risk === 5) numLegs = 4;
+            if (config.risk === 8) numLegs = 5;
+            if (config.risk === 10) numLegs = 7;
+
             // Generate parlay using AI
             const generated = await generateParlay({
                 sport: sports,
                 riskLevel: config.risk,
-                numLegs: 3,
+                numLegs: numLegs,
                 betTypes: safeBetTypes,
                 oddsData: oddsData // Pass pre-fetched data
             });

@@ -35,7 +35,7 @@ export async function GET() {
             picks = await prisma.dailyPick.findMany({
                 include: { parlay: { include: { legs: true } } },
                 orderBy: { created_at: 'desc' },
-                take: 3
+                take: 4
             });
         }
 
