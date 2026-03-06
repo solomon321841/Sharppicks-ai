@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         }
 
         const result = await generateParlay({
-            sport: sports, // Now supports array of sports
+            sports, // Corrected parameter name
             riskLevel,
             numLegs,
             betTypes
