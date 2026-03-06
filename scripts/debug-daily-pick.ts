@@ -19,7 +19,7 @@ async function main() {
 
     try {
         const generated = await generateParlay({
-            sport: sports,
+            sports: sports,
             riskLevel: 5,
             numLegs: 3,
             betTypes: ['moneyline', 'spread', 'totals']

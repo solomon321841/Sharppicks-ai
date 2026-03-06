@@ -141,7 +141,7 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
 
             // Generate parlay using AI
             const generated = await generateParlay({
-                sport: sports,
+                sports: sports,
                 riskLevel: config.risk,
                 numLegs: numLegs,
                 betTypes: safeBetTypes,
