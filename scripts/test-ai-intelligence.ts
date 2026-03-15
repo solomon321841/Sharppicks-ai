@@ -13,7 +13,7 @@ async function testRiskLevel(riskLevel: number, description: string) {
 
     try {
         const result = await generateParlay({
-            sport: ['soccer_spain_la_liga'],
+            sports: ['soccer_spain_la_liga'],
             numLegs: 4,
             riskLevel,
             betTypes: ['moneyline', 'player_props']

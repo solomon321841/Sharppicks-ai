@@ -59,24 +59,24 @@ export function calculateCombinedParlayMetrics(legs: { odds: number }[]) {
 }
 
 export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean {
+    // Ranges paired by tier: Risk 1-2 share a range, 3-4, 5-6, 7-8, 9-10
+    // This matches the risk personality tiers in analyzePicks
     const targetRanges: Record<number, [number, number]> = {
-        1: [120, 300],
-        2: [180, 480],
-        3: [300, 720],
-        4: [450, 960],
-        5: [600, 1500],
-        6: [800, 2200],
-        7: [1200, 3000],
-        8: [1600, 4800],
-        9: [2500, 8000],
-        10: [4000, 20000]
+        1: [100, 350],
+        2: [100, 350],
+        3: [200, 700],
+        4: [200, 700],
+        5: [400, 1500],
+        6: [400, 1500],
+        7: [1000, 5000],
+        8: [1000, 5000],
+        9: [3000, 25000],
+        10: [3000, 25000]
     };
 
     const range = targetRanges[riskLevel];
     if (!range) return false;
 
-    // Check if odds fall between range[0] and range[1]
-    // Note: +150 to +250.
     return totalOdds >= range[0] && totalOdds <= range[1];
 }
 

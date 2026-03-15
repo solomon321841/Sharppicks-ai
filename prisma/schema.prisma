@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -50,18 +51,24 @@ model Parlay {
 }
 
 model ParlayLeg {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  parlay_id    String    @db.Uuid
-  sport        String
-  team         String
-  opponent     String?
-  bet_type     String
-  line         String?
-  odds         String?
-  game_time    DateTime? @db.Timestamptz(6)
-  ai_reasoning String?
-  player       String?
-  result       String?   @default("pending")
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parlay_id       String    @db.Uuid
+  sport           String
+  team            String
+  opponent        String?
+  bet_type        String
+  line            String?
+  odds            String?
+  game_time       DateTime? @db.Timestamptz(6)
+  ai_reasoning    String?
+  player          String?
+  result          String?   @default("pending")
+  prop_market     String?   // "Points", "Rebounds", "Goals", etc.
+  actual_value    Float?    // Actual stat value for graded props
+  graded_at       DateTime? @db.Timestamptz(6)
+  best_book       String?   // Best sportsbook from line shopping
+  consensus_odds  String?   // Market consensus odds at time of pick
+  clv             Float?    // Closing Line Value: positive = beat the market
 
   parlay Parlay @relation(fields: [parlay_id], references: [id], onDelete: Cascade)
 
@@ -69,14 +76,16 @@ model ParlayLeg {
 }
 
 model BetHistory {
-  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id      String   @db.Uuid
-  parlay_id    String?  @db.Uuid
-  stake_amount Decimal? @db.Decimal(10, 2)
-  sportsbook   String?  // 'FanDuel', 'DraftKings', etc.
-  result       String?  @default("pending")
-  profit       Decimal? @db.Decimal(10, 2)
-  created_at   DateTime @default(now()) @db.Timestamptz(6)
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String    @db.Uuid
+  parlay_id    String?   @db.Uuid
+  stake_amount Decimal?  @db.Decimal(10, 2)
+  sportsbook   String?   // 'FanDuel', 'DraftKings', etc.
+  result       String?   @default("pending")
+  profit       Decimal?  @db.Decimal(10, 2)
+  payout       Decimal?  @db.Decimal(10, 2) // Actual payout amount
+  graded_at    DateTime? @db.Timestamptz(6)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
 
   user   User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   parlay Parlay? @relation(fields: [parlay_id], references: [id])

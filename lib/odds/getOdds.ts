@@ -139,6 +139,7 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
 
 interface RequestInitWithTimeout extends RequestInit {
     timeout?: number;
+    next?: any;
 }
 
 async function fetchWithTimeout(resource: RequestInfo, options: RequestInitWithTimeout = {}) {

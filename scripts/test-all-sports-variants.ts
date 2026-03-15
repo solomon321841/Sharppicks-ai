@@ -42,7 +42,7 @@ async function main() {
 
                 try {
                     const params = {
-                        sport,
+                        sports: [sport],
                         riskLevel: risk,
                         numLegs: 2,
                         betTypes: [betType]

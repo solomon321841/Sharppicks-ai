@@ -50,7 +50,7 @@ export async function POST(request: Request) {
                 ai_confidence: body.confidence,
                 legs: {
                     create: legs.map((l: any) => ({
-                        sport: l.sport || 'Mixed',
+                        sport: l.sport || l.sports || 'Mixed',
                         team: l.team,
                         bet_type: l.bet_type || 'moneyline',
                         line: l.line || null,
@@ -58,6 +58,9 @@ export async function POST(request: Request) {
                         opponent: l.opponent,
                         game_time: l.game_time ? new Date(l.game_time) : null,
                         player: l.player || null,
+                        prop_market: l.prop_market || null,
+                        best_book: l.bestBook || l.best_book || null,
+                        consensus_odds: l.consensus_odds || null,
                         result: 'pending'
                     }))
                 }

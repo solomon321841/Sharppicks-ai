@@ -26,7 +26,7 @@ async function runTest(league: { key: string, name: string }, betType: string) {
         const oddsData = await getOdds([league.key]);
         // Default to Low Risk (1) just to verify the bet type logic works
         const parlay = await generateParlay({
-            sport: league.key,
+            sports: [league.key],
             riskLevel: 1,
             numLegs: 2,
             betTypes: [betType],

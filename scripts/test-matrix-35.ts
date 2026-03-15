@@ -9,7 +9,7 @@ dotenv.config({ path: envPath });
 
 type TestConfig = {
     name: string;
-    sport: string | string[]; // Support both single and multi-sport
+    sports: string | string[]; // Support both single and multi-sport
     riskLevel: number;
     numLegs: number;
     betTypes: string[];
@@ -22,7 +22,7 @@ type TestConfig = {
 // If the user wants multi-sport parlays, the backend might need modification or I need to see how it's handled.
 // The current `generateParlay` implementation only fetches odds for `params.sport`.
 // If I pass 'all' or multiple sports, `getOdds` might fail or only fetch one.
-// Let's check `getOdds` signature: `sport: string`.
+// Let's check `getOdds` signature: `sports: string`.
 // It seems the current implementation MIGHT NOT support multi-sport generation in a single call.
 // The user asked for "Test 5: NFL + NBA Combined".
 // If the current backend doesn't support this, I might need to implement it or note it as a failure/blocker.
@@ -54,7 +54,7 @@ const TESTS: TestConfig[] = [
     // --- SPORT ISOLATION ---
     {
         name: 'Test 1: NFL Only',
-        sport: LEAGUES.NFL,
+        sports: LEAGUES.NFL,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -68,7 +68,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 2: NBA Only',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -79,7 +79,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 3: NHL Only',
-        sport: LEAGUES.NHL,
+        sports: LEAGUES.NHL,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'], // NHL uses puck line sometimes but moneyline is standard
@@ -90,7 +90,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 4: EPL Only',
-        sport: LEAGUES.EPL,
+        sports: LEAGUES.EPL,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -101,7 +101,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 5: NBA + NHL Multi-Sport',
-        sport: [LEAGUES.NBA, LEAGUES.NHL], // Multi-sport array
+        sports: [LEAGUES.NBA, LEAGUES.NHL], // Multi-sport array
         riskLevel: 5,
         numLegs: 4,
         betTypes: ['moneyline'],
@@ -114,7 +114,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 6: All 4 Sports',
-        sport: [LEAGUES.NBA, LEAGUES.NHL, LEAGUES.EPL], // Skip NFL if no games
+        sports: [LEAGUES.NBA, LEAGUES.NHL, LEAGUES.EPL], // Skip NFL if no games
         riskLevel: 5,
         numLegs: 4,
         betTypes: ['moneyline'],
@@ -127,7 +127,7 @@ const TESTS: TestConfig[] = [
     // --- RISK LEVELS (NBA) ---
     {
         name: 'Test 7: Risk 1 (Safe)',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 1,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -139,7 +139,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 8: Risk 2',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 2,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -151,7 +151,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 11: Risk 5 (Balanced)',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -164,7 +164,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 15: Risk 9',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 9,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -177,7 +177,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 16: Risk 10 (Risky)',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 10,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -192,7 +192,7 @@ const TESTS: TestConfig[] = [
     // --- BET TYPES ---
     {
         name: 'Test 18: Spread Only',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['spread'],
@@ -204,7 +204,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 19: Totals Only',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['totals'],
@@ -216,7 +216,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 20: Player Props',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['player_props'],
@@ -230,7 +230,7 @@ const TESTS: TestConfig[] = [
     // --- PARLAY SIZES ---
     {
         name: 'Test 26: 2 Legs',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 2,
         betTypes: ['moneyline'],
@@ -241,7 +241,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 32: 8 Legs',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 8,
         betTypes: ['moneyline'],
@@ -254,7 +254,7 @@ const TESTS: TestConfig[] = [
     // --- MORE RISK LEVELS ---
     {
         name: 'Test 9: Risk 3',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 3,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -266,7 +266,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 14: Risk 8',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 8,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -281,7 +281,7 @@ const TESTS: TestConfig[] = [
     // --- PARLAY SIZES 4-7 ---
     {
         name: 'Test 28: 4 Legs',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 4,
         betTypes: ['moneyline'],
@@ -292,7 +292,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 30: 6 Legs',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 6,
         betTypes: ['moneyline'],
@@ -305,7 +305,7 @@ const TESTS: TestConfig[] = [
     // --- REAL DATA CHECKS ---
     {
         name: 'Test 33: Verify Today',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -317,7 +317,7 @@ const TESTS: TestConfig[] = [
     },
     {
         name: 'Test 35: Variety',
-        sport: LEAGUES.NBA,
+        sports: LEAGUES.NBA,
         riskLevel: 5,
         numLegs: 3,
         betTypes: ['moneyline'],
@@ -342,9 +342,9 @@ async function run() {
 
         console.log(`\nRunning ${t.name}...`);
         try {
-            const sportDisplay = Array.isArray(t.sport) ? t.sport.join('+') : t.sport;
+            const sportDisplay = Array.isArray(t.sports) ? t.sports.join('+') : t.sports;
             const result = await generateParlay({
-                sport: t.sport,
+                sports: Array.isArray(t.sports) ? t.sports : [t.sports],
                 riskLevel: t.riskLevel,
                 numLegs: t.numLegs,
                 betTypes: t.betTypes

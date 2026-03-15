@@ -1,11 +1,15 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import { getScores, findMatchingGame, getWinner, getTotalScore, getTeamScore, GameScore } from '@/lib/odds/getScores'
+import { getScores, GameScore } from '@/lib/odds/getScores'
+import { gradeBatch, type LegToGrade } from '@/lib/audit/grader'
+import { calculatePayout } from '@/lib/audit/calculator'
+import { calculateLegCLV } from '@/lib/audit/clv'
 
 /**
  * POST /api/check-results
- * 
+ *
  * Checks all pending bets and resolves them against completed game scores.
+ * Now uses the enhanced grader that supports player props via ESPN box scores.
  * This can be called by:
  * 1. A cron job (every 30 min)
  * 2. When the dashboard loads (for fresh data)
@@ -15,13 +19,9 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
     try {
-        // Optional: Verify cron secret for automated calls
         const authHeader = request.headers.get('authorization')
         const cronSecret = process.env.CRON_SECRET
         const isCron = authHeader === `Bearer ${cronSecret}`
-
-        // For non-cron calls, we could add user auth here if needed
-        // For now, allow any call (the dashboard will call this on load)
 
         console.log(`[CheckResults] Starting result check (cron: ${isCron})...`)
 
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
             where: {
                 result: 'pending',
                 game_time: {
-                    lt: new Date(now.getTime() - 3 * 60 * 60 * 1000) // Game started 3+ hours ago (should be done)
+                    lt: new Date(now.getTime() - 3 * 60 * 60 * 1000)
                 }
             },
             include: {
@@ -50,106 +50,71 @@ export async function POST(request: Request) {
 
         console.log(`[CheckResults] Found ${pendingLegs.length} pending legs to check.`)
 
-        // 2. Get unique sports from pending legs
+        // 2. Get unique sports and fetch scores
         const uniqueSports = Array.from(new Set(pendingLegs.map(l => l.sport).filter(Boolean)))
         console.log(`[CheckResults] Sports to check: ${uniqueSports.join(', ')}`)
 
-        // 3. Fetch scores for each sport
-        const scoresByPort: Record<string, GameScore[]> = {}
+        const scoresBySport: Record<string, GameScore[]> = {}
         for (const sport of uniqueSports) {
             try {
-                scoresByPort[sport] = await getScores(sport)
+                scoresBySport[sport] = await getScores(sport)
             } catch (err) {
                 console.error(`[CheckResults] Failed to get scores for ${sport}:`, err)
-                scoresByPort[sport] = []
+                scoresBySport[sport] = []
             }
         }
 
-        // 4. Resolve each pending leg
+        // 3. Group legs by sport and grade using the enhanced grader
         let resolved = 0
         let won = 0
         let lost = 0
 
-        for (const leg of pendingLegs) {
-            const scores = scoresByPort[leg.sport] || []
-            if (scores.length === 0) continue
+        for (const sport of uniqueSports) {
+            const sportLegs = pendingLegs.filter(l => l.sport === sport)
+            const scores = scoresBySport[sport] || []
 
-            // Find the matching game
-            const game = findMatchingGame(scores, leg.team, leg.opponent)
-            if (!game) {
-                console.log(`[CheckResults] No match found for: ${leg.team} vs ${leg.opponent} (${leg.sport})`)
-                continue
-            }
+            if (scores.length === 0 && !sportLegs.some(l => l.bet_type?.includes('prop'))) continue
 
-            console.log(`[CheckResults] Matched: ${leg.team} → ${game.home_team} vs ${game.away_team}`)
+            const legsToGrade: LegToGrade[] = sportLegs.map(l => ({
+                id: l.id,
+                sport: l.sport,
+                team: l.team,
+                opponent: l.opponent,
+                bet_type: l.bet_type,
+                line: l.line,
+                player: l.player,
+                prop_market: l.prop_market
+            }))
 
-            // Determine result based on bet type
-            let legResult: 'won' | 'lost' | null = null
+            const gradeResults = await gradeBatch(legsToGrade, scores)
 
-            const betType = leg.bet_type?.toLowerCase() || 'moneyline'
+            // 4. Update each graded leg (including CLV calculation)
+            for (const [legId, grade] of Array.from(gradeResults.entries())) {
+                if (grade.result === 'pending') continue
 
-            if (betType === 'moneyline' || betType === 'h2h') {
-                // Moneyline: Did the picked team win?
-                const winner = getWinner(game)
-                if (winner) {
-                    const pickedTeamNorm = leg.team.toLowerCase()
-                    const winnerNorm = winner.toLowerCase()
-                    legResult = winnerNorm.includes(pickedTeamNorm) || pickedTeamNorm.includes(winnerNorm)
-                        ? 'won' : 'lost'
-                }
-            } else if (betType === 'spread' || betType === 'spreads') {
-                // Spread: Did the team cover?
-                if (leg.line) {
-                    const spread = parseFloat(leg.line)
-                    const teamScore = getTeamScore(game, leg.team)
-                    const oppScore = leg.opponent ? getTeamScore(game, leg.opponent) : null
+                // Calculate CLV from pick odds vs consensus odds
+                const leg = sportLegs.find(l => l.id === legId)
+                const clv = leg ? calculateLegCLV(leg.odds, leg.consensus_odds) : null
 
-                    if (teamScore !== null && oppScore !== null && !isNaN(spread)) {
-                        const adjustedScore = teamScore + spread
-                        legResult = adjustedScore > oppScore ? 'won' : 'lost'
+                await prisma.parlayLeg.update({
+                    where: { id: legId },
+                    data: {
+                        result: grade.result,
+                        actual_value: grade.actualValue ?? null,
+                        graded_at: grade.gradedAt ?? new Date(),
+                        clv: clv ?? null
                     }
-                }
-            } else if (betType === 'totals' || betType === 'total') {
-                // Totals: Was the combined score over/under the line?
-                if (leg.line) {
-                    const isOver = leg.line.toLowerCase().includes('over') ||
-                        leg.team.toLowerCase().includes('over')
-                    const lineValue = parseFloat(leg.line.replace(/[^0-9.]/g, ''))
-                    const total = getTotalScore(game)
+                })
 
-                    if (total !== null && !isNaN(lineValue)) {
-                        if (isOver) {
-                            legResult = total > lineValue ? 'won' : 'lost'
-                        } else {
-                            legResult = total < lineValue ? 'won' : 'lost'
-                        }
-                    }
-                }
-            } else if (betType.includes('prop') || betType.includes('player')) {
-                // Props: Cannot auto-resolve with scores API (need player stats)
-                console.log(`[CheckResults] Skipping prop bet (no auto-resolution): ${leg.team} - ${leg.bet_type}`)
-                continue
+                resolved++
+                if (grade.result === 'won') won++
+                else if (grade.result === 'lost') lost++
+
+                console.log(`[CheckResults] ${leg?.team} ${leg?.bet_type}: ${grade.result.toUpperCase()}${grade.actualValue !== undefined ? ` (actual: ${grade.actualValue})` : ''}${clv !== null ? ` (CLV: ${clv > 0 ? '+' : ''}${clv}%)` : ''}`)
             }
-
-            if (!legResult) {
-                console.log(`[CheckResults] Could not determine result for: ${leg.team} (${leg.bet_type})`)
-                continue
-            }
-
-            // 5. Update the leg result
-            await prisma.parlayLeg.update({
-                where: { id: leg.id },
-                data: { result: legResult }
-            })
-
-            resolved++
-            if (legResult === 'won') won++
-            else lost++
-
-            console.log(`[CheckResults] ✅ ${leg.team} ${leg.bet_type}: ${legResult.toUpperCase()}`)
         }
 
-        // 6. Now resolve full parlays — check if all legs are done
+        // 5. Resolve full parlays and calculate payouts
         const affectedParlayIds = Array.from(new Set(pendingLegs.map(l => l.parlay_id)))
 
         for (const parlayId of affectedParlayIds) {
@@ -158,18 +123,41 @@ export async function POST(request: Request) {
             })
 
             const stillPending = allLegs.some(l => l.result === 'pending')
-            if (stillPending) continue // Not all legs resolved yet
+            if (stillPending) continue
 
             const anyLost = allLegs.some(l => l.result === 'lost')
             const parlayResult = anyLost ? 'lost' : 'won'
 
-            // Update BetHistory result
-            await prisma.betHistory.updateMany({
-                where: { parlay_id: parlayId },
-                data: { result: parlayResult }
+            // Get the parlay for odds info
+            const parlay = await prisma.parlay.findUnique({
+                where: { id: parlayId },
+                select: { total_odds: true }
             })
 
-            console.log(`[CheckResults] 🎯 Parlay ${parlayId.slice(0, 8)}: ${parlayResult.toUpperCase()}`)
+            // Update BetHistory with result + payout
+            const betHistories = await prisma.betHistory.findMany({
+                where: { parlay_id: parlayId, result: 'pending' }
+            })
+
+            for (const bet of betHistories) {
+                const stake = bet.stake_amount ? Number(bet.stake_amount) : 0
+                const payout = parlayResult === 'won'
+                    ? calculatePayout(stake, parlay?.total_odds || '+100')
+                    : 0
+                const profit = parlayResult === 'won' ? payout - stake : -stake
+
+                await prisma.betHistory.update({
+                    where: { id: bet.id },
+                    data: {
+                        result: parlayResult,
+                        payout: parlayResult === 'won' ? payout : null,
+                        profit,
+                        graded_at: new Date()
+                    }
+                })
+            }
+
+            console.log(`[CheckResults] Parlay ${parlayId.slice(0, 8)}: ${parlayResult.toUpperCase()}`)
         }
 
         const summary = { resolved, won, lost, checked: pendingLegs.length }

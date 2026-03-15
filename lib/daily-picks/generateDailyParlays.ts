@@ -171,7 +171,7 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
                         create: generated.legs.map((l: ParlayLeg) => ({
                             sport: l.sport || 'Mixed',
                             team: l.team,
-                            bet_type: l.betType || l.bet_type || 'moneyline',
+                            bet_type: l.bet_type || l.betType || 'moneyline',
                             odds: l.odds,
                             opponent: l.opponent,
                             player: l.player || null,

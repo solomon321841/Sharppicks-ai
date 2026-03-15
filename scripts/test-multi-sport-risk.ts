@@ -8,31 +8,31 @@ console.log('Testing AI risk consistency across different sports...\n');
 
 const testCases = [
     {
-        sport: 'soccer_spain_la_liga',
+        sports: 'soccer_spain_la_liga',
         sportName: '⚽ Soccer (La Liga)',
         riskLevel: 1,
         expectedBehavior: 'Very safe picks - stars with low thresholds (e.g., Mbappe Over 0.5 Shots)'
     },
     {
-        sport: 'basketball_nba',
+        sports: 'basketball_nba',
         sportName: '🏀 Basketball (NBA)',
         riskLevel: 1,
         expectedBehavior: 'Very safe picks - stars with low thresholds (e.g., LeBron Over 15.5 Points)'
     },
     {
-        sport: 'americanfootball_nfl',
+        sports: 'americanfootball_nfl',
         sportName: '🏈 Football (NFL)',
         riskLevel: 1,
         expectedBehavior: 'Very safe picks - stars with low thresholds (e.g., Mahomes Over 225.5 Passing Yards)'
     },
     {
-        sport: 'soccer_spain_la_liga',
+        sports: 'soccer_spain_la_liga',
         sportName: '⚽ Soccer (La Liga)',
         riskLevel: 10,
         expectedBehavior: 'High-risk picks - stars with high thresholds OR bench players (e.g., Mbappe Over 5.5 Shots)'
     },
     {
-        sport: 'basketball_nba',
+        sports: 'basketball_nba',
         sportName: '🏀 Basketball (NBA)',
         riskLevel: 10,
         expectedBehavior: 'High-risk picks - stars with high thresholds OR bench players (e.g., LeBron Over 35.5 Points)'
@@ -47,7 +47,7 @@ async function runTest(testCase: typeof testCases[0]) {
 
     try {
         const result = await generateParlay({
-            sport: [testCase.sport],
+            sports: Array.isArray(testCase.sports) ? testCase.sports : [testCase.sports],
             numLegs: 3,
             betTypes: ['player_props'],
             riskLevel: testCase.riskLevel

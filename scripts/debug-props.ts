@@ -50,13 +50,13 @@ async function testProps() {
     } catch (e) { console.error(e); }
 }
 
-async function runTests(game: any, markets: string[], sport: string, region: string, apiKey: string) {
+async function runTests(game: any, markets: string[], sports: string, region: string, apiKey: string) {
     for (const market of markets) {
         await checkMarket(game.id, sport, market, region, apiKey);
     }
 }
 
-async function checkMarket(eventId: string, sport: string, market: string, region: string, apiKey: string) {
+async function checkMarket(eventId: string, sports: string, market: string, region: string, apiKey: string) {
     const url = `https://api.the-odds-api.com/v4/sports/${sport}/events/${eventId}/odds/?apiKey=${apiKey}&regions=${region}&markets=${market}&oddsFormat=american`;
 
     try {

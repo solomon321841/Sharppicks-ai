@@ -90,7 +90,7 @@ const getSportName = (key: string) => {
 
 const getSportLogo = (key: string) => {
     const map: Record<string, string> = {
-        'basketball_nba': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
+        'basketball_nba': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
         'icehockey_nhl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png',
         'soccer_epl': 'https://a.espncdn.com/i/leaguelogos/soccer/500/23.png',
         'soccer_spain_la_liga': 'https://a.espncdn.com/i/leaguelogos/soccer/500/15.png',

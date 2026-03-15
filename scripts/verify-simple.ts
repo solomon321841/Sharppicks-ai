@@ -20,14 +20,14 @@ if (fs.existsSync(envPath)) {
 }
 
 async function main() {
-    console.log('Generating Simple La Liga Parlay (1 Leg)...');
+    console.log('Generating NBA Mixed Parlay (3 Legs, Risk 5)...');
 
     try {
         const result = await generateParlay({
-            sport: ['soccer_spain_la_liga'],
-            numLegs: 1,
+            sports: ['basketball_nba'],
+            numLegs: 3,
             riskLevel: 5,
-            betTypes: ['player_props'] // Just test props
+            betTypes: ['moneyline', 'spread', 'player_props']
         });
 
         if (result.error) {
@@ -35,14 +35,18 @@ async function main() {
             return;
         }
 
-        console.log('\n--- Generated Single Leg ---');
-        const leg = result.legs[0];
-        console.log(`Player: ${leg.player}`);
-        console.log(`Team: ${leg.team}`);
-        console.log(`Opponent: ${leg.opponent}`);
-        console.log(`Line: ${leg.line}`);
-        console.log(`Odds: ${leg.odds}`);
-        console.log(`Sportsbook: ${leg.sportsbook}`);
+        console.log('\n--- AI ANALYSIS STRATEGY ---');
+        console.log(`Strategy: ${result.strategy}`);
+
+        console.log(`\nTotal Odds: ${result.totalOdds}`);
+        console.log(`Confidence: ${result.confidence}%`);
+        console.log(`\n--- Generated Legs ---`);
+        for (const leg of result.legs) {
+            console.log(`\n  ${leg.player || leg.team} vs ${leg.opponent}`);
+            console.log(`  Type: ${leg.bet_type} | Line: ${leg.line} | Odds: ${leg.odds}`);
+            console.log(`  Book: ${leg.sportsbook}${leg.bestBook ? ` (Best: ${leg.bestBook})` : ''}`);
+            console.log(`  Reasoning: ${leg.reasoning}`);
+        }
 
     } catch (error) {
         console.error('Generation failed:', error);

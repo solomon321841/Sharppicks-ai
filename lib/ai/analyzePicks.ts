@@ -9,521 +9,796 @@ import {
 } from './parlayMath'
 
 export type ParlayRequest = {
-    sport: string | string[] // Support both single and multi-sport
+    sports: string | string[]
     riskLevel: number // 1-10
     numLegs: number
-    betTypes: string[] // ['moneyline', 'spread', 'totals']
-    oddsData: any[] // From getOdds
+    betTypes: string[] // ['moneyline', 'spread', 'totals', 'player_props']
+    oddsData: any[]
+    statsContext?: Map<string, any>   // ESPN team stats + injuries per game
+    shoppingData?: Map<string, any>   // Line shopping data per game
 }
 
+// ─── Bet type normalization ────────────────────────────────────────────
+function normalizeBetType(raw: string): string {
+    const t = raw.toLowerCase().trim()
+    if (t === 'h2h' || t === 'money_line' || t === 'ml') return 'moneyline'
+    if (t === 'spreads') return 'spread'
+    if (t === 'total' || t === 'over/under') return 'totals'
+    if (t === 'prop' || t === 'player_prop' || t === 'props' || t.startsWith('player_')) return 'player_props'
+    return t
+}
+
+// ─── Build the AI prompt ───────────────────────────────────────────────
+function buildPrompt(request: ParlayRequest, games: any[], retryFeedback?: string): string {
+    const riskLevel = request.riskLevel
+    const numLegs = request.numLegs
+    const betTypesStr = request.betTypes.join(', ')
+    const sportString = Array.isArray(request.sports) ? request.sports.join(', ') : request.sports
+
+    // Risk personality — this is the KEY. Tell the AI what KIND of picks to make.
+    const riskPersonality = getRiskPersonality(riskLevel)
+
+    const hasProps = request.betTypes.includes('player_props')
+
+    return `You are the SharpPicks AI parlay engine. You build professional-quality sports parlay recommendations using ONLY the real-time odds data provided below.
+
+## YOUR IDENTITY
+You are an elite sports bettor. Every pick must have a clear statistical or situational edge. You never pick randomly. You think like a sharp.
+
+## ABSOLUTE RULES (ZERO EXCEPTIONS)
+1. You ONLY use odds, teams, players, and games from the data below. NEVER invent data.
+2. Every "odds" value must come EXACTLY from the data. Do not modify odds values.
+3. Every "game_id" must match an ID in the data.
+4. If you cannot build a valid parlay with the constraints, respond with EXACTLY: {"error": "No qualifying parlays available at Risk ${riskLevel} for the selected sports and bet types. Try adjusting your settings."}
+
+## BET TYPE RESTRICTION (MANDATORY)
+You may ONLY use these bet types: [${betTypesStr}]
+${request.betTypes.length === 1 ? `\nCRITICAL: Every single leg MUST be "${request.betTypes[0]}". No exceptions. If you cannot fill all legs with "${request.betTypes[0]}", return the error JSON above.` : `\nYou can use any mix of the allowed types, but NEVER use a type not in this list.`}
+
+## RISK LEVEL: ${riskLevel}/10 — ${riskPersonality.label}
+
+${riskPersonality.instructions}
+
+## TARGET COMBINED ODDS RANGE
+${riskPersonality.oddsRange}
+
+## CORRELATION RULES
+${riskLevel <= 5 ? '- NEVER combine two legs from the same game. Each leg must be from a different matchup.' : ''}
+${riskLevel >= 6 && riskLevel <= 7 ? '- Same-game legs are allowed, but NEVER combine Moneyline/Spread with Over/Under from the same game.' : ''}
+${riskLevel >= 8 ? '- Same-game parlays are allowed. Flag correlated legs.' : ''}
+
+## VARIETY RULES
+- Spread legs across different games. If 3+ games are available, use at least 2 different games.
+- If 5+ games are available, use at least 3 different games.
+${hasProps ? `- For player props: MIX different stat categories. Do NOT make every prop the same category (e.g., all Points). Vary: Points, Rebounds, Assists, Threes, Goals, Shots, Saves, etc.` : ''}
+- For mixed bet types: vary bet types across legs. Don't make them all the same type.
+
+## REQUEST PARAMETERS
+- Sport(s): ${sportString}
+- Risk Level: ${riskLevel}/10
+- Number of Legs: ${numLegs}
+- Allowed Bet Types: ${betTypesStr}
+
+${hasProps ? `## PLAYER PROPS FORMAT
+When a leg is a player prop:
+- Set bet_type to "player_props"
+- Set prop_market to the stat category: "Points", "Rebounds", "Assists", "Threes", "Goals", "Shots", "Saves", etc.
+- Set player to the player name
+- Set line to "Over X.5" or "Under X.5" (the exact threshold from the data)
+` : ''}
+
+## REAL STATISTICS (ESPN)
+Some games include a "stats" block with REAL team data from ESPN. When available:
+- USE actual team records to assess strength (e.g., 50-18 team is elite, 22-46 is tanking).
+- USE PPG (points per game) and PAPG (points allowed per game) to inform Over/Under and spread picks.
+- USE home/away records — a team with 30-8 home record is much stronger at home.
+- USE injury data — if a star is OUT or DOUBTFUL, factor that into your analysis. Mention specific injuries in reasoning.
+- USE "keyPlayers" — these are REAL season averages from ESPN (e.g., "Jalen Brunson: 26.3 PPG"). For player props, compare the prop line to the player's ACTUAL season average. If Over 24.5 and the player averages 26.3, that's a strong Over play.
+- USE "backToBack: true" — this means the team played YESTERDAY. Back-to-back games cause fatigue, especially for older/high-minute players. This is a significant factor for: totals (tired teams score less on defense), player props (stars may rest or underperform), and spreads (rested team has an edge).
+- If no stats are available for a game, use your general knowledge but note that stats were unavailable.
+
+## LINE SHOPPING DATA
+Some games include a "sharpEdges" block showing where one sportsbook offers significantly better odds than the market consensus (3%+ edge). When available:
+- PREFER picking legs that have sharp value — this means the sportsbook is offering a mispriced line.
+- Mention the edge in your reasoning (e.g., "DraftKings offering +150 vs market consensus +130 — 4.2% edge").
+- The "bestBook" tells you which sportsbook has the best line — use this.
+
+## AVAILABLE GAMES & ODDS DATA
+${JSON.stringify(games, null, 1)}
+
+## OUTPUT FORMAT
+Return ONLY valid JSON matching this exact schema:
+{
+  "legs": [
+    {
+      "game_id": "exact_id_from_data",
+      "team": "Team Name",
+      "player": "Player Name (for props only, omit for non-props)",
+      "prop_market": "Points (REQUIRED for props, omit for non-props)",
+      "opponent": "Opponent Name",
+      "bet_type": "must be one of: ${betTypesStr}",
+      "line": "Over 27.5 or -3.5 or exact team name for ML",
+      "odds": "-115 (exact American odds from data)",
+      "reasoning": "2-3 sentences of sharp analysis explaining the statistical edge."
+    }
+  ],
+  "strategy": "1-2 sentence summary of the overall parlay thesis."
+}
+
+${retryFeedback ? `\n## PREVIOUS ATTEMPT FAILED\n${retryFeedback}\nFix the issue and try again. Follow the rules above exactly.\n` : ''}
+
+Return ONLY the JSON. No markdown, no explanation, no wrapping.`
+}
+
+// ─── Risk personality definitions ──────────────────────────────────────
+function getRiskPersonality(risk: number): { label: string, instructions: string, oddsRange: string } {
+    if (risk <= 2) {
+        return {
+            label: 'SAFE — Lock It In',
+            instructions: `PICK SELECTION STRATEGY:
+- Pick HEAVY FAVORITES only. Moneyline favorites at -200 or better.
+- For spreads: pick favorites covering small spreads (-1.5 to -4.5).
+- For player props: pick the LOWEST, most achievable lines. Stars hitting their floor.
+  Example: LeBron Over 15.5 Points (he averages 27), Mbappe Over 0.5 Shots (he averages 5).
+- For totals: pick the most obvious Over/Under based on team scoring trends.
+- Every pick should feel like "of course this will hit." These are chalk plays.
+- DO NOT pick any underdogs. DO NOT pick risky props with high lines.`,
+            oddsRange: `Combined odds MUST be between +100 and +350. This is a "should hit" parlay.`
+        }
+    }
+    if (risk <= 4) {
+        return {
+            label: 'CONSERVATIVE — Calculated Value',
+            instructions: `PICK SELECTION STRATEGY:
+- Lean toward favorites but look for VALUE. Slight favorites (-110 to -180) are ideal.
+- For spreads: moderate spreads (-2.5 to -6.5) where the team has a clear edge.
+- For player props: pick lines near or slightly below the player's recent average.
+  Example: Jayson Tatum Over 24.5 Points (he averages 27), Haaland Over 0.5 Goals (he scores every other game).
+- One leg can be a slight underdog (+100 to +150) if there's a clear edge.
+- Think: high-percentage plays with a slightly better payout.`,
+            oddsRange: `Combined odds MUST be between +200 and +700.`
+        }
+    }
+    if (risk <= 6) {
+        return {
+            label: 'BALANCED — Sharp Money',
+            instructions: `PICK SELECTION STRATEGY:
+- Mix favorites and pick-em situations. No heavy favorites required.
+- For spreads: moderate to large spreads are okay if justified.
+- For player props: pick lines right at or slightly above the player's average. These require a good game but are very achievable.
+  Example: Luka Over 28.5 Points (he averages 29), Salah Over 1.5 Shots on Target (he averages 2.1).
+- You can include 1-2 slight underdogs (+110 to +200) if the edge is real.
+- This is the "everyday sharp bettor" zone. Smart picks, decent payout.`,
+            oddsRange: `Combined odds MUST be between +400 and +1500.`
+        }
+    }
+    if (risk <= 8) {
+        return {
+            label: 'AGGRESSIVE — Big Swing',
+            instructions: `PICK SELECTION STRATEGY:
+- Target underdogs, high-line props, and bold predictions.
+- For player props: pick lines ABOVE the player's average. They need a big game to hit.
+  Example: Anthony Edwards Over 32.5 Points (he averages 26), Mbappe Over 3.5 Shots (he averages 4.2 but this requires volume).
+- Underdogs (+150 to +300) are great here if there's a matchup edge.
+- You're looking for games where the underdog has a real path to victory.
+- More legs, more variance, more payout. This is a "this could really pop" parlay.`,
+            oddsRange: `Combined odds MUST be between +1000 and +5000.`
+        }
+    }
+    // Risk 9-10
+    return {
+        label: 'MOONSHOT — Lottery Ticket',
+        instructions: `PICK SELECTION STRATEGY:
+- Go for the home runs. Heavy underdogs, extreme player props, long-shot outcomes.
+- For player props: pick lines WELL ABOVE average. These need career-night performances.
+  Example: Role player to score 20+ points, backup goalie to make 35+ saves, underdog QB to throw 3+ TDs.
+- Target significant underdogs (+200 to +500 per leg).
+- Same-game parlays and correlated legs are encouraged for multiplied variance.
+- This is a "buy a lottery ticket" play. Low probability, massive payout.
+- Think about narratives: upset games, rivalry matches, contract-year players.`,
+        oddsRange: `Combined odds MUST be between +3000 and +25000.`
+    }
+}
+
+// ─── Main analysis function ────────────────────────────────────────────
 export async function analyzePicks(request: ParlayRequest) {
-    // 1. Enforce Spec Constraints dynamically before hitting AI
-    request.numLegs = enforceLegCount(request.riskLevel, request.numLegs);
-    request.betTypes = enforceBetTypes(request.riskLevel, request.betTypes);
+    request.numLegs = enforceLegCount(request.riskLevel, request.numLegs)
+    request.betTypes = enforceBetTypes(request.riskLevel, request.betTypes)
 
     if (!process.env.ANTHROPIC_API_KEY) {
-        console.warn('Missing ANTHROPIC_API_KEY, returning mock AI response')
-        return getMockAIResponse(request)
+        console.warn('Missing ANTHROPIC_API_KEY')
+        return buildErrorResponse(request, 'AI service is not configured. Please contact support.')
     }
 
-    // Log input data for debugging (first 3 games)
-    console.log('[AI Input Data Sample]:', JSON.stringify(request.oddsData.slice(0, 3).map(g => ({
-        home: g.home_team,
-        away: g.away_team,
-        bookmakers: g.bookmakers?.[0]?.markets?.map((m: any) => ({ key: m.key, outcomes: m.outcomes }))
-    })), null, 2));
+    // ── Minify game data for the AI ──────────────────────────────────
+    const simplifiedGames = minifyGames(request)
 
-    // Normalize sport to string
-    const sportString = Array.isArray(request.sport) ? request.sport.join('+') : request.sport;
-    const isMultiSport = sportString.includes('+');
-    const sportsList = sportString.split('+');
+    if (simplifiedGames.length === 0) {
+        return buildErrorResponse(request, `No games with matching bet types found for the selected sports. Try enabling more bet types or selecting different sports.`)
+    }
 
+    // Check: if user wants only props but no props exist in data
+    if (request.betTypes.length === 1 && request.betTypes[0] === 'player_props') {
+        const hasAnyProps = simplifiedGames.some(g =>
+            g.markets.some((m: any) => m.type.startsWith('player'))
+        )
+        if (!hasAnyProps) {
+            return buildErrorResponse(request, 'Player props are not available for the selected games right now. Try selecting Moneyline or Spread, or check back closer to game time.')
+        }
+    }
 
-    // Minify Data to reduce tokens (Fix for 429 Rate Limit)
-    // 1. Limit to 15 games max
-    // 2. Extract only the most relevant bookmaker and markets
-    const simplifiedGames = request.oddsData.slice(0, 15).map(g => {
-        // Determine required markets based on request
-        const requiredMarkets: string[] = [];
-        if (request.betTypes.includes('moneyline')) requiredMarkets.push('h2h');
-        if (request.betTypes.includes('spread')) requiredMarkets.push('spreads');
-        if (request.betTypes.includes('totals')) requiredMarkets.push('totals');
-        if (request.betTypes.some(t => t.includes('prop'))) requiredMarkets.push('player_'); // partial match
+    // Check: enough games for the requested legs (no-correlation check)
+    if (request.riskLevel <= 5 && simplifiedGames.length < request.numLegs) {
+        // At low risk, each leg must be a different game
+        if (simplifiedGames.length < 2) {
+            return buildErrorResponse(request, `Only ${simplifiedGames.length} game(s) available. Need at least 2 games to build a safe parlay. Try selecting more sports.`)
+        }
+        request.numLegs = simplifiedGames.length
+    }
 
-        // Helper to check if a bookmaker has ANY of the required markets
-        const hasRequiredMarkets = (b: any) => {
-            if (requiredMarkets.length === 0) return true;
-            return requiredMarkets.some(req =>
-                b.markets.some((m: any) => m.key.startsWith(req.replace('player_', 'player')))
-            );
-        };
+    console.log(`[AI] ${simplifiedGames.length} games prepared | Risk ${request.riskLevel} | ${request.numLegs} legs | Types: ${request.betTypes.join(',')}`)
 
-        // 1. Filter bookmakers that have at least one valid market
-        const validBookmakers = g.bookmakers?.filter(hasRequiredMarkets) || [];
+    // ── Call AI with retry loop ──────────────────────────────────────
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+    let lastError = ''
+    const maxAttempts = 4
 
-        if (validBookmakers.length === 0) return null;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            console.log(`[AI] Attempt ${attempt}/${maxAttempts}...`)
 
-        // 2. Select best from valid ones
+            const prompt = buildPrompt(
+                request,
+                simplifiedGames,
+                attempt > 1 ? lastError : undefined
+            )
+
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('AI request timed out after 50 seconds')), 50000)
+            })
+
+            const aiPromise = anthropic.messages.create({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 4000,
+                temperature: 0.3,
+                messages: [{ role: 'user', content: prompt }],
+            })
+
+            const msg = await Promise.race([aiPromise, timeoutPromise]) as Anthropic.Messages.Message
+            const text = (msg.content[0] as any).text
+
+            // Extract JSON
+            const firstBrace = text.indexOf('{')
+            const lastBrace = text.lastIndexOf('}')
+            if (firstBrace === -1 || lastBrace === -1) {
+                lastError = 'AI did not return valid JSON. Return ONLY a JSON object.'
+                continue
+            }
+
+            const result = JSON.parse(text.substring(firstBrace, lastBrace + 1))
+
+            // Check if AI returned an error (it was told to do this when it can't build a parlay)
+            if (result.error) {
+                return buildErrorResponse(request, result.error)
+            }
+
+            if (!result.legs || !Array.isArray(result.legs) || result.legs.length === 0) {
+                lastError = 'Response has no legs array. Return a valid parlay JSON.'
+                continue
+            }
+
+            // ── Validate the result ──────────────────────────────────
+            const validation = validateResult(result, request)
+            if (!validation.valid) {
+                lastError = validation.error!
+                console.warn(`[AI Validation Fail ${attempt}]: ${lastError}`)
+                continue
+            }
+
+            // ── All checks passed — finalize ─────────────────────────
+            return finalizeResult(result, request)
+
+        } catch (error: any) {
+            if (error.status === 429 || error.code === 'rate_limit_error') {
+                console.warn('Rate limit hit, waiting 2s...')
+                await new Promise(resolve => setTimeout(resolve, 2000))
+                lastError = 'Rate limited. Try again.'
+            } else if (error.status === 400 && error.error?.message?.includes('credit balance')) {
+                return buildErrorResponse(request, 'AI service credits depleted. Please contact support.')
+            } else if (error.status >= 500 || error.status === 529) {
+                return buildErrorResponse(request, 'AI servers are temporarily overloaded. Please try again in a few moments.')
+            } else if (error instanceof SyntaxError) {
+                lastError = 'Invalid JSON returned. Output ONLY clean JSON, no markdown.'
+            } else {
+                lastError = error.message || 'Unknown error'
+            }
+            console.warn(`[AI Error ${attempt}]: ${lastError}`)
+        }
+    }
+
+    // All attempts failed
+    console.error(`[AI] All ${maxAttempts} attempts failed. Last: ${lastError}`)
+    return buildErrorResponse(request, lastError)
+}
+
+// ─── Minify games for AI context ───────────────────────────────────────
+function minifyGames(request: ParlayRequest): any[] {
+    return request.oddsData.slice(0, 15).map(g => {
+        const requiredMarkets: string[] = []
+        if (request.betTypes.includes('moneyline')) requiredMarkets.push('h2h')
+        if (request.betTypes.includes('spread')) requiredMarkets.push('spreads')
+        if (request.betTypes.includes('totals')) requiredMarkets.push('totals')
+        if (request.betTypes.includes('player_props')) requiredMarkets.push('player')
+
+        // Find a top-tier bookmaker with relevant markets
+        const validBookmakers = (g.bookmakers || []).filter((b: any) =>
+            requiredMarkets.some(req =>
+                b.markets.some((m: any) => m.key.startsWith(req))
+            )
+        )
+
+        if (validBookmakers.length === 0) return null
+
         const bookmaker = validBookmakers.find((b: any) =>
             ['draftkings', 'fanduel', 'betmgm', 'bovada'].includes(b.key)
-        ) || validBookmakers[0];
+        ) || validBookmakers[0]
 
-        // Filter markets to only those requested
+        // Filter to only requested markets
         const relevantMarkets = bookmaker.markets.filter((m: any) => {
-            const isH2H = m.key === 'h2h' && request.betTypes.includes('moneyline');
-            const isSpread = m.key === 'spreads' && request.betTypes.includes('spread');
-            const isTotal = m.key === 'totals' && request.betTypes.includes('totals');
-            const isProp = m.key.startsWith('player_') && request.betTypes.some(t => t.includes('prop') || t.includes('player'));
+            if (m.key === 'h2h' && request.betTypes.includes('moneyline')) return true
+            if (m.key === 'spreads' && request.betTypes.includes('spread')) return true
+            if (m.key === 'totals' && request.betTypes.includes('totals')) return true
+            if (m.key.startsWith('player_') && request.betTypes.includes('player_props')) return true
+            return false
+        })
 
-            return isH2H || isSpread || isTotal || isProp;
-        });
+        if (relevantMarkets.length === 0) return null
 
-        if (relevantMarkets.length === 0) return null;
-
-        return {
+        const gameData: any = {
             id: g.id,
-            home: g.home_team,
-            away: g.away_team,
+            matchup: `${g.away_team} @ ${g.home_team}`,
             start: g.commence_time,
             book: bookmaker.key,
             markets: relevantMarkets.map((m: any) => ({
-                key: m.key,
-                outcomes: m.outcomes.map((o: any) => ({
-                    name: o.description || o.name, // Use description (Player Name) if available, fallback to name (e.g. Over/Under)
-                    price: o.price,
-                    point: o.point // Explicitly ensure point is passed
+                type: m.key,
+                options: m.outcomes.map((o: any) => ({
+                    name: o.description || o.name,
+                    odds: o.price,
+                    line: o.point,
+                    difficulty: o.lineDifficulty,
+                    role: o.playerImportance
                 }))
             }))
-        };
-    }).filter(g => g !== null);
-
-    console.log(`[AI Optimization] Reduced ${request.oddsData.length} games to ${simplifiedGames.length} minified inputs.`);
-
-    // Format enriched data for AI analysis with player context
-    const enrichedGamesForAI = simplifiedGames.map(g => ({
-        id: g.id,
-        matchup: `${g.away} @ ${g.home}`,
-        start: g.start,
-        markets: g.markets.map((m: any) => ({
-            type: m.key,
-            options: m.outcomes.map((o: any) => ({
-                selection: o.name,
-                odds: o.price,
-                line: o.point,
-                // AI Context from enrichment
-                player: o.playerName,
-                playerRole: o.playerImportance, // star/starter/bench
-                lineThreshold: o.lineThreshold,
-                difficulty: o.lineDifficulty // very_easy to very_hard
-            }))
-        }))
-    }));
-
-    const prompt = `
-    You are the SharpPicks AI parlay engine. You generate sports betting parlay recommendations using ONLY verified data from The Odds API. You follow these rules with zero exceptions:
-
-    DATA INTEGRITY:
-    - You ONLY use odds, teams, and games that exist in the current API response.
-    - You NEVER invent, estimate, or hallucinate any odds or game data.
-    - If no games are available for the requested sport, return: "No games currently available for [sport]. Try again later."
-    - If you cannot build a parlay within the risk range, return: "No qualifying parlays available at Risk [X] for [sport] with [bet type]. Try adjusting your settings."
-
-    RISK CALIBRATION (NON-NEGOTIABLE):
-    - Risk 1: Combined odds +120 to +300 | Max 3 legs | ML + Spreads only
-    - Risk 2: Combined odds +180 to +480 | Max 3 legs | ML + Spreads only
-    - Risk 3: Combined odds +300 to +720 | Max 3 legs | ML + Spreads only
-    - Risk 4: Combined odds +450 to +960 | Max 4 legs | ML + Spreads + Totals
-    - Risk 5: Combined odds +600 to +1500 | Max 4 legs | ML + Spreads + Totals
-    - Risk 6: Combined odds +800 to +2200 | Max 5 legs | All bet types
-    - Risk 7: Combined odds +1200 to +3000 | Max 5 legs | All bet types
-    - Risk 8: Combined odds +1600 to +4800 | Max 6 legs | All bet types
-    - Risk 9: Combined odds +2500 to +8000 | Max 7 legs | All bet types
-    - Risk 10: Combined odds +4000 to +20000 | Max 7+ legs | All bet types
-
-    ODDS CALCULATION PROCEDURE:
-    1. For each potential leg, calculate implied probability from the American odds.
-    2. Remove the vig by normalizing both sides of the market to sum to 100%.
-    3. Multiply no-vig fair probabilities of all selected legs to get combined probability.
-    4. Convert combined probability back to American odds.
-    5. VERIFY the combined odds fall within the target range for the selected risk level.
-    6. If out of range: swap legs, add/remove a leg, or return "no qualifying parlays."
-
-    CORRELATION RULES:
-    - At Risk 1–5: Do NOT combine legs from the same game.
-    - At Risk 6+: Same-game legs are allowed but flag them as correlated in the output.
-    - Never combine a team ML with an Over/Under from the same game at Risk 1–7.
-
-    VARIETY RULES (MANDATORY):
-    - SPREAD LEGS ACROSS DIFFERENT GAMES. Do NOT put all legs from the same matchup.
-    - If there are 3+ games in the data, use at LEAST 2 different games.
-    - If there are 5+ games, use at LEAST 3 different games.
-    - For player props: MIX different stat categories (points, rebounds, assists, threes, etc.). Do NOT make every prop the same stat.
-    - For mixed bet types: include variety — don't just pick all spreads or all moneylines.
-    
-    TARGET SPECS FOR THIS REQUEST:
-    - Sport(s): ${sportString}
-    - Risk Level: ${request.riskLevel}
-    - Num Legs MAX: ${request.numLegs} (Minimum 2 required)
-    - Allowed Bet Types: ${request.betTypes.join(', ')}
-    ${request.betTypes.includes('player_props') ? `
-    PLAYER PROPS INSTRUCTIONS:
-    - Use bet_type="player_props" in your output for ANY player prop leg.
-    - You MUST include the "prop_market" field specifying the stat: "Points", "Rebounds", "Assists", "Threes", "Pts+Reb+Ast", etc.
-    - VARY the stat categories across legs. Example: 1 Points prop + 1 Rebounds prop + 1 Assists prop. Do NOT make every leg a Points prop.
-    - SPREAD across different players from DIFFERENT games when possible.
-    - Include the player name in the "player" field.
-    ` : ''}
-
-    AVAILABLE GAMES WITH API ODDS:
-    ${JSON.stringify(enrichedGamesForAI)}
-
-    OUTPUT FORMAT:
-    You MUST output valid JSON ONLY matching exactly this schema:
-    {
-      "legs": [
-        {
-          "game_id": "valid_id_from_data", 
-          "team": "Player's Team Name",
-          "player": "Player Name (if prop, otherwise omit)",
-          "prop_market": "Points (REQUIRED for props — e.g. Points, Rebounds, Assists, Threes, Pts+Reb+Ast)",
-          "opponent": "Opponent Name",
-          "bet_type": "exact type from the allowed list above",
-          "line": "Over 27.5", 
-          "odds": "-115",
-          "fair_prob": "53.2%",
-          "sportsbook": "FanDuel",
-          "reasoning": "2-3 sentence sharp analysis explaining WHY this bet has value."
         }
-      ],
-      "totalOdds": "+500",
-      "combined_fair_prob": "16.7%",
-      "risk_confirmation": "Risk 4/10 — VERIFIED: +500 is within +500 to +800"
-    }
 
-    WHAT YOU MUST NEVER DO:
-    - Never generate a parlay with combined odds outside the risk level range.
-    - Never include a game or odds not in the current API data.
-    - Never say "approximately" or "around" for odds — use exact figures from the API.
-    - Never put all legs from the same game when other games are available.
-    - Never make all player prop legs the same stat category.
-
-    CRITICAL INSTRUCTIONS:
-    1. HONOR SELECTION: If "player_props" is the ONLY allowed bet type, ALL of your legs MUST be props. Same for only spread, etc.
-    2. YOU CAN RETURN UP TO ${request.numLegs} PICKS (Minimum 2). If you hit the target odds with fewer legs, that is perfectly fine.
-    3. **BET TYPE & GAME VARIETY (STRICT):** Spread your picks across different games and stat categories.
-    4. **REASONING QUALITY:** Each leg MUST have a real, specific reason — reference the player's recent performance, matchup advantage, or statistical edge. NOT generic filler.
-    `
-
-    const anthropic = new Anthropic({
-        apiKey: process.env.ANTHROPIC_API_KEY,
-    })
-
-    let attempts = 0;
-    const maxAttempts = 5;
-    let lastError = '';
-
-    while (attempts < maxAttempts) {
-        try {
-            console.log(`[AI] Requesting analysis from Anthropic (Attempt ${attempts + 1}/${maxAttempts})...`);
-
-            // Create a timeout promise
-            const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Anthropic request timed out after 45 seconds')), 45000);
-            });
-
-            const aiPromise = anthropic.messages.create({
-                model: 'claude-3-haiku-20240307',
-                max_tokens: 3000, // Increased slightly for safety
-                temperature: 0.7,
-                system: "You are a sharp sports bettor AI. Return only valid JSON. For numbers, do NOT use a plus sign (e.g. use 1.5 not +1.5 for lines, but DO use it for odds like +150).",
-                messages: [{ role: 'user', content: prompt + (attempts > 0 ? `\n\nPREVIOUS ATTEMPT WAS INVALID. ERROR: ${lastError}\nPLEASE FIX.` : '') }],
-            });
-
-            // Race against timeout
-            const msg = await Promise.race([aiPromise, timeoutPromise]) as Anthropic.Messages.Message;
-
-            const text = (msg.content[0] as any).text
-            const firstBrace = text.indexOf('{');
-            const lastBrace = text.lastIndexOf('}');
-
-            let jsonStr = text;
-            if (firstBrace !== -1 && lastBrace !== -1) {
-                jsonStr = text.substring(firstBrace, lastBrace + 1);
+        // ── Inject ESPN stats (if available) ──────────────────────
+        const stats = request.statsContext?.get(g.id)
+        if (stats) {
+            gameData.stats = {
+                home: {
+                    record: stats.homeTeam.record || undefined,
+                    homeRecord: stats.homeTeam.homeRecord || undefined,
+                    ppg: stats.homeTeam.pointsPerGame || undefined,
+                    papg: stats.homeTeam.pointsAllowed || undefined,
+                    last5: stats.homeTeam.last5 || undefined,
+                },
+                away: {
+                    record: stats.awayTeam.record || undefined,
+                    awayRecord: stats.awayTeam.awayRecord || undefined,
+                    ppg: stats.awayTeam.pointsPerGame || undefined,
+                    papg: stats.awayTeam.pointsAllowed || undefined,
+                    last5: stats.awayTeam.last5 || undefined,
+                },
+                injuries: stats.injuries
+                    ?.filter((inj: any) => inj.status === 'OUT' || inj.status === 'DOUBTFUL' || inj.status === 'QUESTIONABLE')
+                    .slice(0, 8) // Limit to most impactful injuries to save tokens
+                    .map((inj: any) => `${inj.playerName} (${inj.status}: ${inj.description})`) || []
             }
 
-
-            const result = JSON.parse(jsonStr)
-
-            // Normalize Odds (Ensure + sign for positive)
-            result.legs = result.legs.map((l: any) => {
-                let odds = l.odds;
-                if (!String(odds).startsWith('-') && !String(odds).startsWith('+')) {
-                    if (parseInt(odds) > 0) odds = '+' + odds;
-                }
-                return { ...l, odds: String(odds) };
-            });
-
-            // Validate Result
-            let valid = true;
-            console.log(`Debug Attempt ${attempts + 1} | Risk: ${request.riskLevel} | Legs: ${JSON.stringify(result.legs.map((l: any) => l.odds))}`);
-
-            if (request.betTypes.length > 0) {
-                const hasWrongType = result.legs.some((l: any) => {
-                    let actual = l.bet_type;
-                    // Normalize AI output — the AI may return specific prop market names
-                    if (actual === 'prop' || actual === 'player_prop') actual = 'player_props';
-                    if (actual === 'total' || actual === 'over/under') actual = 'totals';
-                    if (actual === 'spreads') actual = 'spread';
-                    if (actual === 'h2h' || actual === 'money_line') actual = 'moneyline';
-                    // Map ALL specific prop markets to the umbrella "player_props"
-                    if (actual && actual.startsWith('player_')) actual = 'player_props';
-
-                    // Write back normalized value so downstream checks work
-                    l.bet_type = actual;
-
-                    return !request.betTypes.includes(actual);
-                });
-
-                if (hasWrongType) {
-                    lastError = `Wrong bet_type. Expected one of: ${request.betTypes.join(', ')}. Got: ${result.legs.map((l: any) => l.bet_type).join(', ')}`;
-                    valid = false;
-                }
+            // Add key player season averages (from ESPN scoreboard leaders)
+            if (stats.homeKeyPlayers?.length) {
+                gameData.stats.home.keyPlayers = stats.homeKeyPlayers.slice(0, 3).map((p: any) => p.display ? `${p.name}: ${p.display}` : `${p.name}: ${p.value} ${p.category}`)
             }
-            if (valid) {
-                const hasInvalidOdds = result.legs.some((l: any) => {
-                    if (l.odds === undefined && l.price !== undefined) l.odds = l.price;
-                    if (!l.odds) return true;
-                    return isNaN(parseInt(String(l.odds)));
-                });
-
-                if (hasInvalidOdds) {
-                    lastError = "Missing or invalid odds.";
-                    valid = false;
-                }
-
-                const hasMissingReasoning = result.legs.some((l: any) => !l.reasoning || l.reasoning.length < 10);
-                if (valid && hasMissingReasoning) {
-                    lastError = "One or more legs are missing AI reasoning.";
-                    valid = false;
-                }
+            if (stats.awayKeyPlayers?.length) {
+                gameData.stats.away.keyPlayers = stats.awayKeyPlayers.slice(0, 3).map((p: any) => p.display ? `${p.name}: ${p.display}` : `${p.name}: ${p.value} ${p.category}`)
             }
 
-            if (valid) {
-                // Strict Risk Validation Module Checks
-                const validLegs = result.legs.map((l: any) => ({
-                    game_id: l.game_id,
-                    bet_type: l.bet_type,
-                    odds: parseInt(String(l.odds).replace('+', ''))
-                }));
-
-                // 1. Check Leg Limits again just in case
-                if (validLegs.length > request.numLegs) {
-                    lastError = `Generated too many legs (${validLegs.length}). Spec limit is ${request.numLegs} for Risk Level ${request.riskLevel}.`;
-                    valid = false;
-                }
-
-                // 2. Correlation Detector (Spec Rule 6)
-                if (valid) {
-                    const correlationCheck = checkCorrelation(validLegs, request.riskLevel);
-                    if (!correlationCheck.valid) {
-                        lastError = `Correlation Violation: ${correlationCheck.reason}`;
-                        valid = false;
-                    }
-                }
-
-                // 3. Mathematical Odds Calculation (Spec Rule 3)
-                if (valid) {
-                    const mathCalc = calculateCombinedParlayMetrics(validLegs);
-                    const calcAmerican = mathCalc.combinedAmericanOdds;
-
-                    // 4. Strict Range Gate Check (Spec Rule 2 & 3.5)
-                    const rangeValid = validateRiskLevel(request.riskLevel, calcAmerican);
-                    if (!rangeValid) {
-                        // Give the AI actionable, directional feedback for retry
-                        const targetRanges: Record<number, [number, number]> = {
-                            1: [120, 300], 2: [180, 480], 3: [300, 720], 4: [450, 960],
-                            5: [600, 1500], 6: [800, 2200], 7: [1200, 3000], 8: [1600, 4800],
-                            9: [2500, 8000], 10: [4000, 20000]
-                        };
-                        const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999];
-                        const direction = calcAmerican < lo
-                            ? `TOO LOW (+${calcAmerican}). You need LONGER odds legs (more underdogs or add a leg). Target: +${lo} to +${hi}.`
-                            : `TOO HIGH (+${calcAmerican}). You need SHORTER odds legs (more favorites or remove a leg). Target: +${lo} to +${hi}.`;
-                        lastError = `Risk Level ${request.riskLevel} Boundary Miss. Math engine calculated +${calcAmerican}. ${direction}`;
-                        valid = false;
-                        console.warn(`[MATH GATE REJECT] Risk ${request.riskLevel}: +${calcAmerican} not in [+${lo}, +${hi}]`);
-                    } else {
-                        // Trust math engine, not AI's estimation
-                        result.totalOdds = calcAmerican > 0 ? `+${calcAmerican}` : `${calcAmerican}`;
-                        result.true_implied_prob = mathCalc.combinedFairProb;
-                        console.log(`[VALIDATION PASSED] Risk ${request.riskLevel}. Math Engine Output: ${result.totalOdds}`);
-                    }
-                }
+            // Add rest day / back-to-back info
+            if (stats.restDays) {
+                if (stats.restDays.home === 0) gameData.stats.home.backToBack = true
+                if (stats.restDays.away === 0) gameData.stats.away.backToBack = true
             }
 
-            if (valid) {
-                const legSignatures = new Set();
-                const validGameIds = new Set(request.oddsData.map(g => g.id));
-                const allTeams = new Set(request.oddsData.flatMap(g => [g.home_team, g.away_team]));
-
-                const hasIssues = result.legs.some((l: any) => {
-                    // Check 1: Duplicate Leg (Same Game + Same Bet + Same Line/Player)
-                    const sig = `${l.game_id}-${l.bet_type}-${l.player || l.team}-${l.line}`;
-                    if (legSignatures.has(sig)) {
-                        lastError = `Duplicate exact leg picked: ${sig}`;
-                        return true;
-                    }
-                    legSignatures.add(sig);
-
-                    // Check 2: Existence (Must be in provided data)
-                    if (!validGameIds.has(l.game_id)) {
-                        lastError = `Hallucinated Game ID: ${l.game_id}. Must use IDs from provided data.`;
-                        return true;
-                    }
-
-                    // Check 3: Team Validation (Teams must match that Game ID)
-                    const game = request.oddsData.find(g => g.id === l.game_id);
-                    if (game) {
-                        const isHome = (l.team === game.home_team) || (l.team && typeof l.team === 'string' && l.team.includes(game.home_team));
-                        const isAway = (l.team === game.away_team) || (l.team && typeof l.team === 'string' && l.team.includes(game.away_team));
-
-                        // Auto-fill opponent if missing and team is valid
-                        if (!l.opponent) {
-                            if (isHome) l.opponent = game.away_team;
-                            else if (isAway) l.opponent = game.home_team;
-                        }
-
-                        // IMPROVED VALIDATION:
-                        // 1. Team must be one of the two teams in the game
-                        if (!isHome && !isAway) {
-                            // Relaxed check for props if strict check fails, but still must be reasonable
-                            // Try fuzzy match?
-                            lastError = `Team mismatch for Game ${l.game_id}. Picked: ${l.team}, Valid: ${game.home_team} vs ${game.away_team}`;
-                            return true;
-                        }
-
-                        // 2. Opponent must be the OTHER team
-                        const isOpponentHome = (l.opponent === game.home_team) || (l.opponent && typeof l.opponent === 'string' && l.opponent.includes(game.home_team));
-                        const isOpponentAway = (l.opponent === game.away_team) || (l.opponent && typeof l.opponent === 'string' && l.opponent.includes(game.away_team));
-
-                        if (!isOpponentHome && !isOpponentAway) {
-                            lastError = `Opponent mismatch for Game ${l.game_id}. Picked: ${l.opponent}. Valid: ${game.home_team} or ${game.away_team}`;
-                            return true;
-                        }
-
-                        if (l.team === l.opponent) {
-                            lastError = `Logic Error: Player/Team is playing against themselves! Team: ${l.team}, Opponent: ${l.opponent}`;
-                            return true;
-                        }
-                    }
-
-                    return false;
-                });
-
-                if (hasIssues) {
-                    valid = false;
-                    console.log(`[AI Validation Failure Attempt ${attempts + 1}]:`, lastError);
-                } else if (!valid) {
-                    // It was already invalid before the team/location check
-                    console.log(`[AI Validation Failure Attempt ${attempts + 1}]:`, lastError);
-                }
+            // Strip undefined values to save tokens
+            for (const side of ['home', 'away'] as const) {
+                Object.keys(gameData.stats[side]).forEach(k => {
+                    if (gameData.stats[side][k] === undefined) delete gameData.stats[side][k]
+                })
             }
-
-            if (valid) {
-                // Add unit sizing string
-                result.unit_size = getUnitSize(request.riskLevel);
-
-                // Calculate Dynamic Confidence based on risk level and true probability
-                // Lower risk = higher confidence (more likely to hit), Higher risk = lower confidence
-                const riskConfidenceMap: Record<number, [number, number]> = {
-                    1: [80, 95], 2: [70, 85], 3: [60, 78], 4: [50, 68],
-                    5: [40, 58], 6: [32, 48], 7: [25, 38], 8: [18, 30],
-                    9: [12, 22], 10: [5, 15]
-                };
-                const [cLo, cHi] = riskConfidenceMap[request.riskLevel] || [30, 60];
-                result.confidence = Math.round(cLo + Math.random() * (cHi - cLo));
-
-                // Final Polish: Entrich legs with Sport and normalize fields
-                result.legs = result.legs.map((leg: any) => {
-                    const game = request.oddsData.find(g => g.id === leg.game_id);
-                    return {
-                        ...leg,
-                        sport: game?.sport_key || 'Mixed', // Inject sport key
-                        game_time: game?.commence_time || null, // Inject game time for result tracking
-                        betType: leg.bet_type, // Provide camelCase alias for compatibility
-                        bet_type: leg.bet_type
-                    };
-                });
-
-                return result;
-            }
-            attempts++;
-
-        } catch (error: any) {
-            console.error('AI Analysis failed:', error)
-
-            // Handle Rate Limiting (429)
-            if (error.status === 429 || error.code === 'rate_limit_error') {
-                console.warn('Rate limit hit. Waiting 2 seconds before retry...');
-                await new Promise(resolve => setTimeout(resolve, 2000));
-            }
-
-            // Handle Credit Balance / Billing Issues
-            if (error.status === 400 && error.error?.type === 'invalid_request_error' && error.error?.message?.includes('credit balance')) {
-                console.warn('[AI] Insufficient credits detected. Falling back to error state.');
-                return getMockAIResponse(request, 'Insufficient credits');
-            }
-
-            // Handle Overloaded / Server Errors with Fallback
-            if (error.status >= 500 || error.status === 529) {
-                console.warn('[AI] Anthropic Server Error. Falling back to error state.');
-                return getMockAIResponse(request, 'Server Error');
-            }
-
-            if (error instanceof SyntaxError) {
-                lastError = "Invalid JSON format. Please output clean JSON.";
-            } else {
-                lastError = error.message || "Unknown error";
-            }
-            console.warn(`[AI Attempt ${attempts + 1} Failed]: ${lastError}`);
-            attempts++;
+            if (gameData.stats.injuries.length === 0) delete gameData.stats.injuries
         }
-    }
 
-    // Final Fallback if all attempts fail
-    console.error(`[AI] Failed to generate valid parlay after ${maxAttempts} attempts. Last Error: ${lastError}`);
-    return getMockAIResponse(request, lastError);
+        // ── Inject line shopping data (if available) ──────────────
+        const shopping = request.shoppingData?.get(g.id)
+        if (shopping) {
+            // Only include sharp value lines to save tokens
+            const sharpLines = shopping.lines
+                .filter((l: any) => l.sharpValue && l.bookCount >= 3)
+                .slice(0, 6)
+                .map((l: any) => ({
+                    market: l.outcome.marketKey,
+                    name: l.outcome.name,
+                    line: l.outcome.point,
+                    bestOdds: l.bestOdds,
+                    bestBook: l.bestBook,
+                    consensus: l.consensusOdds,
+                    edge: `${l.edgePercent}%`
+                }))
+
+            if (sharpLines.length > 0) {
+                gameData.sharpEdges = sharpLines
+            }
+        }
+
+        return gameData
+    }).filter(Boolean)
 }
 
-function getMockAIResponse(request: ParlayRequest, lastError?: string) {
-    let errorMessage = 'AI analysis is temporarily unavailable. Please try again in a moment.';
+// ─── Validate AI result ────────────────────────────────────────────────
+function validateResult(result: any, request: ParlayRequest): { valid: boolean, error?: string } {
+    const legs = result.legs
 
-    if (lastError) {
-        if (lastError.includes('Risk Level')) {
-            errorMessage = `Unable to find enough games matching Risk Level ${request.riskLevel}. Try adjusting the risk slider or selecting more sports.`;
-        } else if (lastError.includes('Missing or invalid odds')) {
-            errorMessage = 'Not enough odds data available for the selected sports right now. Try selecting different sports or bet types.';
-        } else if (lastError.includes('Duplicate exact leg')) {
-            errorMessage = `Not enough unique bets available to build a ${request.numLegs}-leg parlay with these settings. Please reduce the number of legs or select more sports.`;
-        } else if (lastError.includes('Wrong bet_type')) {
-            errorMessage = 'Couldn\'t find enough bets matching your selected bet types. Try enabling more bet types.';
-        } else if (lastError.includes('Hallucinated Game ID') || lastError.includes('Team mismatch') || lastError.includes('Opponent mismatch')) {
-            errorMessage = 'The AI struggled to find valid matchups. Try broadening your criteria by selecting more sports or bet types.';
-        } else if (lastError.includes('Insufficient credits')) {
-            errorMessage = 'The AI service is currently out of credits. Please try again later or contact support.';
-        } else if (lastError.includes('Server Error')) {
-            errorMessage = 'The AI analysis servers are currently overloaded. Please try again in a few moments.';
-        } else {
-            // Generic fallback but actionable
-            errorMessage = `We couldn't generate a valid parlay with your exact criteria. Try adjusting your risk level, number of legs, or sports.`;
+    // 1. Normalize and validate bet types
+    for (const leg of legs) {
+        leg.bet_type = normalizeBetType(leg.bet_type || '')
+
+        // Normalize odds format
+        if (leg.odds === undefined && leg.price !== undefined) leg.odds = leg.price
+        let oddsStr = String(leg.odds)
+        if (!oddsStr.startsWith('-') && !oddsStr.startsWith('+') && parseInt(oddsStr) > 0) {
+            oddsStr = '+' + oddsStr
+        }
+        leg.odds = oddsStr
+
+        if (!request.betTypes.includes(leg.bet_type)) {
+            return {
+                valid: false,
+                error: `WRONG BET TYPE: Got "${leg.bet_type}" but only allowed: [${request.betTypes.join(', ')}]. Every leg must use ONLY the allowed bet types.`
+            }
         }
     }
 
-    // Instead of returning fake/mock data, return an error so the UI shows an actionable message
+    // 2. Validate odds are real numbers
+    for (const leg of legs) {
+        if (!leg.odds || isNaN(parseInt(String(leg.odds)))) {
+            return { valid: false, error: `Invalid odds "${leg.odds}". Must be American format like -110 or +150.` }
+        }
+    }
+
+    // 3. Validate reasoning exists
+    if (legs.some((l: any) => !l.reasoning || l.reasoning.length < 15)) {
+        return { valid: false, error: 'Each leg needs substantive reasoning (at least 15 chars). Explain the statistical edge.' }
+    }
+
+    // 4. Validate leg count
+    if (legs.length > request.numLegs) {
+        return { valid: false, error: `Too many legs (${legs.length}). Maximum is ${request.numLegs} for Risk ${request.riskLevel}.` }
+    }
+
+    if (legs.length < 2) {
+        return { valid: false, error: 'A parlay needs at least 2 legs.' }
+    }
+
+    // 5. Validate game IDs exist in source data
+    const validGameIds = new Set(request.oddsData.map(g => g.id))
+    for (const leg of legs) {
+        if (!validGameIds.has(leg.game_id)) {
+            return { valid: false, error: `Invalid game_id "${leg.game_id}". Use only IDs from the provided data.` }
+        }
+    }
+
+    // 6. Validate teams match game
+    for (const leg of legs) {
+        const game = request.oddsData.find(g => g.id === leg.game_id)
+        if (!game) continue
+
+        const teamMatch = matchesTeam(leg.team, game.home_team, game.away_team)
+        if (!teamMatch) {
+            return {
+                valid: false,
+                error: `Team "${leg.team}" not in game ${leg.game_id}. Valid teams: ${game.home_team} vs ${game.away_team}.`
+            }
+        }
+
+        // Auto-fill opponent
+        if (!leg.opponent) {
+            leg.opponent = leg.team === game.home_team ? game.away_team : game.home_team
+        }
+    }
+
+    // 7. Check for duplicate legs
+    const sigs = new Set<string>()
+    for (const leg of legs) {
+        const sig = `${leg.game_id}|${leg.bet_type}|${leg.player || leg.team}|${leg.line}`
+        if (sigs.has(sig)) {
+            return { valid: false, error: `Duplicate leg: ${sig}. Each leg must be unique.` }
+        }
+        sigs.add(sig)
+    }
+
+    // 8. Correlation check
+    const correlationInput = legs.map((l: any) => ({
+        game_id: l.game_id,
+        bet_type: l.bet_type,
+        odds: parseInt(String(l.odds).replace('+', ''))
+    }))
+
+    const corrCheck = checkCorrelation(correlationInput, request.riskLevel)
+    if (!corrCheck.valid) {
+        return { valid: false, error: `Correlation violation: ${corrCheck.reason}. ${request.riskLevel <= 5 ? 'At Risk 1-5, each leg must be from a DIFFERENT game.' : ''}` }
+    }
+
+    // 9. Math validation — recalculate combined odds and check risk range
+    const mathLegs = legs.map((l: any) => ({
+        odds: parseInt(String(l.odds).replace('+', ''))
+    }))
+
+    const mathCalc = calculateCombinedParlayMetrics(mathLegs)
+    const calcOdds = mathCalc.combinedAmericanOdds
+
+    const rangeValid = validateRiskLevel(request.riskLevel, calcOdds)
+    if (!rangeValid) {
+        const targetRanges: Record<number, [number, number]> = {
+            1: [100, 350], 2: [100, 350], 3: [200, 700], 4: [200, 700],
+            5: [400, 1500], 6: [400, 1500], 7: [1000, 5000], 8: [1000, 5000],
+            9: [3000, 25000], 10: [3000, 25000]
+        }
+        const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999]
+        const oddsDisplay = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
+        const direction = calcOdds < lo
+            ? `TOO LOW (${oddsDisplay}). Pick riskier legs or add more legs. Target: +${lo} to +${hi}.`
+            : `TOO HIGH (${oddsDisplay}). Pick safer legs or remove a leg. Target: +${lo} to +${hi}.`
+        return { valid: false, error: `Combined odds ${oddsDisplay} outside Risk ${request.riskLevel} range. ${direction}` }
+    }
+
+    // Store the math-calculated odds (more accurate than AI's estimate)
+    result.totalOdds = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
+    result.true_implied_prob = mathCalc.combinedFairProb
+
+    return { valid: true }
+}
+
+// ─── Finalize a valid result ───────────────────────────────────────────
+function finalizeResult(result: any, request: ParlayRequest) {
+    result.unit_size = getUnitSize(request.riskLevel)
+
+    // Data-driven confidence (replaces random range)
+    result.confidence = calculateDataDrivenConfidence(result.legs, request)
+
+    // Enrich legs with sport key, game time, sportsbook, shopping data, and consensus odds
+    result.legs = result.legs.map((leg: any) => {
+        const game = request.oddsData.find(g => g.id === leg.game_id)
+
+        // Find matching line from shopping data for this specific leg
+        let bestBook = ''
+        let consensusOdds = ''
+        const shopping = request.shoppingData?.get(leg.game_id)
+        if (shopping) {
+            const legName = (leg.player || leg.team || '').toLowerCase()
+            const legLine = leg.line ? String(leg.line) : ''
+
+            // Try to match by name + line for precise consensus odds
+            for (const line of shopping.lines) {
+                const outcomeName = (line.outcome.name || '').toLowerCase()
+                const outcomePoint = line.outcome.point !== undefined ? String(line.outcome.point) : ''
+
+                const nameMatch = outcomeName.includes(legName) || legName.includes(outcomeName)
+                const lineMatch = !legLine || !outcomePoint || legLine.includes(outcomePoint)
+
+                if (nameMatch && lineMatch) {
+                    consensusOdds = String(line.consensusOdds > 0 ? `+${line.consensusOdds}` : line.consensusOdds)
+                    if (line.sharpValue) bestBook = line.bestBook
+                    break
+                }
+            }
+        }
+
+        // Find the sportsbook name from the source data
+        let sportsbook = bestBook || leg.sportsbook || ''
+        if (!sportsbook && game?.bookmakers?.length > 0) {
+            const preferred = game.bookmakers.find((b: any) =>
+                ['draftkings', 'fanduel', 'betmgm', 'bovada'].includes(b.key)
+            )
+            const book = preferred || game.bookmakers[0]
+            sportsbook = book.title || book.key?.replace(/([a-z])([A-Z])/g, '$1 $2')
+                .replace(/^./, (s: string) => s.toUpperCase()) || ''
+        }
+
+        return {
+            ...leg,
+            sports: game?.sport_key || 'Mixed',
+            game_time: game?.commence_time || null,
+            betType: leg.bet_type,
+            sportsbook,
+            bestBook: bestBook || undefined,
+            consensus_odds: consensusOdds || undefined
+        }
+    })
+
+    console.log(`[AI] Success: Risk ${request.riskLevel} | ${result.legs.length} legs | ${result.totalOdds} | Confidence ${result.confidence}%`)
+    return result
+}
+
+// ─── Data-driven confidence calculation ─────────────────────────────────
+function calculateDataDrivenConfidence(legs: any[], request: ParlayRequest): number {
+    // Base confidence from mathematical implied probability
+    // Lower risk = higher base, higher risk = lower base
+    const baseByRisk: Record<number, number> = {
+        1: 82, 2: 75, 3: 65, 4: 55, 5: 45,
+        6: 38, 7: 30, 8: 22, 9: 15, 10: 8
+    }
+    const base = baseByRisk[request.riskLevel] || 45
+
+    // Collect per-leg modifiers
+    let totalModifier = 0
+    let modifierLegs = 0
+
+    for (const leg of legs) {
+        let legMod = 0
+
+        // 1. Sharp edge bonus: if line shopping found an edge on this leg (+0 to +6)
+        const shopping = request.shoppingData?.get(leg.game_id)
+        if (shopping) {
+            const legName = (leg.player || leg.team || '').toLowerCase()
+            const sharpMatch = shopping.lines.find((l: any) =>
+                l.sharpValue && (l.outcome.name || '').toLowerCase().includes(legName)
+            )
+            if (sharpMatch) {
+                legMod += Math.min(sharpMatch.edgePercent * 1.5, 6) // Cap at +6
+            }
+        }
+
+        // 2. Stats alignment: team records, key players, back-to-back
+        const stats = request.statsContext?.get(leg.game_id)
+        if (stats) {
+            // Parse win percentages from records
+            const homeWinPct = parseWinPct(stats.homeTeam?.record)
+            const awayWinPct = parseWinPct(stats.awayTeam?.record)
+
+            if (homeWinPct !== null && awayWinPct !== null) {
+                const pickedTeam = (leg.team || '').toLowerCase()
+                const homeTeamName = (stats.homeTeam?.name || '').toLowerCase()
+
+                const isPickingHome = homeTeamName.includes(pickedTeam) || pickedTeam.includes(homeTeamName)
+                const pickedWinPct = isPickingHome ? homeWinPct : awayWinPct
+                const oppWinPct = isPickingHome ? awayWinPct : homeWinPct
+
+                // Picking a significantly stronger team = confidence boost
+                const strengthDiff = pickedWinPct - oppWinPct
+                if (strengthDiff > 0.15) legMod += 3       // Strong favorite by record
+                else if (strengthDiff > 0.05) legMod += 1  // Slight edge
+                else if (strengthDiff < -0.15) legMod -= 3 // Picking significant underdog
+                else if (strengthDiff < -0.05) legMod -= 1 // Slight disadvantage
+            }
+
+            // Back-to-back penalty for the team we're picking
+            if (stats.restDays) {
+                const pickedTeam = (leg.team || '').toLowerCase()
+                const homeTeamName = (stats.homeTeam?.name || '').toLowerCase()
+                const isPickingHome = homeTeamName.includes(pickedTeam) || pickedTeam.includes(homeTeamName)
+
+                if (isPickingHome && stats.restDays.home === 0) legMod -= 3
+                if (!isPickingHome && stats.restDays.away === 0) legMod -= 3
+                // Bonus if opponent is on B2B but we're not
+                if (isPickingHome && stats.restDays.away === 0 && stats.restDays.home !== 0) legMod += 2
+                if (!isPickingHome && stats.restDays.home === 0 && stats.restDays.away !== 0) legMod += 2
+            }
+
+            // Key player prop alignment: compare prop line to actual season average
+            if (leg.bet_type === 'player_props' && leg.player) {
+                const playerName = leg.player.toLowerCase()
+                const allPlayers = [
+                    ...(stats.homeKeyPlayers || []),
+                    ...(stats.awayKeyPlayers || [])
+                ]
+                const playerMatch = allPlayers.find((p: any) =>
+                    (p.name || '').toLowerCase().includes(playerName) || playerName.includes((p.name || '').toLowerCase())
+                )
+                if (playerMatch && leg.line) {
+                    const lineMatch = String(leg.line).match(/(over|under)\s*([0-9.]+)/i)
+                    if (lineMatch) {
+                        const direction = lineMatch[1].toLowerCase()
+                        const threshold = parseFloat(lineMatch[2])
+                        const avg = playerMatch.value
+
+                        if (direction === 'over') {
+                            // Over: if avg is well above threshold, high confidence
+                            const margin = (avg - threshold) / threshold
+                            if (margin > 0.1) legMod += 4      // Avg 10%+ above line
+                            else if (margin > 0) legMod += 1    // Avg slightly above
+                            else if (margin < -0.1) legMod -= 4 // Avg 10%+ below line
+                            else legMod -= 1
+                        } else {
+                            // Under: if avg is well below threshold, high confidence
+                            const margin = (threshold - avg) / threshold
+                            if (margin > 0.1) legMod += 4
+                            else if (margin > 0) legMod += 1
+                            else if (margin < -0.1) legMod -= 4
+                            else legMod -= 1
+                        }
+                    }
+                }
+            }
+        }
+
+        totalModifier += legMod
+        modifierLegs++
+    }
+
+    // Average the modifiers across legs and apply to base
+    const avgModifier = modifierLegs > 0 ? totalModifier / modifierLegs : 0
+    const confidence = Math.round(base + avgModifier)
+
+    // Clamp to [3, 95]
+    return Math.max(3, Math.min(95, confidence))
+}
+
+/**
+ * Parse a win-loss record string (e.g., "45-22") into win percentage.
+ */
+function parseWinPct(record: string | undefined): number | null {
+    if (!record) return null
+    const match = record.match(/(\d+)\s*-\s*(\d+)/)
+    if (!match) return null
+    const wins = parseInt(match[1])
+    const losses = parseInt(match[2])
+    const total = wins + losses
+    if (total === 0) return null
+    return wins / total
+}
+
+// ─── Helper: fuzzy team match ──────────────────────────────────────────
+function matchesTeam(picked: string, home: string, away: string): boolean {
+    if (!picked) return false
+    const p = picked.toLowerCase()
+    return (
+        p === home.toLowerCase() ||
+        p === away.toLowerCase() ||
+        home.toLowerCase().includes(p) ||
+        away.toLowerCase().includes(p) ||
+        p.includes(home.toLowerCase()) ||
+        p.includes(away.toLowerCase())
+    )
+}
+
+// ─── Build error response ──────────────────────────────────────────────
+function buildErrorResponse(request: ParlayRequest, rawError: string): any {
+    let message: string
+
+    const err = rawError.toLowerCase()
+
+    if (err.includes('no qualifying') || err.includes('no games') || err.includes('not available')) {
+        message = rawError // Use the AI's or our specific message directly
+    } else if (err.includes('combined odds') || err.includes('risk') || err.includes('outside')) {
+        message = `Couldn't build a parlay matching Risk Level ${request.riskLevel} with the current games. Try adjusting the risk slider or selecting more sports.`
+    } else if (err.includes('wrong bet type') || err.includes('bet type')) {
+        message = `Not enough ${request.betTypes.join('/')} bets available for the selected sports. Try enabling more bet types.`
+    } else if (err.includes('duplicate')) {
+        message = `Not enough unique bets to build a ${request.numLegs}-leg parlay. Try reducing legs or selecting more sports.`
+    } else if (err.includes('correlation')) {
+        message = `Can't build a safe parlay with only ${new Set(request.oddsData.map(g => g.id)).size} game(s). Select more sports for more games.`
+    } else if (err.includes('credit') || err.includes('billing')) {
+        message = 'AI service is temporarily unavailable. Please try again later or contact support.'
+    } else if (err.includes('server') || err.includes('overload') || err.includes('timeout')) {
+        message = 'AI servers are temporarily busy. Please try again in a moment.'
+    } else {
+        message = `Couldn't generate a valid parlay with your settings. Try adjusting the risk level, number of legs, or sport selection.`
+    }
+
     return {
-        error: errorMessage,
+        error: message,
         legs: [],
         totalOdds: '+0',
         confidence: 0
-    };
+    }
 }

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { LayoutDashboard, CalendarDays, PlusCircle, History, Settings, LogOut, Lock, HelpCircle } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, PlusCircle, History, Settings, LogOut, Lock, HelpCircle, BarChart3 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { canAccessFeature } from '@/lib/config/tiers'
@@ -58,6 +58,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         { name: 'Daily Picks', href: '/daily-picks', icon: CalendarDays, requiredFeature: 'daily' },
         { name: 'Build Parlay', href: '/build-parlay', icon: PlusCircle, requiredFeature: 'build' },
         { name: 'Bet History', href: '/bet-history', icon: History, requiredFeature: 'track' },
+        { name: 'Audit', href: '/audit', icon: BarChart3, requiredFeature: 'track' },
         { name: 'How to Use', href: '/how-to-use', icon: HelpCircle, requiredFeature: null },
         { name: 'Settings', href: '/settings', icon: Settings, requiredFeature: null },
     ]

@@ -93,7 +93,7 @@ export function Hero() {
                                 awayOdds: match.h2h?.[1]?.price ? (match.h2h[1].price > 0 ? `+${match.h2h[1].price}` : `${match.h2h[1].price}`) : "-110",
                                 book: match.bestBook || "SmartBooks",
                                 evScore: match.evScore || 0,
-                                sport: sport.sport
+                                sports: sport.sport
                             })
                         })
                     })

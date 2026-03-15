@@ -31,7 +31,7 @@ async function runTest(league: any, betType: string, riskLevel: number) {
         }
 
         const parlay = await generateParlay({
-            sport: league.key,
+            sports: [league.key],
             riskLevel,
             numLegs: 2,
             betTypes: [betType],

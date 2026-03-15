@@ -286,10 +286,13 @@ export function ParlayBuilder() {
                         <h3 className="text-xl font-bold text-white mb-2">
                             {(() => {
                                 const err = errorState?.toLowerCase() || '';
-                                if (err.includes('no games') || err.includes('not enough odds data') || err.includes('unique bets available')) return 'Not Enough Data';
-                                if (err.includes('risk') || err.includes('validation') || err.includes('bet types')) return 'Constraints Too Strict';
-                                if (err.includes('credits')) return 'Out of Credits';
-                                if (err.includes('server')) return 'System Overloaded';
+                                if (err.includes('no live games') || err.includes('no games') || err.includes('not enough odds') || err.includes('lines posted')) return 'No Games Available';
+                                if (err.includes('not available') || err.includes('props are not') || err.includes('unique bets') || err.includes('not enough unique')) return 'Not Enough Data';
+                                if (err.includes('risk') || err.includes('couldn\'t build') || err.includes('couldn\'t generate') || err.includes('adjust')) return 'Constraints Too Strict';
+                                if (err.includes('bet type') || err.includes('moneyline') || err.includes('spread') || err.includes('player_props')) return 'Bet Type Mismatch';
+                                if (err.includes('credit') || err.includes('billing')) return 'Out of Credits';
+                                if (err.includes('server') || err.includes('overload') || err.includes('busy') || err.includes('timeout')) return 'System Overloaded';
+                                if (err.includes('configured') || err.includes('support')) return 'Service Error';
                                 return 'Generation Issue';
                             })()}
                         </h3>
@@ -301,7 +304,13 @@ export function ParlayBuilder() {
                             onClick={() => setErrorState(null)}
                             className="bg-zinc-900/50 hover:bg-zinc-900 border-white/10 text-white hover:text-emerald-400"
                         >
-                            {errorState?.toLowerCase().includes('no games') ? 'Try Another Sport' : 'Adjust Settings'}
+                            {(() => {
+                                const err = errorState?.toLowerCase() || '';
+                                if (err.includes('no live games') || err.includes('no games') || err.includes('lines posted')) return 'Try Another Sport';
+                                if (err.includes('not available') || err.includes('props')) return 'Change Bet Types';
+                                if (err.includes('server') || err.includes('busy') || err.includes('timeout') || err.includes('credits')) return 'Try Again';
+                                return 'Adjust Settings';
+                            })()}
                         </Button>
                     </div>
                 ) : result ? (
@@ -320,6 +329,7 @@ export function ParlayBuilder() {
                                 totalOdds={result.totalOdds}
                                 confidence={result.confidence}
                                 riskLevel={risk}
+                                strategy={result.strategy}
                             />
                         </div>
                         <Button
