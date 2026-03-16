@@ -81,35 +81,37 @@ export function Hero() {
     const currentScan = scannerLines[activeScan]
 
     return (
-        <section className="relative overflow-hidden flex flex-col items-center pt-28 pb-20 md:pt-36 md:pb-28 min-h-[100vh] justify-center bg-[#030304]">
+        <section className="relative overflow-hidden flex flex-col items-center pt-28 pb-20 md:pt-36 md:pb-28 min-h-[100vh] justify-center bg-[#000000]">
             
             {/* === CINEMATIC BACKGROUND SYSTEM === */}
-            {/* Primary aurora glow - top center */}
-            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[600px] md:h-[900px] rounded-[100%] pointer-events-none animate-aurora"
-                 style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, rgba(13,148,136,0.06) 40%, transparent 70%)' }} />
+            {/* Primary soft glow at the top */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
+                 style={{ background: 'radial-gradient(ellipse at top, rgba(6,182,212,0.12) 0%, rgba(147,51,234,0.06) 40%, transparent 70%)' }} />
             
-            {/* Secondary accent glow - left */}
-            <div className="absolute top-[30%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none opacity-40"
-                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)' }} />
-            
-            {/* Tertiary accent glow - right */}
-            <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] rounded-full pointer-events-none opacity-30"
-                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.06) 0%, transparent 70%)' }} />
+            <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
+                 style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.08) 0%, transparent 60%)' }} />
 
-            {/* Subtle noise texture */}
-            <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
-                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat' }} />
+            <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none"
+                 style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 60%)' }} />
+
+            {/* Subtle tech grid background */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+            {/* Glowing top line */}
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
 
             {/* Floating particles */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(8)].map((_, i) => (
                     <div
                         key={i}
-                        className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                        className="absolute w-1 rounded-full bg-cyan-400/20"
                         style={{
-                            left: `${15 + i * 15}%`,
-                            top: `${20 + (i % 3) * 25}%`,
-                            animation: `float-particle ${3 + i * 0.5}s ease-in-out ${i * 0.7}s infinite`,
+                            height: `${Math.random() * 4 + 2}px`,
+                            left: `${10 + i * 12}%`,
+                            top: `${15 + (i % 4) * 20}%`,
+                            animation: `float-particle ${4 + i * 0.8}s ease-in-out ${i * 0.5}s infinite alternate`,
+                            filter: 'blur(1px)'
                         }}
                     />
                 ))}
@@ -118,52 +120,55 @@ export function Hero() {
             {/* === MAIN CONTENT === */}
             <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-6xl mx-auto">
                 
-                {/* Live Status Bar */}
+                {/* Ultra-Modern Top Badge */}
                 <motion.div 
-                   initial={{ opacity: 0, y: 20 }}
-                   animate={{ opacity: 1, y: 0 }}
-                   transition={{ duration: 0.6 }}
-                   className="mb-8 md:mb-14"
+                   initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                   className="mb-10 md:mb-12"
                 >
-                    <div className="inline-flex items-center gap-4 px-5 py-2.5 bg-[#0A0A0C]/50 border border-white/[0.05] rounded-full backdrop-blur-md shadow-lg">
-                        <div className="flex items-center gap-2">
-                            <div className="relative flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-[#1ee6a6] shadow-[0_0_8px_rgba(30,230,166,0.8)]" />
+                    <div className="relative group cursor-pointer inline-block">
+                        {/* Animated Glow Behind Badge */}
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-80 transition duration-700 group-hover:duration-200" />
+                        
+                        <div className="relative flex items-center gap-3 px-4 py-2.5 bg-black border border-white/10 rounded-full flex-wrap sm:flex-nowrap justify-center sm:justify-start">
+                            <div className="px-2 py-0.5 bg-cyan-500/10 rounded-full border border-cyan-500/20 flex items-center gap-1.5">
+                                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+                                <span className="text-[10px] font-bold text-cyan-400 tracking-wider">LIVE</span>
                             </div>
-                            <span className="text-[12px] font-bold text-[#1ee6a6] uppercase tracking-widest">Live</span>
-                        </div>
-                        <div className="w-px h-3.5 bg-white/10" />
-                        <span className="text-[12.5px] text-zinc-400 font-medium">
-                            <span className="text-white font-bold">{liveCount.toLocaleString()}</span> lines scanned right now
-                        </span>
-                        <div className="w-px h-3.5 bg-white/10" />
-                        <div className="flex items-center gap-1.5">
-                            <BrainCircuit className="w-3.5 h-3.5 text-zinc-500" />
-                            <span className="text-[12.5px] text-zinc-500 font-medium tracking-wide">AI Engine v4.6</span>
+                            <span className="text-[13px] text-zinc-300">
+                                <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines analyzed
+                            </span>
+                            <div className="w-px h-3.5 bg-white/20 hidden sm:block" />
+                            <span className="text-[13px] text-zinc-400 font-medium hidden sm:block">ProfitPicks Engine v5.0</span>
+                            <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
                         </div>
                     </div>
                 </motion.div>
 
                 {/* MAIN HEADLINE */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 25 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.1 }}
-                    className="text-center w-full max-w-[900px] mx-auto mb-6 relative z-10"
+                    transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-center w-full max-w-[1000px] mx-auto mb-8 relative z-10"
                 >
-                    <h1 className="text-[4rem] sm:text-[5rem] md:text-[5.5rem] lg:text-[6.5rem] font-bold tracking-tight text-white leading-[1.03] mb-0" style={{ letterSpacing: '-0.02em' }}>
-                        Our AI Finds the
-                        <br />
-                        <span className="relative inline-block pb-1">
-                            <span className="text-[#38efb0]" style={{ textShadow: '0 0 50px rgba(56, 239, 176, 0.4)' }}>
-                                Profitable Edge
+                    <h1 className="text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] font-extrabold tracking-tight text-white leading-[1.05] mb-0" style={{ letterSpacing: '-0.02em' }}>
+                        Bet With The
+                        <br className="hidden md:block" />
+                        <span className="relative inline-block mt-1 md:mt-0">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-500">
+                                Mathematical{" "}
                             </span>
-                            {/* Underline glow accent */}
-                            <span className="absolute bottom-1 left-[3%] right-[3%] h-[2px] bg-gradient-to-r from-transparent via-[#38efb0] to-transparent rounded-full shadow-[0_0_20px_rgba(56,239,176,0.8)]" />
                         </span>
-                        {" "}You
-                        <br />
-                        Can't.
+                        
+                        <span className="relative inline-block group">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
+                                Advantage.
+                            </span>
+                            {/* Accent line under Advantage */}
+                            <div className="absolute bottom-1 sm:bottom-2 left-[5%] right-[5%] h-[3px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.6)]"></div>
+                        </span>
                     </h1>
                 </motion.div>
 
@@ -171,13 +176,11 @@ export function Hero() {
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-center max-w-[850px] mx-auto mb-12"
+                    transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-center max-w-2xl mx-auto mb-12"
                 >
-                    <p className="text-base sm:text-lg md:text-[1.35rem] text-zinc-400 leading-[1.6] font-light tracking-wide">
-                        ProfitPicks scans <strong className="text-white font-medium">every sportsbook line in real-time</strong>, comparing public <br className="hidden md:block"/>
-                        odds against our proprietary AI models to surface <strong className="text-[#38efb0] font-medium">mathematically<br className="hidden md:block"/>
-                        proven edges</strong> — so you only bet when the numbers are in your favor.
+                    <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light">
+                        We scan millions of data points across every sportsbook in real-time, instantly surfacing <strong className="text-white font-medium">positive expected value (+EV)</strong> opportunities so you can bet like a sharp.
                     </p>
                 </motion.div>
 
@@ -185,54 +188,66 @@ export function Hero() {
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto mt-2"
+                    transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto"
                 >
-                    <Button 
-                        size="lg" 
-                        className="w-full sm:w-auto px-9 h-[54px] text-[13px] font-bold uppercase tracking-[0.1em] bg-[#1ee6a6] hover:bg-[#15d496] text-[#0A0A0C] border-none rounded-full transition-all duration-300 shadow-[0_0_40px_-10px_rgba(30,230,166,0.6)] group"
-                        asChild
-                    >
-                        <Link href="/login">
-                            START WINNING TODAY
-                            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </Button>
+                    <div className="relative group w-full sm:w-auto">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
+                        <Button 
+                            size="lg" 
+                            className="relative w-full sm:w-auto px-10 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[15px] font-bold tracking-wide transition-colors shadow-2xl flex items-center justify-center gap-2"
+                            asChild
+                        >
+                            <Link href="/login">
+                                Start Your Free Trial
+                                <ArrowRight className="w-4 h-4 ml-1" />
+                            </Link>
+                        </Button>
+                    </div>
+                    
                     <Button 
                         size="lg" 
                         variant="outline"
-                        className="w-full sm:w-auto px-9 h-[54px] text-[14px] font-semibold text-zinc-300 hover:text-white bg-transparent hover:bg-white/[0.04] rounded-full transition-all duration-300 border border-white/[0.08]"
+                        className="w-full sm:w-auto px-10 h-14 bg-zinc-900/50 hover:bg-zinc-800/80 text-white border border-white/10 rounded-xl text-[15px] font-semibold backdrop-blur-md transition-all flex items-center justify-center gap-2 hover:border-white/20"
                         asChild
                     >
                         <Link href="#how-it-works">
+                            <Sparkles className="w-4 h-4 text-zinc-400" />
                             See How It Works
-                            <ChevronRight className="ml-1 w-4 h-4 text-zinc-500" />
                         </Link>
                     </Button>
                 </motion.div>
 
-                {/* === SOCIAL PROOF STATS BAR === */}
+                {/* === SOCIAL PROOF STATS BAR (BENTO-STYLE) === */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-16 mb-24 w-full max-w-4xl mx-auto px-4"
+                    transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto px-4 mb-24"
                 >
                     {[
-                        { value: 67, suffix: "%", label: "WIN RATE", prefix: "" },
-                        { value: 12, suffix: "%", prefix: "+", label: "AVG. MONTHLY ROI" },
-                        { value: 50000, suffix: "+", prefix: "", label: "PICKS ANALYZED" },
+                        { value: 67, suffix: "%", label: "Proven Win Rate", desc: "Across all tracked +EV bets", icon: Target, color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20" },
+                        { value: 12, suffix: "%", prefix: "+", label: "Average Edge", desc: "Found on daily algorithms", icon: TrendingUp, color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
+                        { value: 50, suffix: "k+", prefix: "", label: "Lines Analyzed", desc: "Every single minute", icon: Sparkles, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
                     ].map((stat, i) => (
-                        <div key={i} className="text-center group flex flex-col items-center justify-center">
-                            <div className="flex items-center justify-center gap-3 mb-2">
-                                {i === 0 && <div className="w-5 h-5 rounded-full border border-[#1ee6a6]/30 flex items-center justify-center"><div className="w-2.5 h-2.5 bg-[#1ee6a6] rounded-full shadow-[0_0_10px_rgba(30,230,166,0.8)]"></div></div>}
-                                {i === 1 && <TrendingUp className="w-6 h-6 text-[#1ee6a6]" />}
-                                {i === 2 && <div className="hidden"></div>}
-                                <span className="text-5xl md:text-[56px] font-black text-white tracking-tight leading-none">
-                                    <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
-                                </span>
+                        <div key={i} className="relative group">
+                            {/* Glow effect on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white-[0.05] to-transparent rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+                            
+                            <div className="relative p-6 sm:p-8 rounded-2xl bg-[#0a0a0c]/80 border border-white/5 backdrop-blur-xl flex flex-col items-start text-left overflow-hidden hover:border-white/10 transition-colors shadow-2xl">
+                                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                                
+                                <div className={`w-12 h-12 rounded-xl mb-5 flex items-center justify-center ${stat.bg} ${stat.border} border`}>
+                                    <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                                </div>
+                                <div className="flex items-baseline gap-1 mb-1">
+                                    <span className="text-4xl font-extrabold text-white tracking-tight">
+                                        <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
+                                    </span>
+                                </div>
+                                <span className="text-[15px] font-semibold text-zinc-200">{stat.label}</span>
+                                <span className="text-[13px] text-zinc-500 mt-1.5">{stat.desc}</span>
                             </div>
-                            <span className="text-[12px] font-bold text-zinc-500 uppercase tracking-[0.2em]">{stat.label}</span>
                         </div>
                     ))}
                 </motion.div>
