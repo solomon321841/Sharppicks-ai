@@ -2,151 +2,422 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight, Activity, ChevronRight, Sparkles } from "lucide-react"
-import { motion } from "framer-motion"
+import { 
+    ArrowRight, 
+    BrainCircuit, 
+    ChevronRight, 
+    Flame, 
+    Lock, 
+    ShieldCheck, 
+    Sparkles, 
+    Target, 
+    TrendingUp, 
+    Zap 
+} from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useState, useRef } from "react"
+
+// Animated counter component
+function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }: { 
+    end: number; suffix?: string; prefix?: string; duration?: number 
+}) {
+    const [count, setCount] = useState(0)
+    const [hasStarted, setHasStarted] = useState(false)
+    const ref = useRef<HTMLSpanElement>(null)
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => { if (entry.isIntersecting && !hasStarted) setHasStarted(true) },
+            { threshold: 0.3 }
+        )
+        if (ref.current) observer.observe(ref.current)
+        return () => observer.disconnect()
+    }, [hasStarted])
+
+    useEffect(() => {
+        if (!hasStarted) return
+        let startTime: number
+        const step = (timestamp: number) => {
+            if (!startTime) startTime = timestamp
+            const progress = Math.min((timestamp - startTime) / duration, 1)
+            const eased = 1 - Math.pow(1 - progress, 3)
+            setCount(Math.floor(eased * end))
+            if (progress < 1) requestAnimationFrame(step)
+        }
+        requestAnimationFrame(step)
+    }, [hasStarted, end, duration])
+
+    return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>
+}
+
+// Rotating taglines for the live scanner
+const scannerLines = [
+    { sport: "NFL", matchup: "KC Chiefs @ Ravens", edge: "+4.7%", odds: "+145" },
+    { sport: "NBA", matchup: "Celtics @ Bucks", edge: "+6.2%", odds: "-110" },
+    { sport: "MLB", matchup: "Dodgers @ Yankees", edge: "+3.8%", odds: "+130" },
+    { sport: "NHL", matchup: "Oilers @ Panthers", edge: "+5.1%", odds: "+125" },
+]
 
 export function Hero() {
+    const [activeScan, setActiveScan] = useState(0)
+    const [liveCount, setLiveCount] = useState(2847)
+
+    // Rotate through scanner lines
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveScan((prev) => (prev + 1) % scannerLines.length)
+        }, 3000)
+        return () => clearInterval(interval)
+    }, [])
+
+    // Simulate live user count fluctuation
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLiveCount(prev => prev + Math.floor(Math.random() * 5) - 2)
+        }, 4000)
+        return () => clearInterval(interval)
+    }, [])
+
+    const currentScan = scannerLines[activeScan]
+
     return (
-        <section className="relative overflow-hidden flex flex-col items-center pt-32 pb-24 md:pt-40 md:pb-32 min-h-[95vh] justify-center bg-[#050505]">
-            {/* Spotlight Background */}
-            <div className="absolute top-0 left-0 right-0 h-[600px] bg-[radial-gradient(ellipse_at_center_top,_var(--tw-gradient-stops))] from-emerald-900/40 via-[#050505] to-[#050505] pointer-events-none" />
+        <section className="relative overflow-hidden flex flex-col items-center pt-28 pb-20 md:pt-36 md:pb-28 min-h-[100vh] justify-center bg-[#030304]">
             
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.04]" />
-                {/* Animated Scanner line */}
-                <motion.div 
-                    animate={{ top: ["-10%", "110%"] }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    className="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                />
+            {/* === CINEMATIC BACKGROUND SYSTEM === */}
+            {/* Primary aurora glow - top center */}
+            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1000px] h-[600px] md:h-[900px] rounded-[100%] pointer-events-none animate-aurora"
+                 style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, rgba(13,148,136,0.06) 40%, transparent 70%)' }} />
+            
+            {/* Secondary accent glow - left */}
+            <div className="absolute top-[30%] left-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none opacity-40"
+                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)' }} />
+            
+            {/* Tertiary accent glow - right */}
+            <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] rounded-full pointer-events-none opacity-30"
+                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.06) 0%, transparent 70%)' }} />
+
+            {/* Subtle noise texture */}
+            <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
+                 style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat' }} />
+
+            {/* Floating particles */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {[...Array(6)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute w-1 h-1 rounded-full bg-emerald-400/30"
+                        style={{
+                            left: `${15 + i * 15}%`,
+                            top: `${20 + (i % 3) * 25}%`,
+                            animation: `float-particle ${3 + i * 0.5}s ease-in-out ${i * 0.7}s infinite`,
+                        }}
+                    />
+                ))}
             </div>
 
-            <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-5xl mx-auto">
+            {/* === MAIN CONTENT === */}
+            <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-6xl mx-auto">
                 
-                {/* Ultra-premium badge */}
+                {/* Live Status Bar */}
                 <motion.div 
                    initial={{ opacity: 0, y: 20 }}
                    animate={{ opacity: 1, y: 0 }}
-                   transition={{ duration: 0.5 }}
-                   className="mb-8 md:mb-12"
+                   transition={{ duration: 0.6 }}
+                   className="mb-8 md:mb-10"
                 >
-                    <div className="relative group cursor-pointer inline-flex transition-all duration-300 hover:-translate-y-1">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/40 to-teal-500/40 rounded-full blur opacity-60 group-hover:opacity-100 transition duration-500"></div>
-                        <div className="relative inline-flex items-center gap-2 px-5 py-2.5 bg-black/80 border border-white/10 rounded-full backdrop-blur-md">
-                            <Sparkles className="w-4 h-4 text-emerald-400" />
-                            <span className="text-sm font-medium text-zinc-300">
-                                Powered by <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 ml-1">Claude 4.6 Opus</span>
-                            </span>
-                            <ChevronRight className="w-4 h-4 text-zinc-500 ml-1 group-hover:translate-x-1 transition-transform" />
+                    <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-full backdrop-blur-2xl">
+                        <div className="flex items-center gap-2">
+                            <div className="relative flex items-center justify-center">
+                                <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                                <div className="absolute w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                            </div>
+                            <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-[0.15em]">Live</span>
+                        </div>
+                        <div className="w-px h-3.5 bg-white/10" />
+                        <span className="text-[12px] text-zinc-400">
+                            <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines scanned right now
+                        </span>
+                        <div className="w-px h-3.5 bg-white/10" />
+                        <div className="flex items-center gap-1.5">
+                            <BrainCircuit className="w-3.5 h-3.5 text-zinc-500" />
+                            <span className="text-[11px] text-zinc-500 font-medium">AI Engine v4.6</span>
                         </div>
                     </div>
                 </motion.div>
 
-                {/* Main Headline */}
+                {/* MAIN HEADLINE */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 25 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.1 }}
+                    className="text-center w-full max-w-[900px] mx-auto mb-6"
+                >
+                    <h1 className="text-[2.75rem] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] font-extrabold tracking-[-0.03em] text-white leading-[1.05] mb-0">
+                        Our AI Finds the
+                        <br />
+                        <span className="relative inline-block">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 animate-text-shimmer" 
+                                  style={{ backgroundSize: '200% auto' }}>
+                                Profitable Edge
+                            </span>
+                            {/* Underline glow accent */}
+                            <span className="absolute -bottom-2 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent rounded-full" />
+                        </span>
+                        {" "}You Can't.
+                    </h1>
+                </motion.div>
+
+                {/* SUBHEADLINE */}
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="text-center w-full space-y-6 md:space-y-8"
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-center max-w-2xl mx-auto mb-10"
                 >
-                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-white leading-[1.05]">
-                        Precision Analytics. <br className="hidden sm:block"/>
-                        <span className="relative inline-block mt-2">
-                            <span className="absolute -inset-2 bg-emerald-500/20 blur-2xl rounded-full" />
-                            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-400 drop-shadow-lg">
-                                Maximum Edge.
-                            </span>
-                        </span>
-                    </h1>
-                    
-                    <p className="text-lg sm:text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto font-normal leading-relaxed">
-                        Stop gambling. Start investing. Our AI Engine analyzes millions of real-time market data points to find the <strong className="text-white font-semibold flex-inline">exact moments</strong> the sportsbooks make a mistake.
+                    <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light">
+                        ProfitPicks scans <span className="text-white font-medium">every sportsbook line in real-time</span>, 
+                        comparing public odds against our proprietary AI models to surface 
+                        <span className="text-emerald-400 font-medium"> mathematically proven edges</span> — 
+                        so you only bet when the numbers are in your favor.
                     </p>
                 </motion.div>
 
-                {/* CTA Buttons */}
+                {/* CTA BUTTONS */}
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="w-full flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 md:mt-14"
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14 w-full sm:w-auto"
                 >
                     <Button 
                         size="lg" 
-                        className="w-full sm:w-auto px-10 h-14 md:h-16 text-base font-bold bg-white text-black hover:bg-zinc-200 hover:scale-105 transition-all duration-300 rounded-full shadow-[0_0_40px_-10px_rgba(255,255,255,0.4)]"
+                        className="w-full sm:w-auto px-8 h-14 text-sm font-bold uppercase tracking-[0.15em] bg-emerald-500 text-black hover:bg-emerald-400 hover:scale-[1.03] transition-all duration-300 rounded-full shadow-[0_0_50px_-12px_rgba(16,185,129,0.5)] animate-pulse-glow group"
                         asChild
                     >
                         <Link href="/login">
-                            Initialize Engine <ArrowUpRight className="ml-2 w-5 h-5" />
+                            Start Winning Today
+                            <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </Button>
                     <Button 
                         size="lg" 
                         variant="outline"
-                        className="w-full sm:w-auto px-10 h-14 md:h-16 text-base font-bold text-white hover:bg-white/10 hover:text-white rounded-full transition-all duration-300 border border-white/10 bg-black/20 backdrop-blur-md"
+                        className="w-full sm:w-auto px-8 h-14 text-sm font-semibold text-zinc-300 hover:text-white hover:bg-white/[0.06] rounded-full transition-all duration-300 border border-white/[0.08] bg-white/[0.02] backdrop-blur-xl"
                         asChild
                     >
                         <Link href="#how-it-works">
-                            Explore the Math
+                            See How It Works
+                            <ChevronRight className="ml-1 w-4 h-4" />
                         </Link>
                     </Button>
                 </motion.div>
-                
-                {/* Visual Eye-Catcher - The "Edge Graph" */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
+
+                {/* === SOCIAL PROOF STATS BAR === */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.3 }}
-                    className="w-full max-w-4xl mx-auto mt-20 relative"
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    className="grid grid-cols-3 gap-6 sm:gap-10 mb-16 w-full max-w-xl mx-auto"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-10 pointer-events-none" />
+                    {[
+                        { value: 67, suffix: "%", label: "Win Rate", icon: Target },
+                        { value: 12, suffix: "%", prefix: "+", label: "Avg. Monthly ROI", icon: TrendingUp },
+                        { value: 50000, suffix: "+", label: "Picks Analyzed Daily", icon: Sparkles },
+                    ].map((stat, i) => (
+                        <div key={i} className="text-center group">
+                            <div className="flex items-center justify-center gap-1.5 mb-1">
+                                <stat.icon className="w-3.5 h-3.5 text-emerald-500/70" />
+                                <span className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                                    <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
+                                </span>
+                            </div>
+                            <span className="text-[10px] sm:text-xs font-semibold text-zinc-500 uppercase tracking-[0.15em]">{stat.label}</span>
+                        </div>
+                    ))}
+                </motion.div>
+
+                {/* === THE PRODUCT SHOWCASE === */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="w-full max-w-5xl mx-auto relative group"
+                >
+                    {/* Dramatic glow behind the product showcase */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] pointer-events-none transition-all duration-1000"
+                         style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.04) 50%, transparent 70%)', filter: 'blur(80px)' }} />
                     
-                    <div className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-transparent backdrop-blur-xl p-6 md:p-8 shadow-[0_0_60px_rgba(16,185,129,0.15)] overflow-hidden group">
+                    <div className="relative bg-[#0A0A0C]/80 backdrop-blur-3xl border border-white/[0.07] rounded-2xl md:rounded-3xl shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.03)] overflow-hidden">
                         
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[60px] rounded-full group-hover:bg-emerald-500/20 transition-all duration-700" />
-                        
-                        <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-                            
-                            {/* Left Side: System Status */}
-                            <div className="flex items-center gap-5 w-full md:w-auto">
-                                <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-[inset_0_0_20px_rgba(16,185,129,0.2)]">
-                                    <Activity className="w-7 h-7 text-emerald-400" />
+                        {/* Top Chrome Bar */}
+                        <div className="bg-white/[0.02] border-b border-white/[0.05] px-5 md:px-6 py-3 md:py-3.5 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06] border border-white/[0.08]" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06] border border-white/[0.08]" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30 border border-emerald-500/40 relative">
+                                        <div className="absolute inset-0 rounded-full bg-emerald-400 animate-pulse scale-50" />
+                                    </div>
                                 </div>
-                                <div className="text-left">
-                                    <h3 className="text-white font-bold text-xl tracking-wide mb-1">System Active</h3>
-                                    <div className="flex items-center gap-2 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 w-fit">
-                                        <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                        </span>
-                                        <span className="text-emerald-400 text-xs font-semibold uppercase tracking-wider">Live Sync</span>
+                                <div className="hidden sm:flex items-center gap-2 ml-2">
+                                    <div className="px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.06]">
+                                        <span className="text-[10px] font-mono text-zinc-500">profitpicks.ai/dashboard</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Lock className="w-3 h-3 text-emerald-500/60" />
+                                <span className="text-[10px] font-bold text-emerald-500/80 uppercase tracking-widest hidden sm:inline">Encrypted</span>
+                            </div>
+                        </div>
+
+                        {/* Dashboard Content */}
+                        <div className="p-4 md:p-6 lg:p-8">
+                            
+                            {/* Dashboard Header Row */}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]">
+                                        <BrainCircuit className="w-4.5 h-4.5 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold text-white tracking-tight">AI Edge Scanner</h3>
+                                        <p className="text-[10px] text-zinc-500 font-medium">Real-time odds analysis across all major sportsbooks</p>
+                                    </div>
+                                </div>
+                                <div className="hidden md:flex items-center gap-4">
+                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Scanning Live</span>
+                                    </div>
+                                    <div className="text-[10px] text-zinc-500 font-mono">
+                                        <span className="text-zinc-400 font-semibold">{liveCount.toLocaleString()}</span> lines analyzed
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Right Side: Stats Grid */}
-                            <div className="flex items-center gap-8 md:gap-12 w-full md:w-auto justify-between md:justify-end">
-                                <div className="text-left">
-                                    <p className="text-zinc-500 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1.5">Processing</p>
-                                    <div className="flex items-baseline gap-1">
-                                        <p className="text-white text-3xl md:text-4xl font-bold tracking-tight">4.8M</p>
-                                        <span className="text-zinc-500 font-medium">/sec</span>
-                                    </div>
-                                </div>
-                                
-                                <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
-                                
-                                <div className="text-left">
-                                    <p className="text-zinc-500 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1.5">Avg Edge</p>
-                                    <div className="flex items-baseline gap-1">
-                                        <p className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400 text-3xl md:text-4xl font-bold tracking-tight">+18.4</p>
-                                        <span className="text-teal-500 font-medium">%</span>
-                                    </div>
-                                </div>
+                            {/* Live Picks Grid */}
+                            <div className="space-y-3">
+                                <AnimatePresence mode="wait">
+                                    {scannerLines.map((pick, i) => (
+                                        <motion.div
+                                            key={pick.sport}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ 
+                                                opacity: i === activeScan ? 1 : 0.4, 
+                                                x: 0,
+                                                scale: i === activeScan ? 1 : 0.98,
+                                            }}
+                                            transition={{ duration: 0.5 }}
+                                            className={`relative flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-500 ${
+                                                i === activeScan 
+                                                    ? 'bg-emerald-500/[0.04] border-emerald-500/20 shadow-[0_0_30px_-10px_rgba(16,185,129,0.15)]' 
+                                                    : 'bg-white/[0.01] border-white/[0.04]'
+                                            }`}
+                                        >
+                                            {/* Active indicator */}
+                                            {i === activeScan && (
+                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 bg-emerald-500 rounded-r-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                            )}
+                                            
+                                            {/* Sport Badge */}
+                                            <div className={`shrink-0 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
+                                                pick.sport === 'NFL' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                                                pick.sport === 'NBA' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
+                                                pick.sport === 'MLB' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                                                'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+                                            }`}>
+                                                {pick.sport}
+                                            </div>
+
+                                            {/* Matchup */}
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-sm font-bold text-white truncate block">{pick.matchup}</span>
+                                                <span className="text-[10px] text-zinc-500 font-medium">Moneyline · Public: {pick.odds}</span>
+                                            </div>
+
+                                            {/* AI Model Confidence - Visual Bar */}
+                                            <div className="hidden md:flex flex-col items-end gap-1 w-32">
+                                                <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">AI Confidence</span>
+                                                <div className="w-full h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
+                                                    <motion.div 
+                                                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: i === activeScan ? '78%' : '60%' }}
+                                                        transition={{ duration: 1, delay: 0.2 }}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {/* Edge Value */}
+                                            <div className={`shrink-0 text-right transition-all duration-500 ${i === activeScan ? 'scale-100' : 'scale-95'}`}>
+                                                <div className={`text-xl md:text-2xl font-black tracking-tighter ${
+                                                    i === activeScan 
+                                                        ? 'text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300' 
+                                                        : 'text-zinc-500'
+                                                }`}>
+                                                    {pick.edge}
+                                                </div>
+                                                <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">EV Edge</span>
+                                            </div>
+
+                                            {/* Action Button */}
+                                            {i === activeScan && (
+                                                <motion.div 
+                                                    initial={{ opacity: 0, scale: 0.8 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    className="hidden lg:block shrink-0"
+                                                >
+                                                    <div className="px-4 py-2 rounded-lg bg-emerald-500 text-black text-[10px] font-bold uppercase tracking-widest cursor-pointer hover:bg-emerald-400 transition-colors shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]">
+                                                        View Pick
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
                             </div>
-                            
+
+                            {/* Bottom Stats Row */}
+                            <div className="mt-6 pt-5 border-t border-white/[0.04] grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {[
+                                    { label: "Today's Edges Found", value: "23", icon: Zap, color: "text-emerald-400" },
+                                    { label: "Avg Edge Size", value: "+4.8%", icon: TrendingUp, color: "text-teal-400" },
+                                    { label: "Model Accuracy", value: "67.2%", icon: Target, color: "text-emerald-400" },
+                                    { label: "Books Scanned", value: "12", icon: ShieldCheck, color: "text-zinc-400" },
+                                ].map((stat, i) => (
+                                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.03]">
+                                        <div className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center shrink-0">
+                                            <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                                        </div>
+                                        <div>
+                                            <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
+                                            <div className="text-[9px] text-zinc-600 font-semibold uppercase tracking-widest">{stat.label}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
+                </motion.div>
+
+                {/* Trust Badges */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.8 }}
+                    className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+                >
+                    {[
+                        { icon: ShieldCheck, text: "256-bit Encryption" },
+                        { icon: Lock, text: "Bank-Level Security" },
+                        { icon: Flame, text: "Cancel Anytime" },
+                    ].map((badge, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                            <badge.icon className="w-3.5 h-3.5 text-zinc-600" />
+                            <span className="text-[11px] text-zinc-600 font-medium">{badge.text}</span>
+                        </div>
+                    ))}
                 </motion.div>
             </div>
         </section>
