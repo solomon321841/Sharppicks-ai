@@ -68,8 +68,8 @@ export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean
         4: [200, 700],
         5: [400, 1500],
         6: [400, 1500],
-        7: [1000, 5000],
-        8: [1000, 5000],
+        7: [800, 5000],
+        8: [800, 5000],
         9: [3000, 50000],
         10: [3000, 50000]
     };

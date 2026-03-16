@@ -181,8 +181,9 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
   Example: Anthony Edwards Over 32.5 Points (he averages 26), Mbappe Over 3.5 Shots (he averages 4.2 but this requires volume).
 - Underdogs (+150 to +300) are great here if there's a matchup edge.
 - You're looking for games where the underdog has a real path to victory.
-- More legs, more variance, more payout. This is a "this could really pop" parlay.`,
-            oddsRange: `Combined odds MUST be between +1000 and +5000.`
+- More legs, more variance, more payout. This is a "this could really pop" parlay.
+- MATH TIP: To hit +800 combined, you need several plus-odds legs. Example: 3 legs at +150 each ≈ +1000, or 4 legs at +120 each ≈ +950. Mix underdogs and plus-odds spreads to reach the target.`,
+            oddsRange: `Combined odds MUST be between +800 and +5000. Use 3-5 underdog or plus-odds legs to reach this range.`
         }
     }
     // Risk 9-10
@@ -258,7 +259,7 @@ export async function analyzePicks(request: ParlayRequest) {
             })
 
             const aiPromise = anthropic.messages.create({
-                model: 'claude-sonnet-4-6-20250514',
+                model: 'claude-sonnet-4-20250514',
                 max_tokens: 4000,
                 temperature: 0.3,
                 messages: [{ role: 'user', content: prompt }],
@@ -555,7 +556,7 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
     if (!rangeValid) {
         const targetRanges: Record<number, [number, number]> = {
             1: [-200, 500], 2: [-200, 500], 3: [200, 700], 4: [200, 700],
-            5: [400, 1500], 6: [400, 1500], 7: [1000, 5000], 8: [1000, 5000],
+            5: [400, 1500], 6: [400, 1500], 7: [800, 5000], 8: [800, 5000],
             9: [3000, 50000], 10: [3000, 50000]
         }
         const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999]
