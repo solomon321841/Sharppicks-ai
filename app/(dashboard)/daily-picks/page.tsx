@@ -91,7 +91,7 @@ export default function DailyPicksPage() {
     }, [])
 
     return (
-        <div className="relative flex flex-col h-full max-h-[calc(100vh-2rem)] overflow-hidden">
+        <div className="relative flex flex-col h-full lg:max-h-[calc(100vh-2rem)] overflow-y-auto lg:overflow-hidden">
             {/* Ambient Background Orbs */}
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -126,14 +126,14 @@ export default function DailyPicksPage() {
             </div>
 
             {/* Grid layout for cards - updated to 4 columns to fit Lotto */}
-            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 pb-2">
+            <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 pb-4 lg:pb-2">
                 {PARLAY_TYPES.map((config, index) => {
                     const pick = loading ? null : picks.find(p => p.parlay_type === config.type);
                     const Icon = config.icon;
                     if (!loading && !pick) return null;
 
                     return (
-                        <div key={config.type} className="relative group flex flex-col min-h-0 h-full">
+                        <div key={config.type} className="relative group flex flex-col min-h-0 h-auto lg:h-full">
                             {/* Card Glow Effect */}
                             <div className={`absolute inset-0 bg-gradient-to-b ${config.orb} opacity-0 group-hover:opacity-100 blur-[80px] transition-opacity duration-700 pointer-events-none rounded-3xl`} />
 
@@ -150,7 +150,7 @@ export default function DailyPicksPage() {
                                         </div>
 
                                         <div className="flex flex-col items-end">
-                                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold mb-0.5">Win Prob</span>
+                                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-0.5">Win Prob</span>
                                             <div className="flex items-center gap-1">
                                                 <TrendingUp className={`w-3 h-3 ${config.text}`} />
                                                 <span className={`text-[12px] font-black ${config.text}`}>{loading ? '--' : (pick?.ai_confidence || 85)}%</span>

@@ -372,11 +372,11 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                         </div>
                                                     </div>
                                                     
-                                                    {/* Moneyline Preview (Unexpanded) */}
+                                                    {/* Preview (Unexpanded) */}
                                                     {!isExpanded && (
                                                         <div className="flex items-center justify-between px-1">
-                                                            <span className="text-[10px] font-black text-zinc-500 tracking-[0.15em] uppercase">Moneyline</span>
-                                                            <ChevronDown className="w-4 h-4 text-zinc-600 transition-transform duration-300 group-hover/game:text-emerald-400 group-hover/game:translate-y-0.5" />
+                                                            <span className="text-[10px] font-black text-zinc-500 tracking-[0.15em] uppercase hover:text-white transition-colors">More Information</span>
+                                                            <ChevronDown className="w-4 h-4 text-zinc-600 transition-transform duration-300 group-hover/game:text-emerald-400 group-hover/game:-translate-y-0.5" />
                                                         </div>
                                                     )}
                                                 </div>

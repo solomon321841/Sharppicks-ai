@@ -262,24 +262,27 @@ export function ParlayBuilder() {
             <div className="lg:col-span-5 h-full space-y-4">
                 {/* Schedule / Results Column */}
                 {!result && !errorState && schedule && (
-                    <div className="h-full rounded-2xl border border-white/5 bg-white/5 backdrop-blur-md overflow-hidden flex flex-col">
-                        <div className="p-3 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                            <h3 className="text-xs font-bold text-zinc-300 uppercase tracking-wider">Live Schedule</h3>
+                <div className="h-full rounded-[24px] border border-white/[0.08] bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-xl overflow-hidden flex flex-col relative shadow-2xl">
+                        {/* Shimmer line top */}
+                        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+                        
+                        <div className="px-5 py-4 border-b border-white/[0.05] bg-gradient-to-b from-white/[0.03] to-transparent flex justify-between items-center">
+                            <h3 className="text-[12px] font-black text-white uppercase tracking-[0.2em]">Live Schedule</h3>
                             {loadingSchedule && (
-                                <div className="flex items-center gap-1.5 text-[10px] text-zinc-500">
-                                    <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                                <div className="flex items-center gap-1.5 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                                    <Loader2 className="h-3 w-3 animate-spin" />
                                     <span>Syncing</span>
                                 </div>
                             )}
                         </div>
-                        <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                             <UpcomingGamesPanel schedule={schedule} />
                         </div>
                     </div>
                 )}
 
                 {errorState ? (
-                    <div className="h-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-red-500/20 p-8 text-center bg-red-500/5 backdrop-blur-sm">
+                    <div className="h-full flex flex-col items-center justify-center rounded-[24px] border border-dashed border-red-500/20 p-8 text-center bg-gradient-to-b from-red-500/[0.02] to-transparent backdrop-blur-xl">
                         <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mb-4 animate-pulse">
                             <Activity className="h-8 w-8 text-red-500" />
                         </div>
@@ -344,9 +347,9 @@ export function ParlayBuilder() {
                 ) : null}
 
                 {!result && !errorState && !schedule && (
-                    <div className="h-full flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 p-8 text-center bg-white/5">
+                    <div className="h-full flex flex-col items-center justify-center rounded-[24px] border border-dashed border-white/10 p-8 text-center bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-xl">
                         <Loader2 className="h-6 w-6 animate-spin mb-3 text-emerald-500" />
-                        <p className="text-zinc-400 animate-pulse text-xs">Syncing live odds...</p>
+                        <p className="text-zinc-500 font-bold tracking-widest uppercase animate-pulse text-[10px]">Syncing live odds...</p>
                     </div>
                 )}
             </div>

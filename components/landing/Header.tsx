@@ -1,9 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Menu, X } from "lucide-react"
 
 export function Header() {
+    const [mobileOpen, setMobileOpen] = useState(false)
+
     return (
         <header className="fixed w-full z-50 top-0 transition-all duration-300 bg-black/50 backdrop-blur-xl border-b border-white/5 supports-[backdrop-filter]:bg-black/20">
             <div className="container px-4 md:px-6 h-20 flex items-center justify-between">
@@ -44,15 +48,42 @@ export function Header() {
                 </nav>
 
                 {/* CTA Buttons */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors hidden sm:block" href="/login">
                         Login
                     </Link>
                     <Button className="btn-shimmer bg-white text-black hover:bg-zinc-200 font-bold h-10 px-6 text-sm rounded-full transition-all hover:scale-105" asChild>
                         <Link href="/login">Get Started</Link>
                     </Button>
+                    <button
+                        onClick={() => setMobileOpen(!mobileOpen)}
+                        className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+                        aria-label="Toggle menu"
+                    >
+                        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                    </button>
                 </div>
             </div>
+
+            {/* Mobile Menu Dropdown */}
+            {mobileOpen && (
+                <div className="md:hidden border-t border-white/5 bg-black/90 backdrop-blur-xl">
+                    <nav className="container px-4 py-4 flex flex-col gap-1">
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/#features" onClick={() => setMobileOpen(false)}>
+                            Features
+                        </Link>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/how-it-works" onClick={() => setMobileOpen(false)}>
+                            How it Works
+                        </Link>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/#pricing" onClick={() => setMobileOpen(false)}>
+                            Pricing
+                        </Link>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5 sm:hidden" href="/login" onClick={() => setMobileOpen(false)}>
+                            Login
+                        </Link>
+                    </nav>
+                </div>
+            )}
         </header>
     )
 }
