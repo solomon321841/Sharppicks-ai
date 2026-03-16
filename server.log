@@ -29828,3 +29828,32 @@ prisma:query COMMIT
  ✓ Compiled in 6.3s (1869 modules)
  ✓ Compiled in 2.8s (1869 modules)
  ✓ Compiled in 3s (928 modules)
+ ✓ Compiled in 10.4s (1869 modules)
+ ✓ Compiled in 1680ms (1869 modules)
+ ✓ Compiled in 1868ms (1869 modules)
+ ⨯ ./components/dashboard/UpcomingGamesPanel.tsx
+Error: 
+  [31mx[0m Unexpected token `Card`. Expected jsx identifier
+     ,-[[36;1;4m/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/components/dashboard/UpcomingGamesPanel.tsx[0m:198:1]
+ [2m198[0m |     }
+ [2m199[0m | 
+ [2m200[0m |     return (
+ [2m201[0m |         <Card className="h-full border-0 shadow-none bg-transparent">
+     : [31;1m         ^^^^[0m
+ [2m202[0m |             <CardHeader className="px-0 pt-0 pb-2">
+ [2m203[0m |                 <CardTitle className="text-[11px] font-bold text-zinc-400 uppercase tracking-[0.15em] flex items-center gap-2">
+ [2m204[0m |                     <span className="relative flex h-2 w-2">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/dashboard/UpcomingGamesPanel.tsx
+./components/dashboard/ParlayBuilder.tsx
+./app/(dashboard)/build-parlay/page.tsx
+ ✓ Compiled in 8.3s (1869 modules)
+ ✓ Compiled in 1394ms (1869 modules)
+ ✓ Compiled in 1953ms (928 modules)
+ ✓ Compiled in 3.6s (1869 modules)
+ ✓ Compiled in 1833ms (1869 modules)

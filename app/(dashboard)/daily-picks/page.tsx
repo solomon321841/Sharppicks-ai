@@ -9,7 +9,7 @@ import { TeamLogo } from "@/components/dashboard/TeamLogo"
 const PARLAY_TYPES = [
     {
         type: 'safe',
-        title: 'Safe Builder',
+        title: 'Safe',
         icon: Shield,
         accent: 'emerald',
         text: 'text-emerald-400',
@@ -18,10 +18,13 @@ const PARLAY_TYPES = [
         border: 'border-emerald-500/20',
         button: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]',
         orb: 'bg-emerald-500/10',
+        badge: 'bg-emerald-500/10',
+        borderLeft: 'border-emerald-500/30',
+        hoverBorder: 'group-hover/leg:border-emerald-500/40'
     },
     {
         type: 'balanced',
-        title: 'Balanced Model',
+        title: 'Balanced',
         icon: Activity,
         accent: 'blue',
         text: 'text-blue-400',
@@ -30,10 +33,13 @@ const PARLAY_TYPES = [
         border: 'border-blue-500/20',
         button: 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)]',
         orb: 'bg-blue-500/10',
+        badge: 'bg-blue-500/10',
+        borderLeft: 'border-blue-500/30',
+        hoverBorder: 'group-hover/leg:border-blue-500/40'
     },
     {
         type: 'risky',
-        title: 'High Risk Edge',
+        title: 'High Risk',
         icon: Flame,
         accent: 'orange',
         text: 'text-orange-400',
@@ -42,10 +48,13 @@ const PARLAY_TYPES = [
         border: 'border-orange-500/20',
         button: 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500/20 hover:border-orange-500/40 hover:shadow-[0_0_20px_rgba(249,115,22,0.3)]',
         orb: 'bg-orange-500/10',
+        badge: 'bg-orange-500/10',
+        borderLeft: 'border-orange-500/30',
+        hoverBorder: 'group-hover/leg:border-orange-500/40'
     },
     {
         type: 'lotto',
-        title: 'Moonshot Lotto',
+        title: 'Moonshot',
         icon: Zap,
         accent: 'purple',
         text: 'text-purple-400',
@@ -54,6 +63,9 @@ const PARLAY_TYPES = [
         border: 'border-purple-500/20',
         button: 'bg-purple-500/10 border-purple-500/20 text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/40 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]',
         orb: 'bg-purple-500/10',
+        badge: 'bg-purple-500/10',
+        borderLeft: 'border-purple-500/30',
+        hoverBorder: 'group-hover/leg:border-purple-500/40'
     },
 ];
 
@@ -159,10 +171,10 @@ export default function DailyPicksPage() {
                                 </CardHeader>
 
                                 {/* Premium Content Area / Legs */}
-                                <CardContent className="flex-1 min-h-0 flex flex-col p-1.5 overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                                <CardContent className="flex-1 min-h-0 block p-2 overflow-y-auto pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
                                     {loading ? (
-                                        <div className="flex flex-col items-center justify-center h-full gap-3">
-                                            <div className={`w-10 h-10 rounded-full border-t-2 border-r-2 ${config.border} animate-spin flex items-center justify-center`}>
+                                        <div className="flex flex-col items-center justify-center h-full gap-3 min-h-[200px]">
+                                            <div className={`w-10 h-10 rounded-full border-t-2 border-r-2 flex items-center justify-center ${config.text.replace('text', 'border')} animate-spin`}>
                                                 <Loader2 className={`w-4 h-4 ${config.text}`} />
                                             </div>
                                             <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em] animate-pulse">Running Physics Engine...</span>
@@ -173,45 +185,47 @@ export default function DailyPicksPage() {
                                             const reasoning = leg.ai_reasoning || leg.reasoning || '';
 
                                             return (
-                                                <div key={i} className="flex-1 group/leg flex flex-col justify-center rounded-[14px] px-3 py-2.5 hover:bg-white/[0.02] transition-colors border border-transparent hover:border-white/[0.02]">
-                                                    <div className="flex items-center gap-3">
+                                                <div key={i} className={`mb-2 shrink-0 group/leg flex flex-col justify-center rounded-[16px] px-3 py-3 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300 border border-white/[0.05] hover:border-white/[0.1] backdrop-blur-md relative overflow-hidden`}>
+                                                    {/* Background Glow Effect on hover */}
+                                                    <div className={`absolute -inset-2 opacity-0 group-hover/leg:opacity-20 transition-opacity duration-500 blur-xl rounded-full ${config.bg}`} />
+
+                                                    <div className="relative z-10 flex items-center gap-3">
                                                         {/* Sleek Logo Container */}
-                                                        <div className="relative w-9 h-9 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-zinc-700/50 flex items-center justify-center shrink-0 shadow-lg">
-                                                            <div className="absolute inset-0 rounded-full bg-black/20 backdrop-blur-sm" />
+                                                        <div className={`relative w-10 h-10 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shrink-0 shadow-lg ${config.hoverBorder} transition-colors`}>
                                                             <TeamLogo name={leg.team} className="w-5 h-5 relative z-10 filter drop-shadow-md" />
                                                         </div>
 
                                                         {/* Team / Prop Name */}
                                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                                             <div className="flex items-center justify-between mb-0.5">
-                                                                <span className="text-[13px] font-black text-white truncate pb-0.5 border-b border-transparent group-hover/leg:border-zinc-700 transition-colors">
+                                                                <span className="text-[13px] font-black text-white truncate pb-0.5">
                                                                     {isProp ? leg.player : leg.team}
                                                                 </span>
-                                                                <span className={`text-[12px] font-black ${config.text}`}>{leg.odds}</span>
+                                                                <span className={`text-[12px] font-black ${config.text} px-1.5 py-0.5 rounded-md ${config.badge}`}>{leg.odds}</span>
                                                             </div>
 
                                                             {/* Sleek Data Row */}
-                                                            <div className="flex items-center gap-1.5 text-[9px] font-bold">
-                                                                <span className="text-zinc-500 uppercase tracking-widest block truncate max-w-[120px]">
-                                                                    {(leg.bet_type || '').replace(/_/g, ' ')}
+                                                            <div className="flex items-center gap-1.5 text-[9px] font-bold mt-0.5">
+                                                                <span className="text-zinc-400 uppercase tracking-widest block truncate max-w-[120px]">
+                                                                    {isProp && leg.prop_market ? leg.prop_market : (leg.bet_type || '').replace(/_/g, ' ')}
                                                                 </span>
-                                                                <span className="w-1 h-1 rounded-full bg-zinc-800" />
+                                                                <span className="w-1 h-1 rounded-full bg-zinc-700" />
                                                                 {isProp ? (
-                                                                    <span className="text-zinc-600 truncate">{leg.team} vs {leg.opponent}</span>
+                                                                    <span className="text-zinc-500 truncate">{leg.team} vs {leg.opponent}</span>
                                                                 ) : (
-                                                                    <span className="text-zinc-600 truncate">vs {leg.opponent}</span>
+                                                                    <span className="text-zinc-500 truncate">vs {leg.opponent}</span>
                                                                 )}
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    {/* Ultra-minimal AI Insight */}
-                                                    <div className="mt-2 ml-12 pl-2.5 border-l-[1.5px] border-zinc-800/50">
-                                                        <div className="flex items-center gap-1.5 mb-0.5">
-                                                            <span className="text-[7.5px] font-black uppercase tracking-widest text-zinc-500">AI Logic</span>
+                                                    {/* AI Insight */}
+                                                    <div className={`relative z-10 mt-3 ml-12 pl-3 border-l-2 ${config.borderLeft}`}>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className={`text-[8px] font-black uppercase tracking-widest ${config.text}`}>AI Logic</span>
                                                             {leg.line && <span className="text-[9px] font-black text-white bg-white/10 px-1.5 py-0.5 rounded-sm">{leg.line === 'Yes' ? 'WIN' : leg.line}</span>}
                                                         </div>
-                                                        <p className="text-[10px] leading-snug text-zinc-400 line-clamp-2">
+                                                        <p className="text-[10px] leading-relaxed text-zinc-300">
                                                             {reasoning}
                                                         </p>
                                                     </div>
