@@ -24,6 +24,7 @@ type SportSchedule = {
 
 // ── League Config ──────────────────────────────────
 const ALLOWED_LEAGUES = [
+    'americanfootball_nfl',
     'basketball_nba',
     'icehockey_nhl',
     'soccer_epl',
@@ -36,6 +37,7 @@ type LeagueTab = 'all' | typeof ALLOWED_LEAGUES[number]
 
 const LEAGUE_TABS: { key: LeagueTab; label: string }[] = [
     { key: 'all', label: 'All' },
+    { key: 'americanfootball_nfl', label: 'NFL' },
     { key: 'basketball_nba', label: 'NBA' },
     { key: 'icehockey_nhl', label: 'NHL' },
     { key: 'soccer_epl', label: 'EPL' },
@@ -78,6 +80,7 @@ const formatOdds = (odds?: number) => {
 
 const getSportName = (key: string) => {
     const map: Record<string, string> = {
+        'americanfootball_nfl': 'NFL',
         'basketball_nba': 'NBA',
         'icehockey_nhl': 'NHL',
         'soccer_epl': 'EPL',
@@ -90,7 +93,8 @@ const getSportName = (key: string) => {
 
 const getSportLogo = (key: string) => {
     const map: Record<string, string> = {
-        'basketball_nba': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
+        'americanfootball_nfl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png',
+        'basketball_nba': 'https://a.espncdn.com/i/teamlogos/leagues/500/nba.png',
         'icehockey_nhl': 'https://a.espncdn.com/i/teamlogos/leagues/500/nhl.png',
         'soccer_epl': 'https://a.espncdn.com/i/leaguelogos/soccer/500/23.png',
         'soccer_spain_la_liga': 'https://a.espncdn.com/i/leaguelogos/soccer/500/15.png',
