@@ -130,28 +130,28 @@ export default function BetHistoryPage() {
                             className="inline-flex items-center gap-2 px-2 py-0.5 rounded border border-white/5 bg-zinc-950/50 backdrop-blur-md"
                         >
                             <ShieldCheck className="w-3 h-3 text-emerald-500/50" />
-                            <span className="text-[8px] font-black text-zinc-500 uppercase tracking-[0.3em]">Institutional Grade Storage</span>
+                            <span className="text-[10px] md:text-[8px] font-black text-zinc-500 uppercase tracking-[0.3em]">Institutional Grade Storage</span>
                         </motion.div>
 
                         <div className="space-y-0">
                             <h2 className="text-3xl md:text-5xl lg:text-5xl font-black tracking-custom text-white uppercase italic leading-[1]">
                                 Bet <span className="text-emerald-500/90">Archive</span>
                             </h2>
-                            <p className="text-zinc-600 font-bold tracking-[0.2em] uppercase text-[9px] mt-1 border-l border-emerald-500/30 pl-3">
+                            <p className="text-zinc-600 font-bold tracking-[0.2em] uppercase text-[10px] md:text-[9px] mt-1 border-l border-emerald-500/30 pl-3">
                                 Immutable Betting History • Verified Analysis
                             </p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="bg-zinc-950/40 border border-white/5 p-3 px-5 rounded-xl flex items-center gap-6">
+                        <div className="bg-zinc-950/40 border border-white/5 p-2.5 px-3 md:p-3 md:px-5 rounded-xl flex items-center gap-3 md:gap-6">
                             <div className="space-y-0.5">
-                                <div className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Sequences</div>
+                                <div className="text-[9px] md:text-[7px] font-black text-zinc-600 uppercase tracking-widest">Sequences</div>
                                 <div className="text-lg font-black text-white font-mono leading-none">{bets.length.toString().padStart(3, '0')}</div>
                             </div>
                             <div className="h-6 w-px bg-white/5" />
                             <div className="space-y-0.5 text-right">
-                                <div className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Status</div>
+                                <div className="text-[9px] md:text-[7px] font-black text-zinc-600 uppercase tracking-widest">Status</div>
                                 <div className="text-[10px] font-black text-emerald-500 uppercase tracking-wider">Synced</div>
                             </div>
                         </div>
@@ -213,17 +213,17 @@ export default function BetHistoryPage() {
                                                 {/* Data Sidebar: Professional spacing */}
                                                 <div className="lg:w-40 bg-zinc-950/40 border-r border-white/5 p-5 flex lg:flex-col justify-between items-start gap-4 shrink-0">
                                                     <div className="space-y-1">
-                                                        <div className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Entry ID</div>
-                                                        <div className="text-[9px] font-mono font-bold text-zinc-500 truncate w-24">
+                                                        <div className="text-[9px] md:text-[7px] font-black text-zinc-600 uppercase tracking-widest">Entry ID</div>
+                                                        <div className="text-[10px] md:text-[9px] font-mono font-bold text-zinc-500 truncate w-24">
                                                             #{bet.id.substring(0, 8).toUpperCase()}
                                                         </div>
                                                     </div>
 
                                                     <div className="space-y-1">
-                                                        <div className="text-[7px] font-black text-zinc-600 uppercase tracking-widest">Timestamp</div>
+                                                        <div className="text-[9px] md:text-[7px] font-black text-zinc-600 uppercase tracking-widest">Timestamp</div>
                                                         <div className="flex flex-col">
                                                             <span className="text-[10px] font-bold text-zinc-400">{new Date(bet.created_at).toLocaleDateString()}</span>
-                                                            <span className="text-[8px] font-mono text-zinc-700">14:23 UTC</span>
+                                                            <span className="text-[10px] md:text-[8px] font-mono text-zinc-700">14:23 UTC</span>
                                                         </div>
                                                     </div>
 
@@ -259,16 +259,16 @@ export default function BetHistoryPage() {
                                                                         <h4 className="text-xl font-black text-white tracking-tight uppercase italic leading-none">
                                                                             {bet.parlay.legs.length} Leg <span className="text-zinc-500">Sequence</span>
                                                                         </h4>
-                                                                        <div className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/5 text-[9px] font-mono font-bold text-zinc-500">
+                                                                        <div className="px-1.5 py-0.5 rounded bg-zinc-900 border border-white/5 text-[10px] md:text-[9px] font-mono font-bold text-zinc-500">
                                                                             {bet.parlay.total_odds}
                                                                         </div>
                                                                     </div>
                                                                     <div className="flex items-center gap-3 mt-1.5">
-                                                                        <span className="flex items-center gap-1.5 text-[8px] font-black text-zinc-600 uppercase tracking-widest">
+                                                                        <span className="flex items-center gap-1.5 text-[10px] md:text-[8px] font-black text-zinc-600 uppercase tracking-widest">
                                                                             {bet.sportsbook}
                                                                         </span>
                                                                         <div className="h-2 w-px bg-zinc-800" />
-                                                                        <span className="text-[8px] font-black text-zinc-500 uppercase tracking-widest">Risk: ${bet.stake_amount}</span>
+                                                                        <span className="text-[10px] md:text-[8px] font-black text-zinc-500 uppercase tracking-widest">Risk: ${bet.stake_amount}</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -283,15 +283,15 @@ export default function BetHistoryPage() {
                                                                                 <div className="flex items-center justify-between gap-2 overflow-hidden">
                                                                                     <div className="text-[10px] font-black text-zinc-300 italic truncate">{leg.team}</div>
                                                                                     {status === 'live' && (
-                                                                                        <span className="flex items-center gap-1 text-[7px] font-black text-emerald-500 uppercase tracking-tighter shrink-0 animate-pulse bg-emerald-500/10 px-1 rounded ring-1 ring-emerald-500/20">
+                                                                                        <span className="flex items-center gap-1 text-[9px] md:text-[7px] font-black text-emerald-500 uppercase tracking-tighter shrink-0 animate-pulse bg-emerald-500/10 px-1 rounded ring-1 ring-emerald-500/20">
                                                                                             <Zap className="w-2 h-2 fill-current" />
                                                                                             LIVE
                                                                                         </span>
                                                                                     )}
                                                                                 </div>
                                                                                 <div className="flex items-center justify-between">
-                                                                                    <span className="text-[8px] font-bold text-zinc-600 uppercase">{leg.bet_type}</span>
-                                                                                    <span className="text-[9px] font-mono font-bold text-emerald-500/60">{leg.odds}</span>
+                                                                                    <span className="text-[10px] md:text-[8px] font-bold text-zinc-600 uppercase">{leg.bet_type}</span>
+                                                                                    <span className="text-[10px] md:text-[9px] font-mono font-bold text-emerald-500/60">{leg.odds}</span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -303,7 +303,7 @@ export default function BetHistoryPage() {
                                                         {/* Impact Rating & Finality */}
                                                         <div className="md:text-right space-y-4 pt-4 md:pt-0">
                                                             <div className="space-y-0.5">
-                                                                <div className="text-[8px] font-black text-zinc-600 uppercase tracking-widest">Process Result</div>
+                                                                <div className="text-[10px] md:text-[8px] font-black text-zinc-600 uppercase tracking-widest">Process Result</div>
                                                                 <div className={`text-lg font-black italic tracking-tighter uppercase ${bet.result === 'won' ? 'text-emerald-500/80' :
                                                                     bet.result === 'lost' ? 'text-red-500/60' :
                                                                         bet.parlay.legs.some(l => getLegStatus(l.game_time) === 'live') ? 'text-emerald-400' :
@@ -319,14 +319,14 @@ export default function BetHistoryPage() {
                                                             </div>
 
                                                             <div className="space-y-0 pt-3 border-t border-white/5">
-                                                                <div className="text-[8px] font-black text-zinc-700 uppercase tracking-widest">Archive Return</div>
+                                                                <div className="text-[10px] md:text-[8px] font-black text-zinc-700 uppercase tracking-widest">Archive Return</div>
                                                                 <div className={`text-2xl font-black italic tracking-tighter leading-none ${bet.result === 'won' ? 'text-zinc-200' : 'text-zinc-800'
                                                                     }`}>
                                                                     ${calculateReturn(bet.stake_amount, bet.parlay.total_odds).toFixed(2)}
                                                                 </div>
                                                             </div>
 
-                                                            <button className="group/link flex items-center md:justify-end gap-1.5 text-[9px] font-black text-zinc-600 uppercase tracking-widest hover:text-zinc-400 transition-colors">
+                                                            <button className="group/link flex items-center md:justify-end gap-1.5 text-[10px] md:text-[9px] font-black text-zinc-600 uppercase tracking-widest hover:text-zinc-400 transition-colors">
                                                                 Archive Detail
                                                                 <ChevronRight className="w-3 h-3 transition-transform group-hover/link:translate-x-0.5" />
                                                             </button>

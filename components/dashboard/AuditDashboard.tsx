@@ -79,7 +79,7 @@ export function AuditDashboard() {
                     <button
                         key={p}
                         onClick={() => setPeriod(p)}
-                        className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg border transition-all ${period === p
+                        className={`px-3 py-2.5 md:py-1.5 text-[11px] md:text-[10px] font-black uppercase tracking-widest rounded-lg border transition-all ${period === p
                             ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
                             : 'bg-zinc-900/50 border-white/5 text-zinc-500 hover:text-zinc-300'
                             }`}
@@ -214,7 +214,7 @@ export function AuditDashboard() {
                         {data.recentResults.map((bet) => (
                             <div key={bet.id} className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-white/[0.02] transition-colors border-b border-white/[0.02] last:border-0">
                                 <div className="flex items-center gap-3">
-                                    <Badge className={`text-[8px] font-black uppercase w-14 justify-center ${bet.result === 'won' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
+                                    <Badge className={`text-[9px] md:text-[8px] font-black uppercase w-14 justify-center ${bet.result === 'won' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
                                         bet.result === 'lost' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
                                             'bg-zinc-800 text-zinc-400 border-zinc-700'
                                         }`}>
@@ -222,7 +222,7 @@ export function AuditDashboard() {
                                     </Badge>
                                     <div className="flex flex-col">
                                         <span className="text-[10px] font-bold text-zinc-300">{bet.odds} | {bet.legsWon}/{bet.legs} legs</span>
-                                        <span className="text-[9px] text-zinc-600">{new Date(bet.date).toLocaleDateString()}</span>
+                                        <span className="text-[10px] text-zinc-600">{new Date(bet.date).toLocaleDateString()}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -253,7 +253,7 @@ function KPICard({ label, value, sub, icon, highlight, valueColor }: {
         <Card className={`bg-zinc-900/60 border-white/5 ${highlight ? 'ring-1 ring-emerald-500/20' : ''}`}>
             <CardContent className="pt-4 pb-3 px-4">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">{label}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">{label}</span>
                     {icon}
                 </div>
                 <p className={`text-xl font-black tracking-tight ${valueColor || 'text-white'}`}>{value}</p>

@@ -259,7 +259,7 @@ export function ParlayBuilder() {
                 </div>
             </div>
 
-            <div className="lg:col-span-5 h-full space-y-4">
+            <div className="lg:col-span-5 h-auto lg:h-full space-y-4">
                 {/* Schedule / Results Column */}
                 {!result && !errorState && schedule && (
                 <div className="h-full rounded-[24px] border border-white/[0.08] bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-xl overflow-hidden flex flex-col relative shadow-2xl">

@@ -24,7 +24,7 @@ export function Footer() {
                 </Link>
 
                 {/* Links */}
-                <nav className="flex gap-8">
+                <nav className="flex flex-wrap gap-4 md:gap-8">
                     {[
                         { name: "Terms", href: "/terms" },
                         { name: "Privacy", href: "/privacy" },

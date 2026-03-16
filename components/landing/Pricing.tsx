@@ -104,7 +104,7 @@ export function Pricing() {
             </div>
 
             <div className="container px-4 md:px-6 relative z-10 flex flex-col items-center">
-                <FadeIn className="flex flex-col items-center justify-center space-y-6 text-center mb-24 max-w-4xl mx-auto">
+                <FadeIn className="flex flex-col items-center justify-center space-y-6 text-center mb-12 md:mb-24 max-w-4xl mx-auto">
                     <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-full px-6 py-2">
                         <span className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Pricing Plans</span>
                     </div>
@@ -134,7 +134,7 @@ export function Pricing() {
                                     <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
                                 )}
 
-                                <div className="p-8 flex flex-col h-full pt-10">
+                                <div className="p-5 md:p-8 flex flex-col h-full pt-8 md:pt-10">
                                     <div className="mb-8 text-center">
                                         <h3 className="text-xl font-bold text-white mb-2">{tier.name}</h3>
                                         <div className="flex items-baseline justify-center gap-1">

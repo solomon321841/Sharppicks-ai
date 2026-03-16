@@ -49,7 +49,7 @@ export function MobileNav() {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 z-50 w-[280px] bg-card shadow-2xl"
+                            className="fixed inset-y-0 left-0 z-50 w-[min(280px,85vw)] bg-card shadow-2xl"
                         >
                             <div className="absolute right-4 top-4">
                                 <button

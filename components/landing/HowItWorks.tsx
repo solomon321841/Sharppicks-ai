@@ -79,7 +79,7 @@ export function HowItWorks() {
                 <div className="max-w-7xl mx-auto">
 
                     {/* Section Header */}
-                    <div className="flex flex-col items-center text-center mb-20">
+                    <div className="flex flex-col items-center text-center mb-10 md:mb-20">
                         <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 mb-8 backdrop-blur-md">
                             <Globe className="w-4 h-4 text-emerald-400" />
                             <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Global Reach</span>
@@ -183,12 +183,12 @@ const LeagueCategoryCard = ({ title, icon: Icon, color, leagues, status }: { tit
     const style = colorStyles[color]
 
     return (
-        <div className={`group relative p-8 rounded-[2rem] border border-white/10 bg-zinc-900/40 backdrop-blur-md transition-all duration-500 hover:-translate-y-2 ${style.border} ${style.bg} overflow-hidden h-full flex flex-col`}>
+        <div className={`group relative p-5 md:p-8 rounded-[2rem] border border-white/10 bg-zinc-900/40 backdrop-blur-md transition-all duration-500 hover:-translate-y-2 ${style.border} ${style.bg} overflow-hidden h-full flex flex-col`}>
             {/* Glow Effect */}
             <div className={`absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br ${style.glow} to-transparent blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-700`} />
 
             <div className="relative z-10 flex flex-col h-full">
-                <div className="flex items-start justify-between mb-8">
+                <div className="flex items-start justify-between mb-5 md:mb-8">
                     <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform duration-500`}>
                         <Icon className={`w-7 h-7 ${style.text}`} />
                     </div>
@@ -197,7 +197,7 @@ const LeagueCategoryCard = ({ title, icon: Icon, color, leagues, status }: { tit
                     </div>
                 </div>
 
-                <h4 className="text-2xl font-bold text-white mb-6 tracking-tight">{title}</h4>
+                <h4 className="text-2xl font-bold text-white mb-4 md:mb-6 tracking-tight">{title}</h4>
 
                 <ul className="space-y-4 flex-grow">
                     {leagues.map((league, idx) => (

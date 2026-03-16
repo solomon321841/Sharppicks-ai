@@ -50,7 +50,7 @@ const features = [
 
 export function Testimonials() {
     return (
-        <section id="features" className="py-20 bg-black relative overflow-hidden">
+        <section id="features" className="py-12 md:py-20 bg-black relative overflow-hidden">
             {/* Background Effects - Optimized */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none transform-gpu">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-emerald-500/10 rounded-[100%] blur-[80px] opacity-40" />
@@ -61,7 +61,7 @@ export function Testimonials() {
 
             <div className="container px-4 md:px-6 relative z-10">
                 {/* Header */}
-                <FadeIn className="text-center mb-20 max-w-3xl mx-auto space-y-6">
+                <FadeIn className="text-center mb-12 md:mb-20 max-w-3xl mx-auto space-y-6">
                     <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur-md shadow-lg shadow-emerald-500/5">
                         <Zap className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
                         <span className="text-xs font-bold text-emerald-300 uppercase tracking-[0.2em]">System Capabilities</span>
@@ -83,7 +83,7 @@ export function Testimonials() {
                         const Icon = feature.icon;
                         return (
                             <FadeIn key={i} delay={i * 0.1}>
-                                <div className="group relative h-full bg-zinc-900/40 border border-white/5 rounded-3xl p-8 hover:bg-zinc-900/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
+                                <div className="group relative h-full bg-zinc-900/40 border border-white/5 rounded-3xl p-5 md:p-8 hover:bg-zinc-900/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] overflow-hidden">
 
                                     {/* Hover Border Gradient */}
                                     <div className="absolute inset-0 border border-transparent group-hover:border-emerald-500/30 rounded-3xl transition-colors duration-500" />
@@ -93,7 +93,7 @@ export function Testimonials() {
 
                                     <div className="relative z-10 flex flex-col items-center text-center">
                                         {/* Icon Ring */}
-                                        <div className="relative w-20 h-20 mb-6 group-hover:scale-110 transition-transform duration-500">
+                                        <div className="relative w-14 h-14 md:w-20 md:h-20 mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
                                             <div className="absolute inset-0 bg-emerald-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                             <div className="relative w-full h-full rounded-2xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shadow-inner group-hover:border-emerald-500/50 transition-colors">
                                                 <Icon className="w-8 h-8 text-emerald-400" />
@@ -124,7 +124,7 @@ export function Testimonials() {
                 </div>
 
                 {/* Testimonials section */}
-                <div className="mt-32">
+                <div className="mt-16 md:mt-32">
                     <FadeIn className="text-center mb-16">
                         <h3 className="text-3xl font-bold text-white mb-2">Member <span className="text-emerald-400">Voices</span></h3>
                         <p className="text-zinc-500">Trusted by over 2,400 serious bettors worldwide.</p>
@@ -152,7 +152,7 @@ export function Testimonials() {
                             }
                         ].map((t, i) => (
                             <FadeIn key={i} delay={i * 0.1}>
-                                <div className="bg-zinc-900/40 border border-white/5 p-8 rounded-3xl relative">
+                                <div className="bg-zinc-900/40 border border-white/5 p-5 md:p-8 rounded-3xl relative">
                                     <div className="flex gap-1 mb-4">
                                         {[...Array(t.rating)].map((_, i) => (
                                             <Trophy key={i} className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
@@ -170,7 +170,7 @@ export function Testimonials() {
                 </div>
 
                 {/* Stats Bar - Unified Glass Bar */}
-                <FadeIn delay={0.6} className="mt-24 max-w-5xl mx-auto">
+                <FadeIn delay={0.6} className="mt-12 md:mt-24 max-w-5xl mx-auto">
                     <div className="relative bg-zinc-900/30 border border-white/10 rounded-2xl p-6 md:p-12 backdrop-blur-md overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
                         {/* Shimmer overlay */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-100%] animate-[shimmer_3s_infinite]" />

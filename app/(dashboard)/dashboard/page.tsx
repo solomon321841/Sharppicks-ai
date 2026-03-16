@@ -161,7 +161,7 @@ export default function DashboardPage() {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                         </span>
-                        <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em]">Live Intelligence Active</span>
+                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Live Intelligence Active</span>
                     </motion.div>
 
                     <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
                             className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white/5 border border-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/20 transition-all group"
                         >
                             <HelpCircle className="w-3 h-3 text-zinc-500 group-hover:text-emerald-400" />
-                            <span className="text-[9px] font-black text-zinc-500 group-hover:text-emerald-400 uppercase tracking-widest leading-none">How it works</span>
+                            <span className="text-[10px] font-black text-zinc-500 group-hover:text-emerald-400 uppercase tracking-widest leading-none">How it works</span>
                         </Link>
                     </div>
                 </div>
@@ -194,7 +194,7 @@ export default function DashboardPage() {
                 <DashboardCard glowColor="emerald" delay={0.1} className="py-0" contentClassName="p-4">
                     <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
-                            <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">All-Time Record</div>
+                            <div className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">All-Time Record</div>
                             <Activity className="w-4 h-4 text-emerald-500/50" />
                         </div>
                         <div>
@@ -203,11 +203,11 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex items-center gap-1.5 mt-1">
                                 <motion.div
-                                    className="text-[8px] font-black px-1 py-px rounded italic bg-emerald-500/10 text-emerald-400"
+                                    className="text-[10px] font-black px-1 py-px rounded italic bg-emerald-500/10 text-emerald-400"
                                 >
                                     {stats.streak} Streak
                                 </motion.div>
-                                <span className="text-[8px] text-zinc-600 font-bold uppercase tracking-widest">Active</span>
+                                <span className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Active</span>
                             </div>
                         </div>
                     </div>
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                 <DashboardCard glowColor="blue" delay={0.2} className="py-0" contentClassName="p-4">
                     <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
-                            <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">Accuracy</div>
+                            <div className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">Accuracy</div>
                             <Activity className="w-4 h-4 text-blue-500/50" />
                         </div>
                         <div>
@@ -238,14 +238,14 @@ export default function DashboardPage() {
                 <DashboardCard glowColor={tier !== 'free' ? 'gold' : 'zinc'} delay={0.3} className="py-0" contentClassName="p-4">
                     <div className="flex flex-col h-full justify-between gap-4 md:gap-0">
                         <div className="flex items-center justify-between">
-                            <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest italic">License</div>
+                            <div className="text-[10px] font-black text-zinc-600 uppercase tracking-widest italic">License</div>
                             <Activity className={`w-4 h-4 ${tier !== 'free' ? 'text-yellow-500/50' : 'text-zinc-500/50'}`} />
                         </div>
                         <div>
                             <div className="text-2xl font-black text-white tracking-tighter leading-none capitalize italic">
                                 {loading ? <Loader2 className="h-5 w-5 animate-spin text-zinc-500" /> : tierInfo.label}
                             </div>
-                            <div className="text-[8px] font-bold text-zinc-600 uppercase tracking-tighter mt-1">
+                            <div className="text-[10px] font-bold text-zinc-600 uppercase tracking-tighter mt-1">
                                 {tier === 'free' ? 'Upgrade for VIP' : 'Priority Compute Lock'}
                             </div>
                         </div>
@@ -256,14 +256,14 @@ export default function DashboardPage() {
             {/* Tactical Content Grid: Viewport-Filling */}
             <div className="shrink-0 lg:flex-1 lg:min-h-0 grid gap-3 lg:gap-4 lg:grid-cols-12 relative z-10 pb-2">
                 {/* Recent Logs: Fluid container */}
-                <DashboardCard className="lg:col-span-7 flex flex-col h-[400px] lg:h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
+                <DashboardCard className="lg:col-span-7 flex flex-col h-[320px] lg:h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex items-center justify-between border-b border-white/5 pb-3 shrink-0">
                             <div className="flex items-center gap-2">
                                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)] animate-pulse" />
                                 <h3 className="text-lg font-black text-white tracking-tighter uppercase italic leading-none">Recent Logs</h3>
                             </div>
-                            <Button variant="ghost" className="h-7 px-2 rounded border border-white/5 bg-white/5 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-emerald-500 hover:text-black transition-all" asChild>
+                            <Button variant="ghost" className="h-7 px-2 rounded border border-white/5 bg-white/5 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-emerald-500 hover:text-black transition-all" asChild>
                                 <Link href="/bet-history">Archive <ChevronRight className="w-3 h-3 ml-1" /></Link>
                             </Button>
                         </div>
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <div className="text-sm font-black text-zinc-400 uppercase italic">Awaiting Signals</div>
-                                        <p className="text-[9px] text-zinc-600 font-bold max-w-[180px] leading-snug mx-auto">System online. Deploy sequences to populate logs.</p>
+                                        <p className="text-[10px] text-zinc-600 font-bold max-w-[180px] leading-snug mx-auto">System online. Deploy sequences to populate logs.</p>
                                     </div>
                                 </div>
                             )}
@@ -316,7 +316,7 @@ export default function DashboardPage() {
                                 <div className="p-4 border-b border-dashed border-white/10 shrink-0">
                                     <div className="flex items-center gap-2 mb-1">
                                         <Sparkles className="w-3 h-3 text-emerald-400" />
-                                        <span className="text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em]">Quick Actions</span>
+                                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Quick Actions</span>
                                     </div>
                                     <h3 className="text-xl lg:text-2xl font-black text-white tracking-tighter uppercase italic leading-none">Elite<span className="text-emerald-500">Picks</span></h3>
                                 </div>
@@ -326,7 +326,7 @@ export default function DashboardPage() {
                                     <div className="space-y-3">
                                         <div className="flex flex-col md:flex-row justify-between md:items-end gap-3">
                                             <div className="space-y-1.5">
-                                                <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em] leading-none">Active Intelligence</p>
+                                                <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] leading-none">Active Intelligence</p>
                                                 <div className="flex flex-wrap gap-1.5 max-w-[200px]">
                                                     {activeLeagues.map((league) => (
                                                         <span key={league} className="px-1.5 py-0.5 rounded-sm bg-zinc-900 border border-white/[0.03] text-[9px] font-black text-zinc-400 uppercase italic tracking-tighter">
@@ -336,7 +336,7 @@ export default function DashboardPage() {
                                                 </div>
                                             </div>
                                             <div className="md:text-right shrink-0">
-                                                <p className="text-[8px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">AI Engine</p>
+                                                <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1">AI Engine</p>
                                                 <div className="flex items-center md:justify-end gap-1.5">
                                                     <div className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
                                                     <p className="text-sm font-black text-emerald-500 italic tracking-tighter">LIVE</p>
@@ -382,7 +382,7 @@ export default function DashboardPage() {
                                                 <ArrowRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
                                             </Link>
                                         </Button>
-                                        <Button variant="ghost" className="w-full h-6 text-zinc-600 hover:text-white text-[8px] font-black uppercase tracking-[0.2em]" asChild>
+                                        <Button variant="ghost" className="w-full h-6 text-zinc-600 hover:text-white text-[10px] font-black uppercase tracking-[0.2em]" asChild>
                                             <Link href="/bet-history">View Bet History</Link>
                                         </Button>
                                     </div>

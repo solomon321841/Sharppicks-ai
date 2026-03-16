@@ -54,7 +54,7 @@ export default async function SettingsPage() {
                     <CardDescription>Manage your plan and billing.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div className="p-4 bg-muted rounded-md flex justify-between items-center">
+                    <div className="p-4 bg-muted rounded-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                         <div>
                             <p className="font-medium">Current Plan: <span className="capitalize">{tier}</span></p>
                             <p className="text-xs text-muted-foreground flex items-center gap-2">

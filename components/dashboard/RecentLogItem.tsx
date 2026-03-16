@@ -31,7 +31,7 @@ export function RecentLogItem({ bet, delay }: RecentLogItemProps) {
                         <span className="text-[10px] font-black text-white uppercase italic tracking-wider">
                             {legsCount} Leg Sequence
                         </span>
-                        <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${isWin ? 'bg-emerald-500/10 text-emerald-400' :
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isWin ? 'bg-emerald-500/10 text-emerald-400' :
                             isLoss ? 'bg-red-500/10 text-red-400' :
                                 'bg-zinc-800 text-zinc-400'
                             }`}>
@@ -39,15 +39,15 @@ export function RecentLogItem({ bet, delay }: RecentLogItemProps) {
                         </span>
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[9px] text-zinc-500 font-bold">{new Date(bet?.created_at || Date.now()).toLocaleDateString()}</span>
-                        <span className="text-[9px] text-zinc-600">•</span>
-                        <span className="text-[9px] text-zinc-500 font-bold">{bet?.sportsbook || 'Unknown'}</span>
+                        <span className="text-[10px] text-zinc-500 font-bold">{new Date(bet?.created_at || Date.now()).toLocaleDateString()}</span>
+                        <span className="text-[10px] text-zinc-600">•</span>
+                        <span className="text-[10px] text-zinc-500 font-bold">{bet?.sportsbook || 'Unknown'}</span>
                     </div>
                 </div>
             </div>
 
             <div className="text-right">
-                <div className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Return</div>
+                <div className="text-[10px] font-black text-zinc-600 uppercase tracking-widest mb-0.5">Return</div>
                 <div className={`text-sm font-black italic tracking-tighter ${isWin ? 'text-emerald-400' : 'text-zinc-500'
                     }`}>
                     ${isWin ? ((bet?.stake_amount || 0) * 3.4).toFixed(2) : '0.00'}

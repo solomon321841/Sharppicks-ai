@@ -160,11 +160,11 @@ export default function DailyPicksPage() {
 
                                     <div className="flex items-center gap-2">
                                         <div className="flex-1 bg-black/50 rounded-lg p-2 border border-white/[0.03] flex items-center justify-between">
-                                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Legs</span>
+                                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Legs</span>
                                             <span className="text-[11px] font-black text-white">{loading ? '-' : pick?.num_legs || 3}</span>
                                         </div>
                                         <div className="flex-1 bg-black/50 rounded-lg p-2 border border-white/[0.03] flex items-center justify-between">
-                                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-bold">Return</span>
+                                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Return</span>
                                             <span className="text-[11px] font-black text-white">{loading ? '---' : pick?.total_odds || '+400'}</span>
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@ export default function DailyPicksPage() {
                                             <div className={`w-10 h-10 rounded-full border-t-2 border-r-2 flex items-center justify-center ${config.text.replace('text', 'border')} animate-spin`}>
                                                 <Loader2 className={`w-4 h-4 ${config.text}`} />
                                             </div>
-                                            <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-[0.2em] animate-pulse">Running Physics Engine...</span>
+                                            <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] animate-pulse">Running Physics Engine...</span>
                                         </div>
                                     ) : pick ? (
                                         pick.legs.map((leg: any, i: number) => {
@@ -205,7 +205,7 @@ export default function DailyPicksPage() {
                                                             </div>
 
                                                             {/* Sleek Data Row */}
-                                                            <div className="flex items-center gap-1.5 text-[9px] font-bold mt-0.5">
+                                                            <div className="flex items-center gap-1.5 text-[10px] font-bold mt-0.5">
                                                                 <span className="text-zinc-400 uppercase tracking-widest block truncate max-w-[120px]">
                                                                     {isProp && leg.prop_market ? leg.prop_market : (leg.bet_type || '').replace(/_/g, ' ')}
                                                                 </span>
@@ -222,7 +222,7 @@ export default function DailyPicksPage() {
                                                     {/* AI Insight */}
                                                     <div className={`relative z-10 mt-3 ml-12 pl-3 border-l-2 ${config.borderLeft}`}>
                                                         <div className="flex items-center gap-2 mb-1">
-                                                            <span className={`text-[8px] font-black uppercase tracking-widest ${config.text}`}>AI Logic</span>
+                                                            <span className={`text-[10px] font-black uppercase tracking-widest ${config.text}`}>AI Logic</span>
                                                             {leg.line && <span className="text-[9px] font-black text-white bg-white/10 px-1.5 py-0.5 rounded-sm">{leg.line === 'Yes' ? 'WIN' : leg.line}</span>}
                                                         </div>
                                                         <p className="text-[10px] leading-relaxed text-zinc-300">
