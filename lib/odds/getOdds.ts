@@ -16,10 +16,10 @@ export async function getOdds(sports: string[], region: string = 'us', markets: 
         const fetchPromises = sports.map(async (sport) => {
             console.log(`[API] Fetching odds for ${sport} (Region: ${region})...`);
 
-            // Time window for relevant games
+            // Time window: only future games within the next 24 hours
             const now = new Date()
-            const timeWindowStart = new Date(now.getTime() - 2 * 60 * 60 * 1000) // 2 hours ago
-            const timeWindowEnd = new Date(now.getTime() + 30 * 60 * 60 * 1000) // 30 hours future (Next day's games + buffer)
+            const timeWindowStart = now // No past games
+            const timeWindowEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000) // 24 hours future
 
             try {
                 if (isProps) {

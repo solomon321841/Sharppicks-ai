@@ -55,7 +55,7 @@ export async function getSchedule(sports: string[]): Promise<SportSchedule[]> {
             const data: any[] = await response.json()
 
             const now = new Date()
-            const timeWindowStart = new Date(now.getTime() - 2 * 60 * 60 * 1000) // 2 hours ago (live games)
+            const timeWindowStart = now // Only future games
             const timeWindowEnd = new Date(now.getTime() + 24 * 60 * 60 * 1000)   // Next 24 hours
 
             const matchups = data
