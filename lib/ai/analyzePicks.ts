@@ -491,8 +491,8 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: `Too many legs (${legs.length}). Maximum is ${request.numLegs} for Risk ${request.riskLevel}.` }
     }
 
-    if (legs.length < 2) {
-        return { valid: false, error: 'A parlay needs at least 2 legs.' }
+    if (legs.length < 3) {
+        return { valid: false, error: 'A parlay needs at least 3 legs.' }
     }
 
     // 5. Validate game IDs exist in source data

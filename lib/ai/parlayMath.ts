@@ -90,8 +90,8 @@ export function enforceLegCount(riskLevel: number, requestedLegs: number): numbe
     };
 
     const limit = maxLegs[riskLevel] || 10;
-    // A parlay requires at least 2 legs
-    return Math.max(2, Math.min(requestedLegs, limit));
+    // A parlay requires at least 3 legs
+    return Math.max(3, Math.min(requestedLegs, limit));
 }
 
 export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): string[] {
