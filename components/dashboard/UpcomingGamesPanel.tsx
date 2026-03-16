@@ -300,112 +300,109 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                 key={game.id || i}
                                                 onClick={() => toggleGame(game.id)}
                                                 className={cn(
-                                                    "group/game relative rounded-[16px] border transition-all duration-300 cursor-pointer overflow-hidden backdrop-blur-md",
+                                                    "group/game relative rounded-2xl border transition-all duration-500 cursor-pointer overflow-hidden",
                                                     isExpanded
-                                                        ? "border-emerald-500/30 bg-white/[0.04] shadow-[0_0_30px_-5px_rgba(16,185,129,0.15)]"
-                                                        : "border-white/[0.05] bg-white/[0.02] hover:border-white/[0.1] hover:bg-white/[0.04]"
+                                                        ? "border-emerald-500/40 bg-gradient-to-br from-emerald-500/[0.08] via-zinc-900/40 to-black/60 shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]"
+                                                        : "border-white/[0.08] bg-gradient-to-br from-white/[0.03] to-white/[0.01] hover:border-emerald-500/30 hover:bg-white/[0.05]"
                                                 )}
                                             >
-                                                {/* Background Glow Effect on hover */}
+                                                {/* Animated Glass Reflection */}
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent opacity-0 group-hover/game:opacity-100 transition-opacity duration-700 pointer-events-none transform -skew-x-12 translate-x-[-100%] group-hover/game:translate-x-[100%]" />
+                                                
+                                                {/* Deep Background Glow on hover */}
                                                 {!isExpanded && (
-                                                    <div className="absolute -inset-2 opacity-0 group-hover/game:opacity-20 transition-opacity duration-500 blur-xl rounded-full bg-blue-500 pointer-events-none" />
+                                                    <div className="absolute -inset-4 opacity-0 group-hover/game:opacity-40 transition-opacity duration-500 blur-2xl rounded-full bg-emerald-500/10 pointer-events-none" />
                                                 )}
-
-                                                {/* Time Row */}
-                                                <div className="relative z-10 flex items-center justify-between px-3 pt-3 pb-1 border-b border-transparent group-hover/game:border-white/[0.02] transition-colors">
+                                            
+                                                {/* Header / Time Row */}
+                                                <div className="relative z-10 flex items-center justify-between px-4 pt-3 pb-2 border-b border-transparent group-hover/game:border-white/[0.04] transition-colors">
                                                     <span className={cn(
-                                                        "flex items-center gap-1.5 text-[10px] font-black tracking-widest uppercase",
-                                                        isLive ? "text-red-400" : "text-emerald-400/80"
+                                                        "flex items-center gap-1.5 text-[10px] font-black tracking-[0.2em] uppercase rounded-full px-2 py-0.5",
+                                                        isLive ? "text-red-400 bg-red-400/10 shadow-[0_0_10px_rgba(248,113,113,0.3)]" : "text-emerald-400 bg-emerald-400/10"
                                                     )}>
                                                         {isLive ? (
-                                                            <Zap className="w-3 h-3 animate-pulse" />
+                                                            <>
+                                                                <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                                                                </span>
+                                                                <span className="animate-pulse">LIVE</span>
+                                                            </>
                                                         ) : (
-                                                            <Clock className="w-3 h-3" />
+                                                            <>
+                                                                <Clock className="w-3 h-3" />
+                                                                {relative}
+                                                            </>
                                                         )}
-                                                        {isLive ? 'LIVE' : relative}
                                                     </span>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">{time}</span>
-                                                        <ChevronDown className={cn(
-                                                            "w-3.5 h-3.5 text-zinc-500 transition-transform duration-300",
-                                                            isExpanded && "rotate-180 text-emerald-400/80"
-                                                        )} />
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.15em] bg-black/40 px-2 py-0.5 rounded-full border border-white/5">{time}</span>
                                                     </div>
                                                 </div>
-
-                                                {/* Teams Container */}
-                                                <div className="relative z-10 px-3 pb-3">
-                                                    {/* Away Team */}
-                                                    <div className="flex items-center justify-between gap-3 py-2">
-                                                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                                                            <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shrink-0 shadow-lg transition-colors group-hover/game:border-white/20">
-                                                                <TeamLogo name={game.away} className="w-4 h-4 shrink-0" />
+                                            
+                                                {/* Matchup Body */}
+                                                <div className="relative z-10 px-4 py-3 flex flex-col gap-3">
+                                                    {/* Teams Area - Modern Face-Off Stack Layout */}
+                                                    <div className="relative flex justify-between items-center bg-black/20 rounded-xl p-3 border border-white/[0.03] group-hover/game:border-white/[0.08] transition-colors">
+                                                        {/* Away Team */}
+                                                        <div className="flex flex-col items-center gap-2 w-[40%]">
+                                                            <div className="relative w-10 h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110">
+                                                                <TeamLogo name={game.away} className="w-full h-full object-contain" />
                                                             </div>
-                                                            <span className="text-[13px] font-black text-white truncate">
+                                                            <span className="text-[11px] font-black text-white text-center leading-tight">
                                                                 {game.away}
                                                             </span>
                                                         </div>
-                                                        {awayOdds && (
-                                                            <span className={cn(
-                                                                "text-[11px] font-black shrink-0 px-2 py-1 rounded-md transition-colors",
-                                                                awayOdds > 0
-                                                                    ? "text-emerald-400 bg-emerald-500/10"
-                                                                    : "text-zinc-400 bg-white/[0.04]"
-                                                            )}>
-                                                                {formatOdds(awayOdds)}
-                                                            </span>
-                                                        )}
-                                                    </div>
-
-                                                    {/* VS Divider */}
-                                                    <div className="flex items-center gap-3 py-0.5">
-                                                        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-                                                        <span className="text-[8px] font-black text-zinc-600 tracking-widest uppercase">VS</span>
-                                                        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
-                                                    </div>
-
-                                                    {/* Home Team */}
-                                                    <div className="flex items-center justify-between gap-3 py-2">
-                                                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                                                            <div className="relative w-8 h-8 rounded-full bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shrink-0 shadow-lg transition-colors group-hover/game:border-white/20">
-                                                                <TeamLogo name={game.home} className="w-4 h-4 shrink-0" />
+                                            
+                                                        {/* VS Badge */}
+                                                        <div className="flex flex-col items-center justify-center gap-1 w-[20%]">
+                                                            <div className="w-6 h-6 rounded-full bg-zinc-900 border border-white/10 flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.5)] z-10 relative">
+                                                                <span className="text-[8px] font-black text-zinc-500 tracking-widest">VS</span>
                                                             </div>
-                                                            <span className="text-[13px] font-black text-white truncate">
+                                                        </div>
+                                            
+                                                        {/* Home Team */}
+                                                        <div className="flex flex-col items-center gap-2 w-[40%]">
+                                                            <div className="relative w-10 h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110">
+                                                                <TeamLogo name={game.home} className="w-full h-full object-contain" />
+                                                            </div>
+                                                            <span className="text-[11px] font-black text-white text-center leading-tight">
                                                                 {game.home}
                                                             </span>
                                                         </div>
-                                                        {homeOdds && (
-                                                            <span className={cn(
-                                                                "text-[11px] font-black shrink-0 px-2 py-1 rounded-md transition-colors",
-                                                                homeOdds > 0
-                                                                    ? "text-emerald-400 bg-emerald-500/10"
-                                                                    : "text-zinc-400 bg-white/[0.04]"
-                                                            )}>
-                                                                {formatOdds(homeOdds)}
-                                                            </span>
-                                                        )}
                                                     </div>
+                                                    
+                                                    {/* Moneyline Preview (Unexpanded) */}
+                                                    {!isExpanded && (
+                                                        <div className="flex items-center justify-between px-1">
+                                                            <span className="text-[10px] font-black text-zinc-500 tracking-[0.15em] uppercase">Moneyline</span>
+                                                            <ChevronDown className="w-4 h-4 text-zinc-600 transition-transform duration-300 group-hover/game:text-emerald-400 group-hover/game:translate-y-0.5" />
+                                                        </div>
+                                                    )}
                                                 </div>
-
-                                                {/* Expanded Detail */}
-                                                {isExpanded && (
-                                                    <div className="relative z-10 mx-3 mb-3 pt-3 border-t border-white/[0.05]">
-                                                        <div className="grid grid-cols-2 gap-2">
-                                                            <div className="flex flex-col items-center gap-1 p-2 rounded-xl bg-black/40 border border-white/[0.04] hover:bg-white/[0.04] transition-colors">
-                                                                <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black">Away ML</span>
-                                                                <span className="text-[12px] font-black text-emerald-400">
-                                                                    {formatOdds(awayOdds)}
+                                            
+                                                {/* Expanded Detail (Odds Panel) */}
+                                                <div className={cn(
+                                                    "relative z-10 overflow-hidden transition-all duration-500 ease-in-out",
+                                                    isExpanded ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                                                )}>
+                                                    <div className="mx-4 mb-4 pt-4 border-t border-white/[0.08]">
+                                                        <div className="grid grid-cols-2 gap-3">
+                                                            <div className="group/odds flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-black/60 to-black/80 border border-white/[0.05] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]">
+                                                                <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black group-hover/odds:text-zinc-400 transition-colors">Away ML</span>
+                                                                <span className="text-[14px] font-black text-white group-hover/odds:text-emerald-400 transition-colors drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover/odds:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]">
+                                                                    {awayOdds ? formatOdds(awayOdds) : '---'}
                                                                 </span>
                                                             </div>
-                                                            <div className="flex flex-col items-center gap-1 p-2 rounded-xl bg-black/40 border border-white/[0.04] hover:bg-white/[0.04] transition-colors">
-                                                                <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black">Home ML</span>
-                                                                <span className="text-[12px] font-black text-emerald-400">
-                                                                    {formatOdds(homeOdds)}
+                                                            <div className="group/odds flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-black/60 to-black/80 border border-white/[0.05] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]">
+                                                                <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black group-hover/odds:text-zinc-400 transition-colors">Home ML</span>
+                                                                <span className="text-[14px] font-black text-white group-hover/odds:text-emerald-400 transition-colors drop-shadow-[0_0_8px_rgba(255,255,255,0.3)] group-hover/odds:drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]">
+                                                                    {homeOdds ? formatOdds(homeOdds) : '---'}
                                                                 </span>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
+                                                </div>
                                             </div>
                                         )
                                     })}
