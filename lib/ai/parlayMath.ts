@@ -62,16 +62,16 @@ export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean
     // Ranges paired by tier: Risk 1-2 share a range, 3-4, 5-6, 7-8, 9-10
     // This matches the risk personality tiers in analyzePicks
     const targetRanges: Record<number, [number, number]> = {
-        1: [100, 350],
-        2: [100, 350],
+        1: [-200, 500],
+        2: [-200, 500],
         3: [200, 700],
         4: [200, 700],
         5: [400, 1500],
         6: [400, 1500],
         7: [1000, 5000],
         8: [1000, 5000],
-        9: [3000, 25000],
-        10: [3000, 25000]
+        9: [3000, 50000],
+        10: [3000, 50000]
     };
 
     const range = targetRanges[riskLevel];
@@ -90,7 +90,8 @@ export function enforceLegCount(riskLevel: number, requestedLegs: number): numbe
     };
 
     const limit = maxLegs[riskLevel] || 10;
-    return Math.min(requestedLegs, limit);
+    // A parlay requires at least 2 legs
+    return Math.max(2, Math.min(requestedLegs, limit));
 }
 
 export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): string[] {

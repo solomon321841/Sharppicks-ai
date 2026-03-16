@@ -143,7 +143,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - For totals: pick the most obvious Over/Under based on team scoring trends.
 - Every pick should feel like "of course this will hit." These are chalk plays.
 - DO NOT pick any underdogs. DO NOT pick risky props with high lines.`,
-            oddsRange: `Combined odds MUST be between +100 and +350. This is a "should hit" parlay.`
+            oddsRange: `Combined odds MUST be between -200 and +500. This is a "should hit" parlay. Two heavy favorites combining to negative odds is perfectly fine.`
         }
     }
     if (risk <= 4) {
@@ -196,7 +196,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - Same-game parlays and correlated legs are encouraged for multiplied variance.
 - This is a "buy a lottery ticket" play. Low probability, massive payout.
 - Think about narratives: upset games, rivalry matches, contract-year players.`,
-        oddsRange: `Combined odds MUST be between +3000 and +25000.`
+        oddsRange: `Combined odds MUST be between +3000 and +50000.`
     }
 }
 
@@ -241,7 +241,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = 4
+    const maxAttempts = 5
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -254,7 +254,7 @@ export async function analyzePicks(request: ParlayRequest) {
             )
 
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('AI request timed out after 50 seconds')), 50000)
+                setTimeout(() => reject(new Error('AI request timed out after 60 seconds')), 60000)
             })
 
             const aiPromise = anthropic.messages.create({
@@ -300,8 +300,8 @@ export async function analyzePicks(request: ParlayRequest) {
 
         } catch (error: any) {
             if (error.status === 429 || error.code === 'rate_limit_error') {
-                console.warn('Rate limit hit, waiting 2s...')
-                await new Promise(resolve => setTimeout(resolve, 2000))
+                console.warn('Rate limit hit, waiting 5s...')
+                await new Promise(resolve => setTimeout(resolve, 5000))
                 lastError = 'Rate limited. Try again.'
             } else if (error.status === 400 && error.error?.message?.includes('credit balance')) {
                 return buildErrorResponse(request, 'AI service credits depleted. Please contact support.')
@@ -502,11 +502,16 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         const game = request.oddsData.find(g => g.id === leg.game_id)
         if (!game) continue
 
-        const teamMatch = matchesTeam(leg.team, game.home_team, game.away_team)
-        if (!teamMatch) {
-            return {
-                valid: false,
-                error: `Team "${leg.team}" not in game ${leg.game_id}. Valid teams: ${game.home_team} vs ${game.away_team}.`
+        // Skip team validation for player props (team = player name)
+        if (leg.bet_type === 'player_props' && leg.player) {
+            // For props, just ensure player is set — team validation is irrelevant
+        } else {
+            const teamMatch = matchesTeam(leg.team, game.home_team, game.away_team, leg.bet_type)
+            if (!teamMatch) {
+                return {
+                    valid: false,
+                    error: `Team "${leg.team}" not in game ${leg.game_id}. Valid teams: ${game.home_team} vs ${game.away_team}.`
+                }
             }
         }
 
@@ -549,9 +554,9 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
     const rangeValid = validateRiskLevel(request.riskLevel, calcOdds)
     if (!rangeValid) {
         const targetRanges: Record<number, [number, number]> = {
-            1: [100, 350], 2: [100, 350], 3: [200, 700], 4: [200, 700],
+            1: [-200, 500], 2: [-200, 500], 3: [200, 700], 4: [200, 700],
             5: [400, 1500], 6: [400, 1500], 7: [1000, 5000], 8: [1000, 5000],
-            9: [3000, 25000], 10: [3000, 25000]
+            9: [3000, 50000], 10: [3000, 50000]
         }
         const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999]
         const oddsDisplay = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
@@ -758,9 +763,13 @@ function parseWinPct(record: string | undefined): number | null {
 }
 
 // ─── Helper: fuzzy team match ──────────────────────────────────────────
-function matchesTeam(picked: string, home: string, away: string): boolean {
+function matchesTeam(picked: string, home: string, away: string, betType?: string): boolean {
     if (!picked) return false
     const p = picked.toLowerCase()
+    // "Draw" is valid for soccer 3-way moneylines
+    if (p === 'draw') return true
+    // "Over"/"Under" are valid for totals bets
+    if ((p === 'over' || p === 'under') && betType === 'totals') return true
     return (
         p === home.toLowerCase() ||
         p === away.toLowerCase() ||
