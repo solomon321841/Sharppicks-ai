@@ -123,24 +123,23 @@ export function Hero() {
                    initial={{ opacity: 0, y: 20 }}
                    animate={{ opacity: 1, y: 0 }}
                    transition={{ duration: 0.6 }}
-                   className="mb-8 md:mb-10"
+                   className="mb-8 md:mb-14"
                 >
-                    <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/[0.03] border border-white/[0.06] rounded-full backdrop-blur-2xl">
+                    <div className="inline-flex items-center gap-4 px-5 py-2.5 bg-[#0A0A0C]/50 border border-white/[0.05] rounded-full backdrop-blur-md shadow-lg">
                         <div className="flex items-center gap-2">
                             <div className="relative flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                                <div className="absolute w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                                <div className="w-2 h-2 rounded-full bg-[#1ee6a6] shadow-[0_0_8px_rgba(30,230,166,0.8)]" />
                             </div>
-                            <span className="text-[11px] font-semibold text-emerald-400 uppercase tracking-[0.15em]">Live</span>
+                            <span className="text-[12px] font-bold text-[#1ee6a6] uppercase tracking-widest">Live</span>
                         </div>
                         <div className="w-px h-3.5 bg-white/10" />
-                        <span className="text-[12px] text-zinc-400">
-                            <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines scanned right now
+                        <span className="text-[12.5px] text-zinc-400 font-medium">
+                            <span className="text-white font-bold">{liveCount.toLocaleString()}</span> lines scanned right now
                         </span>
                         <div className="w-px h-3.5 bg-white/10" />
                         <div className="flex items-center gap-1.5">
                             <BrainCircuit className="w-3.5 h-3.5 text-zinc-500" />
-                            <span className="text-[11px] text-zinc-500 font-medium">AI Engine v4.6</span>
+                            <span className="text-[12.5px] text-zinc-500 font-medium tracking-wide">AI Engine v4.6</span>
                         </div>
                     </div>
                 </motion.div>
@@ -150,20 +149,21 @@ export function Hero() {
                     initial={{ opacity: 0, y: 25 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.1 }}
-                    className="text-center w-full max-w-[900px] mx-auto mb-6"
+                    className="text-center w-full max-w-[900px] mx-auto mb-6 relative z-10"
                 >
-                    <h1 className="text-[2.75rem] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[5rem] font-extrabold tracking-[-0.03em] text-white leading-[1.05] mb-0">
+                    <h1 className="text-[4rem] sm:text-[5rem] md:text-[5.5rem] lg:text-[6.5rem] font-bold tracking-tight text-white leading-[1.03] mb-0" style={{ letterSpacing: '-0.02em' }}>
                         Our AI Finds the
                         <br />
-                        <span className="relative inline-block">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 animate-text-shimmer" 
-                                  style={{ backgroundSize: '200% auto' }}>
+                        <span className="relative inline-block pb-1">
+                            <span className="text-[#38efb0]" style={{ textShadow: '0 0 50px rgba(56, 239, 176, 0.4)' }}>
                                 Profitable Edge
                             </span>
                             {/* Underline glow accent */}
-                            <span className="absolute -bottom-2 left-0 right-0 h-[3px] bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent rounded-full" />
+                            <span className="absolute bottom-1 left-[3%] right-[3%] h-[2px] bg-gradient-to-r from-transparent via-[#38efb0] to-transparent rounded-full shadow-[0_0_20px_rgba(56,239,176,0.8)]" />
                         </span>
-                        {" "}You Can't.
+                        {" "}You
+                        <br />
+                        Can't.
                     </h1>
                 </motion.div>
 
@@ -172,13 +172,12 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-center max-w-2xl mx-auto mb-10"
+                    className="text-center max-w-[850px] mx-auto mb-12"
                 >
-                    <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light">
-                        ProfitPicks scans <span className="text-white font-medium">every sportsbook line in real-time</span>, 
-                        comparing public odds against our proprietary AI models to surface 
-                        <span className="text-emerald-400 font-medium"> mathematically proven edges</span> — 
-                        so you only bet when the numbers are in your favor.
+                    <p className="text-base sm:text-lg md:text-[1.35rem] text-zinc-400 leading-[1.6] font-light tracking-wide">
+                        ProfitPicks scans <strong className="text-white font-medium">every sportsbook line in real-time</strong>, comparing public <br className="hidden md:block"/>
+                        odds against our proprietary AI models to surface <strong className="text-[#38efb0] font-medium">mathematically<br className="hidden md:block"/>
+                        proven edges</strong> — so you only bet when the numbers are in your favor.
                     </p>
                 </motion.div>
 
@@ -187,27 +186,27 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-14 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto mt-2"
                 >
                     <Button 
                         size="lg" 
-                        className="w-full sm:w-auto px-8 h-14 text-sm font-bold uppercase tracking-[0.15em] bg-emerald-500 text-black hover:bg-emerald-400 hover:scale-[1.03] transition-all duration-300 rounded-full shadow-[0_0_50px_-12px_rgba(16,185,129,0.5)] animate-pulse-glow group"
+                        className="w-full sm:w-auto px-9 h-[54px] text-[13px] font-bold uppercase tracking-[0.1em] bg-[#1ee6a6] hover:bg-[#15d496] text-[#0A0A0C] border-none rounded-full transition-all duration-300 shadow-[0_0_40px_-10px_rgba(30,230,166,0.6)] group"
                         asChild
                     >
                         <Link href="/login">
-                            Start Winning Today
+                            START WINNING TODAY
                             <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </Button>
                     <Button 
                         size="lg" 
                         variant="outline"
-                        className="w-full sm:w-auto px-8 h-14 text-sm font-semibold text-zinc-300 hover:text-white hover:bg-white/[0.06] rounded-full transition-all duration-300 border border-white/[0.08] bg-white/[0.02] backdrop-blur-xl"
+                        className="w-full sm:w-auto px-9 h-[54px] text-[14px] font-semibold text-zinc-300 hover:text-white bg-transparent hover:bg-white/[0.04] rounded-full transition-all duration-300 border border-white/[0.08]"
                         asChild
                     >
                         <Link href="#how-it-works">
                             See How It Works
-                            <ChevronRight className="ml-1 w-4 h-4" />
+                            <ChevronRight className="ml-1 w-4 h-4 text-zinc-500" />
                         </Link>
                     </Button>
                 </motion.div>
@@ -217,21 +216,23 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
-                    className="grid grid-cols-3 gap-6 sm:gap-10 mb-16 w-full max-w-xl mx-auto"
+                    className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-16 mb-24 w-full max-w-4xl mx-auto px-4"
                 >
                     {[
-                        { value: 67, suffix: "%", label: "Win Rate", icon: Target },
-                        { value: 12, suffix: "%", prefix: "+", label: "Avg. Monthly ROI", icon: TrendingUp },
-                        { value: 50000, suffix: "+", label: "Picks Analyzed Daily", icon: Sparkles },
+                        { value: 67, suffix: "%", label: "WIN RATE", prefix: "" },
+                        { value: 12, suffix: "%", prefix: "+", label: "AVG. MONTHLY ROI" },
+                        { value: 50000, suffix: "+", prefix: "", label: "PICKS ANALYZED" },
                     ].map((stat, i) => (
-                        <div key={i} className="text-center group">
-                            <div className="flex items-center justify-center gap-1.5 mb-1">
-                                <stat.icon className="w-3.5 h-3.5 text-emerald-500/70" />
-                                <span className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight">
+                        <div key={i} className="text-center group flex flex-col items-center justify-center">
+                            <div className="flex items-center justify-center gap-3 mb-2">
+                                {i === 0 && <div className="w-5 h-5 rounded-full border border-[#1ee6a6]/30 flex items-center justify-center"><div className="w-2.5 h-2.5 bg-[#1ee6a6] rounded-full shadow-[0_0_10px_rgba(30,230,166,0.8)]"></div></div>}
+                                {i === 1 && <TrendingUp className="w-6 h-6 text-[#1ee6a6]" />}
+                                {i === 2 && <div className="hidden"></div>}
+                                <span className="text-5xl md:text-[56px] font-black text-white tracking-tight leading-none">
                                     <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
                                 </span>
                             </div>
-                            <span className="text-[10px] sm:text-xs font-semibold text-zinc-500 uppercase tracking-[0.15em]">{stat.label}</span>
+                            <span className="text-[12px] font-bold text-zinc-500 uppercase tracking-[0.2em]">{stat.label}</span>
                         </div>
                     ))}
                 </motion.div>
