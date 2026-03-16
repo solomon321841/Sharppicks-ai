@@ -1,16 +1,24 @@
-/* eslint-disable */
 /**
- * Daily Picks Generation Helper
- * Generates 4 different 3-leg parlays at varying risk levels
+ * Daily Picks Generation
+ * Generates 4 parlays (safe/balanced/risky/lotto) daily at 9 AM EST.
+ * Favors NBA and soccer games, with other sports as fallback.
  */
 
 import { prisma } from '@/lib/prisma';
 import { generateParlay } from '@/lib/ai/generateParlay';
 
+// ─── Sport priority: NBA + Soccer first, others as fallback ──────────
+const PRIMARY_SPORTS = ['basketball_nba', 'soccer_epl', 'soccer_spain_la_liga'];
+const SECONDARY_SPORTS = ['soccer_uefa_champs_league', 'icehockey_nhl', 'basketball_ncaab'];
+const ALL_SPORTS = [...PRIMARY_SPORTS, ...SECONDARY_SPORTS];
+
+// ─── Parlay configurations ───────────────────────────────────────────
 export interface DailyParlayConfig {
     type: 'safe' | 'balanced' | 'risky' | 'lotto';
     risk: number;
+    numLegs: number;
     betTypes: string[];
+    sportFocus: string;
     description: string;
 }
 
@@ -18,26 +26,34 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
     {
         type: 'safe',
         risk: 2,
-        betTypes: ['moneyline', 'spread', 'totals'],
+        numLegs: 3,
+        betTypes: ['moneyline', 'spread'],
+        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Pick ONLY heavy favorites from well-known leagues. Only use NHL or NCAAB if NBA/soccer games are insufficient.',
         description: 'Heavy favorites - high probability outcomes'
     },
     {
         type: 'balanced',
         risk: 5,
-        betTypes: ['moneyline', 'spread', 'totals', 'player_props'],
-        description: 'Mix of safe anchors and moderate market challenges'
+        numLegs: 3,
+        betTypes: ['moneyline', 'spread', 'totals'],
+        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Look for value plays with statistical edges. Only use other sports if needed.',
+        description: 'Value-driven picks with moderate risk'
     },
     {
         type: 'risky',
-        risk: 8,
-        betTypes: ['moneyline', 'player_props', 'totals', 'spread'],
-        description: 'Underdogs and high-reward player performance props'
+        risk: 7,
+        numLegs: 4,
+        betTypes: ['moneyline', 'spread', 'totals', 'player_props'],
+        sportFocus: 'Use NBA and Soccer games as your base, but include any sport where you see a strong underdog or high-value prop.',
+        description: 'Underdogs and bold predictions with real upside'
     },
     {
         type: 'lotto',
         risk: 10,
-        betTypes: ['moneyline', 'player_props', 'totals', 'spread'],
-        description: 'Extreme long-shots for massive potential payouts'
+        numLegs: 4,
+        betTypes: ['moneyline', 'spread', 'totals', 'player_props'],
+        sportFocus: 'Spread across all available sports for maximum variance. NBA and Soccer should still be represented but mix in NHL, NCAAB, Champions League for diversity.',
+        description: 'Moonshot picks for massive potential payouts'
     }
 ];
 
@@ -50,6 +66,7 @@ interface ParlayResult {
 
 interface ParlayLeg {
     sport?: string;
+    sports?: string;
     team?: string;
     betType?: string;
     bet_type?: string;
@@ -58,103 +75,112 @@ interface ParlayLeg {
     player?: string;
     line?: number;
     reasoning?: string;
+    game_time?: string;
+    game_id?: string;
+    sportsbook?: string;
+    bestBook?: string;
+    consensus_odds?: string;
+    prop_market?: string;
 }
 
 /**
- * Generate all 4 daily parlays for a given date
+ * Sort odds data so primary sports (NBA, soccer) appear first.
+ * The AI sees games in order and naturally favors earlier entries.
+ */
+function sortByPriority(oddsData: any[]): any[] {
+    const primarySet = new Set(PRIMARY_SPORTS);
+    return [...oddsData].sort((a, b) => {
+        const aIsPrimary = primarySet.has(a.sport_key) ? 0 : 1;
+        const bIsPrimary = primarySet.has(b.sport_key) ? 0 : 1;
+        return aIsPrimary - bIsPrimary;
+    });
+}
+
+/**
+ * Generate all 4 daily parlays for a given date.
+ * Runs sequentially to avoid rate limits, with one retry per parlay.
  */
 export async function generateDailyParlays(date: Date, userId: string): Promise<ParlayResult[]> {
     const results: ParlayResult[] = [];
 
-    // Available sports for daily picks
-    const sports = ['basketball_nba', 'icehockey_nhl', 'soccer_epl', 'soccer_spain_la_liga', 'basketball_ncaab', 'soccer_uefa_champs_league'];
+    // ── 1. Centralized odds fetch (one call for all sports) ──────────
+    console.log(`[Daily Picks] Fetching odds for ${ALL_SPORTS.length} sports...`);
 
-    // 0. Centralized Odds Fetching (Optimization to prevent 429 Rate Limits)
-    // We fetch ONCE for all sports/markets instead of 4x inside the loop.
-    console.log(`[Daily Picks] Fetching odds for ${sports.length} sports...`);
-
-    // Construct superset of markets needed (Standard + All Props)
     const baseMarkets = 'h2h,spreads,totals';
     const propMarkets = [
-        'player_points', 'player_rebounds', 'player_assists', 'player_threes', // NBA
-        'player_goals', 'player_shots_on_goal', // NHL
-        'player_goal_scorer_anytime', 'player_shots' // Soccer
+        'player_points', 'player_rebounds', 'player_assists', 'player_threes',
+        'player_goals', 'player_shots_on_goal',
+        'player_goal_scorer_anytime', 'player_shots'
     ].join(',');
 
-    // Try fetching everything first
     const { getOdds } = await import('@/lib/odds/getOdds');
-    let oddsData = await getOdds(sports, 'us', `${baseMarkets},${propMarkets}`);
+    let oddsData = await getOdds(ALL_SPORTS, 'us', `${baseMarkets},${propMarkets}`);
 
-    // Fallback: If rich fetch failed (empty), try just standard markets
     if (!oddsData || oddsData.length === 0) {
-        console.warn(`[Daily Picks] Rich fetch returned empty/failed. Retrying with standard markets only.`);
-        oddsData = await getOdds(sports, 'us', baseMarkets);
+        console.warn(`[Daily Picks] Rich fetch empty. Retrying standard markets only.`);
+        oddsData = await getOdds(ALL_SPORTS, 'us', baseMarkets);
     }
 
     if (!oddsData || oddsData.length === 0) {
-        console.error(`[Daily Picks] Critical: No odds data available for any sport. Generation will likely fail.`);
-    } else {
-        console.log(`[Daily Picks] Successfully fetched ${oddsData.length} games with odds data.`);
+        console.error(`[Daily Picks] No odds data available. All parlays will fail.`);
+        return DAILY_PARLAY_CONFIGS.map(c => ({ type: c.type, success: false, error: 'No odds data available' }));
     }
 
-    // Use Promise.all to generate in parallel
-    await Promise.all(DAILY_PARLAY_CONFIGS.map(async (config) => {
-        console.log(`[Daily Picks] Generating ${config.type} parlay (Risk ${config.risk})...`);
+    // Sort so NBA/soccer games appear first
+    oddsData = sortByPriority(oddsData);
 
-        try {
-            // Filter betTypes if we only have standard data
-            // eslint-disable-next-line prefer-const
-            let safeBetTypes = config.betTypes;
-            // If we are in fallback mode (standard markets only) and config wants props, we must fallback config too
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const isPropsOnly = config.betTypes.every(t => t.includes('prop'));
-            // Check if our oddsData actually HAS props? 
-            // Simplifying assumption: If we have data, valid generator will filter markets.
-            // But if we specifically ONLY fetched standard markets (fallback path), we shouldn't ask for props.
+    const primaryCount = oddsData.filter((g: any) => new Set(PRIMARY_SPORTS).has(g.sport_key)).length;
+    console.log(`[Daily Picks] ${oddsData.length} games fetched (${primaryCount} NBA/soccer).`);
 
-            // Actually, analyzePicks handles missing markets gracefully? 
-            // No, analyzePicks minification will return null if markets missing.
-            // So we should switch riskier parlays to standard bets if props are missing.
-            // But checking if "props missing" is hard on raw data without iterating.
-            // Let's rely on generateParlay's logic? 
-            // Wait, we bypassed generateParlay's fallback logic by passing oddsData!
+    // ── 2. Generate each parlay sequentially with retry ──────────────
+    for (const config of DAILY_PARLAY_CONFIGS) {
+        console.log(`[Daily Picks] Generating ${config.type} parlay (Risk ${config.risk}, ${config.numLegs} legs)...`);
 
-            // Fix: If we fell back to standard markets above, we know we don't have props.
-            // However, distinguishing "Rich Fetch Success" vs "Fallback Success" needs a flag?
-            // Checking:
-            // logic above: 
-            // 1. fetch rich -> oddsData
-            // 2. if empty -> fetch standard -> oddsData
+        let generated: any = null;
+        let lastError = '';
 
-            // If the *Rich Fetch* succeeded but returned NO props (e.g. API didn't have them), we are in trouble?
-            // No, getOdds with props creates a union.
+        // Try up to 2 times per parlay
+        for (let attempt = 1; attempt <= 2; attempt++) {
+            try {
+                generated = await generateParlay({
+                    sports: ALL_SPORTS,
+                    riskLevel: config.risk,
+                    numLegs: config.numLegs,
+                    betTypes: config.betTypes,
+                    oddsData,
+                    sportFocus: config.sportFocus
+                });
 
-            // Let's just pass the data. If generation fails, it fails.
-            // Or better: If `config.betTypes` has props, and we suspect data is missing, we could swap?
-            // For now, let's trust the data we verified.
+                if (generated && !generated.error && generated.legs?.length > 0) {
+                    break; // Success
+                }
 
-            // Configure leg count based on risk level to ensure compliance and variety
-            let numLegs = 3;
-            if (config.risk === 5) numLegs = 4;
-            if (config.risk === 8) numLegs = 5;
-            if (config.risk === 10) numLegs = 7;
+                lastError = generated?.error || 'No legs returned';
+                console.warn(`[Daily Picks] ${config.type} attempt ${attempt} failed: ${lastError}`);
+                generated = null;
 
-            // Generate parlay using AI
-            const generated = await generateParlay({
-                sports: sports,
-                riskLevel: config.risk,
-                numLegs: numLegs,
-                betTypes: safeBetTypes,
-                oddsData: oddsData // Pass pre-fetched data
-            });
-
-            if (!generated || generated.error || !generated.legs) {
-                console.error(`[Daily Picks] Failed to generate ${config.type} parlay:`, generated.error);
-                results.push({ type: config.type, success: false, error: generated.error });
-                return; // Skip if failed
+            } catch (err: any) {
+                lastError = err.message || 'Unknown error';
+                console.error(`[Daily Picks] ${config.type} attempt ${attempt} crashed: ${lastError}`);
+                generated = null;
             }
 
-            // Save parlay to database
+            // Wait before retry
+            if (attempt < 2) {
+                await new Promise(r => setTimeout(r, 3000));
+            }
+        }
+
+        if (!generated || generated.error || !generated.legs) {
+            console.error(`[Daily Picks] Failed ${config.type}: ${lastError}`);
+            results.push({ type: config.type, success: false, error: lastError });
+            // Brief pause before next parlay type
+            await new Promise(r => setTimeout(r, 2000));
+            continue;
+        }
+
+        // ── 3. Save to database ──────────────────────────────────────
+        try {
             const newParlay = await prisma.parlay.create({
                 data: {
                     user_id: userId,
@@ -162,28 +188,30 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
                     total_odds: generated.totalOdds,
                     sports: ['Mixed'],
                     is_daily: true,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     bet_types: generated.legs.map((l: ParlayLeg) => l.betType || l.bet_type || 'moneyline'),
                     num_legs: generated.legs.length,
                     risk_level: config.risk,
-                    ai_confidence: parseInt(generated.confidence) || 85,
+                    ai_confidence: parseInt(generated.confidence) || 50,
                     legs: {
                         create: generated.legs.map((l: ParlayLeg) => ({
-                            sport: l.sport || 'Mixed',
-                            team: l.team,
+                            sport: l.sport || l.sports || 'Mixed',
+                            team: l.team || '',
                             bet_type: l.bet_type || l.betType || 'moneyline',
-                            odds: l.odds,
-                            opponent: l.opponent,
+                            odds: l.odds != null ? String(l.odds) : null,
+                            opponent: l.opponent || null,
                             player: l.player || null,
                             line: (l.line !== undefined && l.line !== null) ? String(l.line) : null,
                             ai_reasoning: l.reasoning || null,
+                            game_time: l.game_time ? new Date(l.game_time) : null,
+                            prop_market: l.prop_market || null,
+                            best_book: l.bestBook || null,
+                            consensus_odds: l.consensus_odds || null,
                             result: 'pending'
                         }))
                     }
                 }
             });
 
-            // Link to DailyPick
             await prisma.dailyPick.create({
                 data: {
                     parlay_id: newParlay.id,
@@ -192,15 +220,17 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
                 }
             });
 
-            console.log(`[Daily Picks] ✅ Generated ${config.type} parlay (ID: ${newParlay.id})`);
+            console.log(`[Daily Picks] ${config.type} saved (ID: ${newParlay.id}, Odds: ${generated.totalOdds}, Legs: ${generated.legs.length})`);
             results.push({ type: config.type, success: true, parlayId: newParlay.id });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error(`[Daily Picks] Error generating ${config.type} parlay:`, error);
-            results.push({ type: config.type, success: false, error: error.message });
+        } catch (dbError: any) {
+            console.error(`[Daily Picks] DB save failed for ${config.type}:`, dbError);
+            results.push({ type: config.type, success: false, error: dbError.message });
         }
-    }));
+
+        // Brief pause between parlays to avoid rate limits
+        await new Promise(r => setTimeout(r, 2000));
+    }
 
     return results;
 }

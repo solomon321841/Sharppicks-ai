@@ -16,6 +16,7 @@ export type ParlayRequest = {
     oddsData: any[]
     statsContext?: Map<string, any>   // ESPN team stats + injuries per game
     shoppingData?: Map<string, any>   // Line shopping data per game
+    sportFocus?: string               // AI hint for which sports to prioritize
 }
 
 // ─── Bet type normalization ────────────────────────────────────────────
@@ -78,7 +79,10 @@ ${hasProps ? `- For player props: MIX different stat categories. Do NOT make eve
 - Risk Level: ${riskLevel}/10
 - Number of Legs: ${numLegs}
 - Allowed Bet Types: ${betTypesStr}
-
+${request.sportFocus ? `
+## SPORT PRIORITY
+${request.sportFocus}
+` : ''}
 ${hasProps ? `## PLAYER PROPS FORMAT
 When a leg is a player prop:
 - Set bet_type to "player_props"
@@ -193,11 +197,12 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - Go for the home runs. Heavy underdogs, extreme player props, long-shot outcomes.
 - For player props: pick lines WELL ABOVE average. These need career-night performances.
   Example: Role player to score 20+ points, backup goalie to make 35+ saves, underdog QB to throw 3+ TDs.
-- Target significant underdogs (+200 to +500 per leg).
+- Target moderate underdogs (+150 to +350 per leg). Do NOT pick every leg at +400 or higher — that will overshoot.
 - Same-game parlays and correlated legs are encouraged for multiplied variance.
 - This is a "buy a lottery ticket" play. Low probability, massive payout.
-- Think about narratives: upset games, rivalry matches, contract-year players.`,
-        oddsRange: `Combined odds MUST be between +3000 and +50000.`
+- Think about narratives: upset games, rivalry matches, contract-year players.
+- MATH TIP: With 4 legs, each leg averaging +200 gives combined ≈ +8000. Each leg averaging +300 gives ≈ +25000. Mix 2-3 underdogs (+150 to +300) with 1 bigger dog (+350 to +500) to land in range.`,
+        oddsRange: `Combined odds MUST be between +3000 and +50000. CRITICAL: Do not pick all legs at +400 or higher — this WILL overshoot. Keep most legs between +150 and +300.`
     }
 }
 
