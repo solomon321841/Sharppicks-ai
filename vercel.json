@@ -3,6 +3,10 @@
         {
             "path": "/api/cron/check-results",
             "schedule": "0 9 * * *"
+        },
+        {
+            "path": "/api/cron/generate-daily-picks",
+            "schedule": "0 14 * * *"
         }
     ]
 }

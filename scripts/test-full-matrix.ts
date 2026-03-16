@@ -11,8 +11,7 @@
  *   (no env)          — Runs ALL tests
  */
 
-process.env.ODDS_API_KEY = process.env.ODDS_API_KEY || 'ff4ef13bb0192313085f97891f5b058d';
-process.env.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || 'sk-ant-api03-placeholder';
+// API keys loaded from .env.local below — never hardcode secrets
 
 import fs from 'fs';
 import path from 'path';
