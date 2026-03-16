@@ -2,13 +2,13 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowUpRight, BarChart3, ChevronRight, Target, Zap, BrainCircuit, Activity, Cpu } from "lucide-react"
+import { ArrowUpRight, BarChart3, ChevronRight, Target, Zap, BrainCircuit, Activity, Cpu, LineChart, ShieldCheck } from "lucide-react"
 import { FadeIn } from "./FadeIn"
 import { motion } from "framer-motion"
 
 export function Hero() {
     return (
-        <section className="relative overflow-hidden flex flex-col items-center pt-24 pb-8 md:pt-32 md:pb-24 min-h-[95vh] justify-center">
+        <section className="relative overflow-hidden flex flex-col items-center pt-24 pb-8 md:pt-32 md:pb-32 min-h-[90vh] justify-center">
             {/* Background Effects */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-[-10%] md:top-[-20%] left-1/2 -translate-x-1/2 w-[600px] md:w-[1200px] h-[500px] md:h-[800px] bg-emerald-500/15 blur-[120px] rounded-[100%] pointer-events-none opacity-50" />
@@ -29,7 +29,7 @@ export function Hero() {
                             </div>
                             <div className="flex items-center gap-1.5 pr-2">
                                 <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest hidden sm:inline-block">Powered by</span>
-                                <span className="text-xs font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-400 tracking-wide uppercase">Claude 3.5 Sonnet Engine</span>
+                                <span className="text-xs font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-400 tracking-wide uppercase">Claude 3.5 Opus Engine</span>
                             </div>
                         </div>
                     </div>
@@ -37,16 +37,16 @@ export function Hero() {
 
                 {/* Main Headline */}
                 <FadeIn delay={0.1} className="text-center w-full max-w-5xl mx-auto space-y-6">
-                    <h1 className="text-[3.5rem] leading-[0.9] sm:text-7xl md:text-[6rem] lg:text-[7.5rem] font-black tracking-tighter text-white uppercase italic">
-                        Dominate the <br className="hidden md:block"/>
-                        <span className="relative inline-block mt-1 md:mt-3 px-2 md:px-0">
+                    <h1 className="text-[3.5rem] leading-[1.05] sm:text-6xl md:text-[5.5rem] lg:text-[6.5rem] font-bold tracking-tight text-white mb-6">
+                        Precision Analytics. <br className="hidden md:block"/>
+                        <span className="relative inline-block mt-1 md:mt-2">
                             <span className="absolute -inset-4 bg-emerald-500/20 blur-3xl rounded-full" />
-                            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-white via-emerald-100 to-emerald-400 drop-shadow-[0_0_40px_rgba(16,185,129,0.3)]">Sportsbooks.</span>
+                            <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-400 to-emerald-400 drop-shadow-[0_0_40px_rgba(16,185,129,0.3)]">Maximum Edge.</span>
                         </span>
                     </h1>
                     
                     <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-zinc-400 max-w-3xl mx-auto font-medium leading-relaxed mt-6">
-                        Stop guessing. We use the world's best AI system to scan millions of data points and uncover mathematically profitable bets in real-time.
+                        Stop guessing. We use the world's most advanced AI engine to scan millions of data points and uncover mathematically profitable bets in real-time.
                     </p>
                 </FadeIn>
 
@@ -54,7 +54,7 @@ export function Hero() {
                 <FadeIn delay={0.2} className="w-full flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 md:mt-12 relative z-20">
                     <Button 
                         size="lg" 
-                        className="w-full sm:w-auto px-8 md:px-10 h-14 text-sm md:text-base font-black uppercase tracking-widest bg-white text-black hover:bg-zinc-200 hover:scale-105 transition-all duration-300 rounded-full shadow-[0_0_40px_-5px_rgba(255,255,255,0.4)]"
+                        className="w-full sm:w-auto px-8 md:px-10 h-14 text-sm md:text-base font-bold uppercase tracking-widest bg-white text-black hover:bg-zinc-200 hover:scale-105 transition-all duration-300 rounded-full shadow-[0_0_40px_-5px_rgba(255,255,255,0.4)]"
                         asChild
                     >
                         <Link href="/login">
@@ -73,90 +73,57 @@ export function Hero() {
                     </Button>
                 </FadeIn>
 
-                {/* Visualizer */}
-                <FadeIn delay={0.3} className="mt-16 w-full max-w-5xl mx-auto relative hidden md:block">
-                    <div className="absolute -inset-1 bg-gradient-to-b from-emerald-500/20 to-transparent blur-2xl rounded-[2rem] opacity-50" />
+                {/* Visualizer - Liquid Glass Data Center */}
+                <FadeIn delay={0.3} className="mt-20 w-full max-w-5xl mx-auto relative hidden md:block">
+                    <div className="absolute inset-x-20 top-0 h-[200px] bg-emerald-500/20 blur-[100px] rounded-full pointer-events-none" />
                     
-                    <div className="relative bg-[#0a0a0a]/80 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-2xl shadow-2xl">
-                        {/* Window Header */}
-                        <div className="px-6 py-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="flex gap-1.5">
-                                    <div className="w-3 h-3 rounded-full bg-zinc-800" />
-                                    <div className="w-3 h-3 rounded-full bg-zinc-800" />
-                                    <div className="w-3 h-3 rounded-full bg-zinc-800" />
-                                </div>
-                                <div className="h-4 w-px bg-white/10 mx-2" />
-                                <div className="flex items-center gap-2 px-2.5 py-1 bg-emerald-500/10 rounded border border-emerald-500/20">
-                                    <Cpu className="w-3.5 h-3.5 text-emerald-400" />
-                                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Claude v3.5 Sonnet / Edge Matrix Active</span>
-                                </div>
+                    <div className="relative grid grid-cols-3 gap-6">
+                        {/* Card 1 */}
+                        <div className="col-span-1 rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-3xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col justify-between overflow-hidden group hover:border-white/[0.1] transition-all duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 blur-[50px] rounded-full group-hover:bg-emerald-500/20 transition-all duration-500" />
+                            <div>
+                                <Activity className="w-8 h-8 text-emerald-400/70 mb-6 group-hover:text-emerald-400 group-hover:scale-110 transition-all duration-500" />
+                                <div className="text-zinc-400 text-sm font-medium mb-2 uppercase tracking-widest">Algorithm Speed</div>
+                                <div className="text-4xl font-light text-white tracking-tight">0.2<span className="text-xl text-emerald-500 ml-1">ms</span></div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="relative flex h-2 w-2">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                </span>
-                                <span className="text-[10px] text-zinc-400 font-mono tracking-wider">LIVE VEGAS SYNC</span>
+                            <div className="mt-8">
+                                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 w-[92%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/5 border-b border-white/5">
-                            {/* Terminal output */}
-                            <div className="col-span-2 p-6 bg-black/40">
-                                <div className="font-mono text-[11px] md:text-sm text-zinc-500 space-y-2.5 h-[180px] overflow-hidden relative">
-                                    <motion.div 
-                                        animate={{ y: ["0%", "-50%"] }}
-                                        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                                    >
-                                        <p>&gt;<span className="text-emerald-500"> [SYS]</span> Connecting to SharpPicks API... 14ms</p>
-                                        <p>&gt;<span className="text-emerald-400"> [CLAUDE_ENGINE]</span> Analyzing NBA slate (8 games)...</p>
-                                        <p className="pl-4 border-l border-white/10 ml-2">Loading historical player data (LeBron James + AD)</p>
-                                        <p className="pl-4 border-l border-white/10 ml-2">Factoring in recent travel schedule and back-to-back...</p>
-                                        <p>&gt;<span className="text-emerald-500"> [MATH_MODEL]</span> Simulating game outcomes (10,000 iterations)...</p>
-                                        <p>&gt;<span className="text-teal-400"> [DETECT]</span> Edge found: LAL Moneyline (+145 on DraftKings)</p>
-                                        <p className="pl-4 border-l border-emerald-500/30 ml-2 text-white">True Probability: 45.2% | Implied: 40.8% | <span className="text-emerald-400 font-bold">+4.4% EV</span></p>
-                                        <p>&gt;<span className="text-emerald-500"> [SYS]</span> Pushing to live dashboard.</p>
-                                        <br/>
-                                        <p>&gt;<span className="text-emerald-500"> [SYS]</span> Fetching live odds from FanDuel, BetMGM, Caesars...</p>
-                                        <p>&gt;<span className="text-emerald-400"> [CLAUDE_ENGINE]</span> Running regression on NHL goalie start...</p>
-                                        <p>&gt;<span className="text-emerald-500"> [MATH_MODEL]</span> Implied volatility detected. Recalculating.</p>
-                                        <p>&gt;<span className="text-zinc-400"> [INFO]</span> No profitable edge detected. Standing by.</p>
-                                        <br/>
-                                        <p>&gt;<span className="text-emerald-500"> [SYS]</span> Connecting to SharpPicks API... 12ms</p>
-                                    </motion.div>
-                                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[rgb(6,6,6)] to-transparent" />
-                                </div>
+                        {/* Card 2  - Main Middle */}
+                        <div className="col-span-1 rounded-3xl bg-gradient-to-b from-emerald-500/[0.08] to-transparent border border-emerald-500/20 backdrop-blur-3xl p-8 shadow-[0_0_60px_rgba(16,185,129,0.15)] flex flex-col justify-between relative overflow-hidden transform scale-105 z-10 hover:border-emerald-500/40 transition-all duration-500">
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-400/20 blur-[60px] rounded-full" />
+                            
+                            <div className="relative z-10">
+                                <BrainCircuit className="w-8 h-8 text-emerald-400 mb-6" />
+                                <div className="text-emerald-500 font-bold mb-2 tracking-widest uppercase text-[10px]">Claude 3.5 Opus Active</div>
+                                <div className="text-5xl font-bold text-white tracking-tighter drop-shadow-md">4.8M<span className="text-3xl text-emerald-400">+</span></div>
+                                <div className="text-zinc-400 text-sm mt-2">Data points processed / sec</div>
                             </div>
                             
-                            {/* Live metrics */}
-                            <div className="col-span-1 p-6 flex flex-col justify-center gap-6">
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="text-[10px] text-zinc-500 uppercase font-black tracking-widest flex items-center gap-1.5"><Activity className="w-3 h-3" /> Process Speed</div>
-                                        <div className="text-xs font-mono font-bold text-emerald-400">14.2ms</div>
-                                    </div>
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-500 w-[85%] rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="text-[10px] text-zinc-500 uppercase font-black tracking-widest flex items-center gap-1.5"><Target className="w-3 h-3" /> Edge Threshold</div>
-                                        <div className="text-xs font-mono font-bold text-teal-400">&gt; 3.5% EV</div>
-                                    </div>
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-teal-400 w-[60%] rounded-full shadow-[0_0_10px_rgba(45,212,191,0.5)]" />
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <div className="flex items-center justify-between mb-2">
-                                        <div className="text-[10px] text-zinc-500 uppercase font-black tracking-widest flex items-center gap-1.5"><BarChart3 className="w-3 h-3" /> Data Volume</div>
-                                        <div className="text-xs font-mono font-bold text-white">24h Scope</div>
-                                    </div>
-                                    <div className="text-3xl font-black text-white italic tracking-tighter">4,821<span className="text-lg text-zinc-500">k</span><span className="text-emerald-500 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">+</span></div>
+                            <div className="relative z-10 mt-8 flex items-center gap-3 bg-black/40 w-max px-4 py-2 rounded-full border border-white/5">
+                                <span className="relative flex h-2.5 w-2.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                </span>
+                                <span className="text-[10px] font-bold text-white tracking-widest uppercase">Live Market Sync</span>
+                            </div>
+                        </div>
+
+                        {/* Card 3 */}
+                        <div className="col-span-1 rounded-3xl bg-white/[0.02] border border-white/[0.05] backdrop-blur-3xl p-8 shadow-[0_0_40px_rgba(0,0,0,0.5)] flex flex-col justify-between overflow-hidden group hover:border-white/[0.1] transition-all duration-500">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 blur-[50px] rounded-full group-hover:bg-teal-500/20 transition-all duration-500" />
+                            <div>
+                                <Target className="w-8 h-8 text-teal-400/70 mb-6 group-hover:text-teal-400 group-hover:scale-110 transition-all duration-500" />
+                                <div className="text-zinc-400 text-sm font-medium mb-2 uppercase tracking-widest">Target Edge</div>
+                                <div className="text-4xl font-light text-white tracking-tight">+18.4<span className="text-xl text-teal-500 ml-1">%</span></div>
+                            </div>
+                            <div className="mt-8">
+                                 <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-teal-400 to-emerald-400 w-[78%] rounded-full shadow-[0_0_10px_rgba(45,212,191,0.5)]" />
                                 </div>
                             </div>
                         </div>
