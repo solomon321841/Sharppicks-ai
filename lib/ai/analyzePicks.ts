@@ -89,6 +89,7 @@ When a leg is a player prop:
 - Set prop_market to the stat category: "Points", "Rebounds", "Assists", "Threes", "Goals", "Shots", "Saves", etc.
 - Set player to the player name
 - Set line to "Over X.5" or "Under X.5" (the exact threshold from the data)
+- CRITICAL: Set "team" to the CORRECT team the player plays for. Use the "keyPlayers" data under home/away stats to determine which team the player belongs to. The player's team must be either "home_team" or "away_team" from the game data. NEVER guess — if you cannot confirm which team the player is on from the data, do not pick that player.
 ` : ''}
 
 ## REAL STATISTICS (ESPN)
@@ -362,6 +363,8 @@ function minifyGames(request: ParlayRequest): any[] {
 
         const gameData: any = {
             id: g.id,
+            home_team: g.home_team,
+            away_team: g.away_team,
             matchup: `${g.away_team} @ ${g.home_team}`,
             start: g.commence_time,
             book: bookmaker.key,
@@ -508,9 +511,41 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         const game = request.oddsData.find(g => g.id === leg.game_id)
         if (!game) continue
 
-        // Skip team validation for player props (team = player name)
         if (leg.bet_type === 'player_props' && leg.player) {
-            // For props, just ensure player is set — team validation is irrelevant
+            // For player props: resolve the correct team from ESPN keyPlayers data
+            const stats = request.statsContext?.get(leg.game_id)
+            const playerName = leg.player.toLowerCase()
+            let resolvedTeam: string | null = null
+
+            if (stats) {
+                const homeMatch = (stats.homeKeyPlayers || []).some((p: any) =>
+                    (p.name || '').toLowerCase().includes(playerName) || playerName.includes((p.name || '').toLowerCase())
+                )
+                const awayMatch = (stats.awayKeyPlayers || []).some((p: any) =>
+                    (p.name || '').toLowerCase().includes(playerName) || playerName.includes((p.name || '').toLowerCase())
+                )
+
+                if (homeMatch && !awayMatch) resolvedTeam = game.home_team
+                else if (awayMatch && !homeMatch) resolvedTeam = game.away_team
+            }
+
+            if (resolvedTeam) {
+                // Use the verified team from ESPN data
+                leg.team = resolvedTeam
+            } else {
+                // Fallback: ensure the AI's team at least matches one of the game's teams
+                const teamMatch = matchesTeam(leg.team, game.home_team, game.away_team, leg.bet_type)
+                if (!teamMatch) {
+                    // Can't determine team — default to home team (player prop is in this game's market)
+                    leg.team = game.home_team
+                }
+            }
+
+            // Set opponent based on resolved/validated team
+            const isHomeTeam = leg.team === game.home_team ||
+                game.home_team.toLowerCase().includes(leg.team.toLowerCase()) ||
+                leg.team.toLowerCase().includes(game.home_team.toLowerCase())
+            leg.opponent = isHomeTeam ? game.away_team : game.home_team
         } else {
             const teamMatch = matchesTeam(leg.team, game.home_team, game.away_team, leg.bet_type)
             if (!teamMatch) {
