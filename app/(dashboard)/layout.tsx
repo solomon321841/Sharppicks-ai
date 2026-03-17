@@ -9,12 +9,12 @@ export default function DashboardLayout({
 }) {
     return (
         <NotificationProvider>
-            <div className="flex flex-col lg:flex-row h-screen overflow-hidden bg-background text-foreground">
+            <div className="flex flex-col lg:flex-row h-[100dvh] overflow-hidden bg-background text-foreground">
                 <MobileNav />
                 <div className="hidden lg:flex">
                     <Sidebar />
                 </div>
-                <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+                <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 lg:p-8 pb-safe">
                     <div className="mx-auto max-w-6xl">
                         {children}
                     </div>

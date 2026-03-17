@@ -69,7 +69,7 @@ export function Pricing() {
             const response = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tier: tier.name.toLowerCase() })
+                body: JSON.stringify({ tier: tier.id })
             })
 
             const data = await response.json()
@@ -104,11 +104,11 @@ export function Pricing() {
             </div>
 
             <div className="container px-4 md:px-6 relative z-10 flex flex-col items-center">
-                <FadeIn className="flex flex-col items-center justify-center space-y-6 text-center mb-12 md:mb-24 max-w-4xl mx-auto">
+                <FadeIn className="flex flex-col items-center justify-center space-y-6 text-center mb-8 md:mb-24 max-w-4xl mx-auto">
                     <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-full px-6 py-2">
                         <span className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Pricing Plans</span>
                     </div>
-                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-white">
+                    <h2 className="text-3xl md:text-7xl font-black tracking-tighter text-white">
                         Simple, <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Transparent</span> Pricing
                     </h2>
                     <p className="max-w-[700px] text-zinc-400 text-lg md:text-xl font-light">
@@ -118,7 +118,7 @@ export function Pricing() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center max-w-[1400px] mx-auto w-full pt-6">
                     {tiers.map((tier, i) => (
-                        <FadeIn key={tier.name} delay={i * 0.1} className={`relative flex flex-col h-full group ${tier.popular ? 'scale-105 z-10' : ''}`}>
+                        <FadeIn key={tier.name} delay={i * 0.1} className={`relative flex flex-col h-full group ${tier.popular ? 'md:scale-105 z-10' : ''}`}>
 
                             {/* Floating Badge (Outside Overflow) */}
                             {tier.popular && (

@@ -1,7 +1,5 @@
 export type Tier = 'free' | 'starter' | 'pro' | 'whale';
 
-// ...existing code...
-// ...existing code...
 export const TIERS: Record<Tier, {
     name: string;
     label: string;
@@ -11,7 +9,7 @@ export const TIERS: Record<Tier, {
     canTrackBets: boolean;
     parlayLimit: number;
     customBuilderLimit: number;
-    stripePriceId: string; // Added for Checkout
+    stripePriceId: string;
 }> = {
     free: {
         name: 'free',
@@ -22,7 +20,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: false,
         parlayLimit: 1,
         customBuilderLimit: 2,
-        stripePriceId: '' // Free tier has no price ID
+        stripePriceId: ''
     },
     starter: {
         name: 'starter',
@@ -33,7 +31,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: 3,
         customBuilderLimit: 0,
-        stripePriceId: 'price_1T2E3mKk1uA6nY1UgfbBCPtV'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || 'price_1T2E3mKk1uA6nY1UgfbBCPtV'
     },
     pro: {
         name: 'pro',
@@ -44,7 +42,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: -1,
-        stripePriceId: 'price_1T2E4XKk1uA6nY1USvhpgpF8'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || 'price_1T2E4XKk1uA6nY1USvhpgpF8'
     },
     whale: {
         name: 'whale',
@@ -55,7 +53,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: -1,
-        stripePriceId: 'price_1T2E5DKk1uA6nY1Ukksi2zLI'
+        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || 'price_1T2E5DKk1uA6nY1Ukksi2zLI'
     }
 };
 
@@ -71,4 +69,15 @@ export function canAccessFeature(tier: string, feature: 'build' | 'track' | 'dai
         case 'daily': return t.canAccessDailyPicks;
         default: return false;
     }
+}
+
+/**
+ * Reverse-lookup: find tier name from a Stripe price ID.
+ * Returns null if no tier matches.
+ */
+export function getTierByPriceId(priceId: string): Tier | null {
+    const entry = (Object.entries(TIERS) as [Tier, typeof TIERS[Tier]][]).find(
+        ([, config]) => config.stripePriceId === priceId
+    );
+    return entry ? entry[0] : null;
 }

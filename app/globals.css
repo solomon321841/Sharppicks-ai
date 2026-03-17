@@ -60,16 +60,55 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-background text-foreground;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
   }
 }
 
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Prevent horizontal overflow on mobile - belt-and-suspenders approach */
+html, body {
+  max-width: 100vw;
+}
+
+@media (max-width: 768px) {
+  html, body, body > div:first-child {
+    overflow-x: hidden !important;
+    max-width: 100vw;
+  }
+}
+
+/* Mobile scrollbar: hide on small screens for cleaner look */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    display: none;
+  }
+
+  /* Ensure smooth momentum scrolling on iOS */
+  .overflow-y-auto, .overflow-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
 }
 
 /* Custom Scrollbar for Webkit */

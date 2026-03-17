@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
-import { ReactNode, useRef } from "react"
+import { ReactNode, useRef, useState, useEffect } from "react"
 
 interface DashboardCardProps {
     children: ReactNode
@@ -31,8 +31,9 @@ const glowMap = {
     amber: 'bg-amber-500/20',
 }
 
-export function DashboardCard({ children, className = "", contentClassName = "p-6 md:p-8", glowColor = 'zinc', delay = 0 }: DashboardCardProps) {
+export function DashboardCard({ children, className = "", contentClassName = "p-4 sm:p-6 md:p-8", glowColor = 'zinc', delay = 0 }: DashboardCardProps) {
     const cardRef = useRef<HTMLDivElement>(null)
+    const [isMobile, setIsMobile] = useState(false)
     const x = useMotionValue(0)
     const y = useMotionValue(0)
 
@@ -42,8 +43,12 @@ export function DashboardCard({ children, className = "", contentClassName = "p-
     const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [6, -6]), { stiffness: 150, damping: 20 })
     const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-6, 6]), { stiffness: 150, damping: 20 })
 
+    useEffect(() => {
+        setIsMobile(window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768)
+    }, [])
+
     function onMouseMove(event: React.MouseEvent<HTMLDivElement>) {
-        if (!cardRef.current) return
+        if (isMobile || !cardRef.current) return
         const rect = cardRef.current.getBoundingClientRect()
         const width = rect.width
         const height = rect.height
@@ -70,8 +75,8 @@ export function DashboardCard({ children, className = "", contentClassName = "p-
             transition={{ duration: 0.5, delay }}
             onMouseMove={onMouseMove}
             onMouseLeave={onMouseLeave}
-            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className={`group relative rounded-[2rem] border bg-zinc-950/40 backdrop-blur-3xl transition-colors duration-500 hover:bg-zinc-900/40 overflow-hidden ${colorMap[glowColor]} ${className}`}
+            style={isMobile ? undefined : { rotateX, rotateY, transformStyle: "preserve-3d" }}
+            className={`group relative rounded-2xl sm:rounded-[2rem] border bg-zinc-950/40 backdrop-blur-3xl transition-colors duration-500 hover:bg-zinc-900/40 overflow-hidden ${colorMap[glowColor]} ${className}`}
         >
             {/* Reactive Mouse Glow */}
             <motion.div
@@ -94,7 +99,7 @@ export function DashboardCard({ children, className = "", contentClassName = "p-
             <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/[0.01] to-white/[0.03] pointer-events-none" />
 
             {/* Content Container */}
-            <div className={`relative z-10 h-full ${contentClassName}`} style={{ transform: "translateZ(30px)" }}>
+            <div className={`relative z-10 h-full ${contentClassName}`} style={isMobile ? undefined : { transform: "translateZ(30px)" }}>
                 {children}
             </div>
         </motion.div>

@@ -67,7 +67,7 @@ export function Testimonials() {
                         <span className="text-xs font-bold text-emerald-300 uppercase tracking-[0.2em]">System Capabilities</span>
                     </div>
 
-                    <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-white">
+                    <h2 className="text-3xl md:text-7xl font-black tracking-tighter text-white">
                         Built for <span className="text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 drop-shadow-sm">Domination</span>
                     </h2>
 

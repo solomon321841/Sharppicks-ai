@@ -40,7 +40,7 @@ export function HowItWorks() {
     })
 
     return (
-        <section ref={ref} id="how-it-works" className="relative bg-black pt-8 md:pt-12 pb-16 md:pb-24">
+        <section ref={ref} id="how-it-works" className="relative bg-black pt-8 md:pt-12 pb-16 md:pb-24 overflow-hidden">
             {/* Section Header */}
             <FadeIn className="text-center mb-12 md:mb-24 relative z-10 px-4">
                 <div className="inline-flex items-center gap-2 bg-zinc-900 border border-white/10 rounded-full px-5 py-2 mb-6 shadow-xl">
@@ -50,7 +50,7 @@ export function HowItWorks() {
                     </span>
                     <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">The Process</span>
                 </div>
-                <h2 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-4 md:mb-6">
+                <h2 className="text-3xl md:text-7xl font-black text-white tracking-tighter mb-4 md:mb-6">
                     How We <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-600">Win</span>
                 </h2>
                 <p className="text-base md:text-lg text-zinc-400 max-w-xl mx-auto">
@@ -84,7 +84,7 @@ export function HowItWorks() {
                             <Globe className="w-4 h-4 text-emerald-400" />
                             <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Global Reach</span>
                         </div>
-                        <h3 className="text-4xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tighter loading-none">
+                        <h3 className="text-3xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tighter loading-none">
                             Comprehensive <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-500">Coverage</span>
                         </h3>
                         <p className="text-lg md:text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">

@@ -150,7 +150,7 @@ export function ParlayBuilder() {
 
     return (
         <div className="grid gap-6 lg:grid-cols-12 items-start lg:h-[calc(100vh-140px)] lg:min-h-[500px]">
-            <div className="lg:col-span-7 h-full flex flex-col">
+            <div className="lg:col-span-7 h-auto lg:h-full flex flex-col">
                 <div className="flex-1 space-y-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-4 shadow-2xl flex flex-col">
 
                     {/* Compact Header */}
@@ -262,7 +262,7 @@ export function ParlayBuilder() {
             <div className="lg:col-span-5 h-auto lg:h-full space-y-4">
                 {/* Schedule / Results Column */}
                 {!result && !errorState && schedule && (
-                <div className="h-full rounded-[24px] border border-white/[0.08] bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-xl overflow-hidden flex flex-col relative shadow-2xl">
+                <div className="h-full max-h-[500px] lg:max-h-none rounded-[24px] border border-white/[0.08] bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-xl overflow-hidden flex flex-col relative shadow-2xl">
                         {/* Shimmer line top */}
                         <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
                         

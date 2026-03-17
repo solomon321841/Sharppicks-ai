@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -10,9 +10,14 @@ export const metadata: Metadata = {
   description: "AI-powered sports betting automated parlays for entertainment only.",
 };
 
-import { Toaster } from "@/components/ui/toaster";
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
-// ... (imports)
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -22,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}
       >
-        {children}
+        <div className="overflow-x-hidden w-full">
+          {children}
+        </div>
         <Toaster />
       </body>
     </html>

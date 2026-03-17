@@ -212,7 +212,7 @@ export function AuditDashboard() {
                 <CardContent>
                     <div className="space-y-1">
                         {data.recentResults.map((bet) => (
-                            <div key={bet.id} className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-white/[0.02] transition-colors border-b border-white/[0.02] last:border-0">
+                            <div key={bet.id} className="flex flex-wrap items-center justify-between gap-2 py-2 px-2 rounded-lg hover:bg-white/[0.02] transition-colors border-b border-white/[0.02] last:border-0">
                                 <div className="flex items-center gap-3">
                                     <Badge className={`text-[9px] md:text-[8px] font-black uppercase w-14 justify-center ${bet.result === 'won' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' :
                                         bet.result === 'lost' ? 'bg-red-500/20 text-red-400 border-red-500/30' :

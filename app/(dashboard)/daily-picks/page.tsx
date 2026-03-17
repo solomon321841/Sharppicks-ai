@@ -91,10 +91,12 @@ export default function DailyPicksPage() {
     }, [])
 
     return (
-        <div className="relative flex flex-col h-full lg:max-h-[calc(100vh-2rem)] overflow-y-auto lg:overflow-hidden">
+        <div className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden">
             {/* Ambient Background Orbs */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 blur-[120px] rounded-full" />
+            </div>
 
             {/* Header section - Compacted margins */}
             <div className="relative z-10 shrink-0 mb-4 px-2 pt-2 flex items-end justify-between">
@@ -220,7 +222,7 @@ export default function DailyPicksPage() {
                                                     </div>
 
                                                     {/* AI Insight */}
-                                                    <div className={`relative z-10 mt-3 ml-12 pl-3 border-l-2 ${config.borderLeft}`}>
+                                                    <div className={`relative z-10 mt-3 ml-10 sm:ml-12 pl-3 border-l-2 ${config.borderLeft}`}>
                                                         <div className="flex items-center gap-2 mb-1">
                                                             <span className={`text-[10px] font-black uppercase tracking-widest ${config.text}`}>AI Logic</span>
                                                             {leg.line && <span className="text-[9px] font-black text-white bg-white/10 px-1.5 py-0.5 rounded-sm">{leg.line === 'Yes' ? 'WIN' : leg.line}</span>}

@@ -98,7 +98,7 @@ export default function BetHistoryPage() {
 
     return (
         <TierGate feature="track" featureName="Bet Archive">
-            <div className="relative h-full flex flex-col space-y-6 lg:space-y-8 overflow-hidden">
+            <div className="relative h-full flex flex-col space-y-4 lg:space-y-8">
                 {/* Sober Elite Background: Reduced movement, lower opacity */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                     <motion.div
@@ -134,7 +134,7 @@ export default function BetHistoryPage() {
                         </motion.div>
 
                         <div className="space-y-0">
-                            <h2 className="text-3xl md:text-5xl lg:text-5xl font-black tracking-custom text-white uppercase italic leading-[1]">
+                            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-custom text-white uppercase italic leading-[1]">
                                 Bet <span className="text-emerald-500/90">Archive</span>
                             </h2>
                             <p className="text-zinc-600 font-bold tracking-[0.2em] uppercase text-[10px] md:text-[9px] mt-1 border-l border-emerald-500/30 pl-3">
@@ -211,7 +211,7 @@ export default function BetHistoryPage() {
                                         >
                                             <div className="flex flex-col lg:flex-row">
                                                 {/* Data Sidebar: Professional spacing */}
-                                                <div className="lg:w-40 bg-zinc-950/40 border-r border-white/5 p-5 flex lg:flex-col justify-between items-start gap-4 shrink-0">
+                                                <div className="lg:w-40 bg-zinc-950/40 border-r border-white/5 p-5 flex flex-wrap lg:flex-col justify-between items-start gap-4 shrink-0">
                                                     <div className="space-y-1">
                                                         <div className="text-[9px] md:text-[7px] font-black text-zinc-600 uppercase tracking-widest">Entry ID</div>
                                                         <div className="text-[10px] md:text-[9px] font-mono font-bold text-zinc-500 truncate w-24">

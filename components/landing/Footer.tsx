@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export function Footer() {
     return (
-        <footer className="py-12 w-full border-t border-white/5 bg-black relative overflow-hidden">
+        <footer className="py-12 w-full border-t border-white/5 bg-black relative overflow-hidden pb-safe">
             {/* Subtle Mesh Background */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/10 via-black to-black pointer-events-none" />
 

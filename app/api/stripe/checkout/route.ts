@@ -1,15 +1,36 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
-import { TIERS } from '@/lib/config/tiers'
+import { TIERS, Tier } from '@/lib/config/tiers'
 import { prisma } from '@/lib/prisma'
+
+const VALID_PAID_TIERS: Tier[] = ['starter', 'pro', 'whale']
 
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { tier, priceId } = body
+        const { tier } = body
 
-        // 1. Validate User
+        // 1. Validate tier
+        if (!tier || !VALID_PAID_TIERS.includes(tier as Tier)) {
+            return NextResponse.json(
+                { error: `Invalid tier: "${tier}". Valid options: ${VALID_PAID_TIERS.join(', ')}` },
+                { status: 400 }
+            )
+        }
+
+        const targetTier = TIERS[tier as Tier]
+        const priceId = targetTier.stripePriceId
+
+        if (!priceId) {
+            console.error(`No Stripe price ID configured for tier: ${tier}`)
+            return NextResponse.json(
+                { error: 'This plan is not available for purchase. Please contact support.' },
+                { status: 400 }
+            )
+        }
+
+        // 2. Validate user
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
 
@@ -17,21 +38,10 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        // 2. Resolve Price ID
-        const targetTier = Object.values(TIERS).find(t => t.name === tier)
-        const effectivePriceId = priceId || targetTier?.stripePriceId
-
-        if (!effectivePriceId) {
-            return NextResponse.json({ error: 'Invalid tier or configuration' }, { status: 400 })
-        }
-
-        // 3. Get or Create User in DB and Stripe
-        let stripeCustomerId = null
-
-        // Ensure user exists in our DB first (Sync from Supabase)
+        // 3. Ensure user exists in DB (sync from Supabase)
         const profile = await prisma.user.upsert({
             where: { id: user.id },
-            update: {}, // No updates needed if exists
+            update: {},
             create: {
                 id: user.id,
                 email: user.email!,
@@ -41,48 +51,64 @@ export async function POST(request: Request) {
             }
         })
 
-        if (profile.stripe_customer_id) {
-            stripeCustomerId = profile.stripe_customer_id
-        } else {
-            // Create new customer in Stripe
+        // 4. Get or create Stripe customer
+        let stripeCustomerId = profile.stripe_customer_id
+
+        if (!stripeCustomerId) {
             const customer = await stripe.customers.create({
                 email: user.email!,
-                metadata: {
-                    userId: user.id
-                }
+                metadata: { userId: user.id }
             })
             stripeCustomerId = customer.id
 
-            // Save to DB
             await prisma.user.update({
                 where: { id: user.id },
                 data: { stripe_customer_id: stripeCustomerId }
             })
         }
 
-        // 4. Create Checkout Session
+        // 5. Create checkout session
+        const headersList = request.headers
+        const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        const appUrl = origin.replace(/\/$/, '') // Remove trailing slash if present
+        const referer = headersList.get('referer')
+        const cancelUrl = referer || `${appUrl}/`
+
         const session = await stripe.checkout.sessions.create({
             customer: stripeCustomerId,
-            line_items: [
-                {
-                    price: effectivePriceId,
-                    quantity: 1,
-                },
-            ],
+            line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/settings?success=true`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/pricing?canceled=true`,
+            success_url: `${appUrl}/settings?success=true`,
+            cancel_url: cancelUrl,
             metadata: {
                 userId: user.id,
                 tier: tier
             },
             allow_promotion_codes: true,
+            subscription_data: {
+                metadata: {
+                    userId: user.id,
+                    tier: tier
+                }
+            }
         })
 
         return NextResponse.json({ url: session.url })
 
     } catch (error: any) {
         console.error('Stripe Checkout Error:', error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
+
+        // Provide user-friendly error messages
+        if (error.type === 'StripeInvalidRequestError') {
+            return NextResponse.json(
+                { error: 'Payment configuration error. Please contact support.' },
+                { status: 400 }
+            )
+        }
+
+        return NextResponse.json(
+            { error: 'Something went wrong. Please try again.' },
+            { status: 500 }
+        )
     }
 }

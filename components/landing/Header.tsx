@@ -57,7 +57,7 @@ export function Header() {
                     </Button>
                     <button
                         onClick={() => setMobileOpen(!mobileOpen)}
-                        className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+                        className="md:hidden p-2 text-zinc-400 hover:text-white transition-colors active:scale-95"
                         aria-label="Toggle menu"
                     >
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -67,18 +67,18 @@ export function Header() {
 
             {/* Mobile Menu Dropdown */}
             {mobileOpen && (
-                <div className="md:hidden border-t border-white/5 bg-black/90 backdrop-blur-xl">
+                <div className="md:hidden border-t border-white/5 bg-black/90 backdrop-blur-xl pb-safe">
                     <nav className="container px-4 py-4 flex flex-col gap-1">
-                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/#features" onClick={() => setMobileOpen(false)}>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-3.5" href="/#features" onClick={() => setMobileOpen(false)}>
                             Features
                         </Link>
-                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/how-it-works" onClick={() => setMobileOpen(false)}>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-3.5" href="/how-it-works" onClick={() => setMobileOpen(false)}>
                             How it Works
                         </Link>
-                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5" href="/#pricing" onClick={() => setMobileOpen(false)}>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-3.5" href="/#pricing" onClick={() => setMobileOpen(false)}>
                             Pricing
                         </Link>
-                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-2.5 sm:hidden" href="/login" onClick={() => setMobileOpen(false)}>
+                        <Link className="text-sm font-medium text-zinc-400 hover:text-white transition-colors py-3.5 sm:hidden" href="/login" onClick={() => setMobileOpen(false)}>
                             Login
                         </Link>
                     </nav>

@@ -97,7 +97,7 @@ export function SportSelector({ value, onChange, schedule }: {
                                 w-[calc(33.33%-6px)] sm:w-[calc(20%-6px)] md:w-[calc(14.28%-6px)]
                                 ${!available
                                     ? 'opacity-40 grayscale cursor-not-allowed border-zinc-800/50'
-                                    : 'cursor-pointer hover:border-emerald-500/30 hover:bg-white/[0.03]'}
+                                    : 'cursor-pointer hover:border-emerald-500/30 hover:bg-white/[0.03] active:scale-95'}
                                 ${isSelected && available
                                     ? 'bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 to-transparent border-emerald-500/50 shadow-[0_0_25px_-5px_rgba(16,185,129,0.15)]'
                                     : available ? 'border-white/5 bg-gradient-to-br from-zinc-900/50 to-zinc-900/30' : 'border-zinc-800/50 bg-zinc-900/30'}

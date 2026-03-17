@@ -72,14 +72,16 @@ export function Hero() {
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#27272a_1px,transparent_1px),linear-gradient(to_bottom,#27272a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,white,transparent)] opacity-20" />
             </div>
 
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] pointer-events-none"
-                 style={{ background: 'radial-gradient(ellipse at top, rgba(16,185,129,0.06) 0%, rgba(45,212,191,0.03) 40%, transparent 70%)' }} />
-            
-            <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 60%)' }} />
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px]"
+                     style={{ background: 'radial-gradient(ellipse at top, rgba(16,185,129,0.06) 0%, rgba(45,212,191,0.03) 40%, transparent 70%)' }} />
 
-            <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.04) 0%, transparent 60%)' }} />
+                <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full"
+                     style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 60%)' }} />
+
+                <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] rounded-full"
+                     style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.04) 0%, transparent 60%)' }} />
+            </div>
 
             {/* Glowing top line */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
@@ -114,7 +116,7 @@ export function Hero() {
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                     className="text-center w-full max-w-4xl mx-auto mb-6 relative z-10"
                 >
-                    <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-[-0.03em] leading-[1.05]">
+                    <h1 className="text-[2.25rem] sm:text-[3rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-[-0.03em] leading-[1.05]">
                         <span className="text-white block">We Do The Math.</span>
                         <motion.span 
                             animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
@@ -144,7 +146,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-16 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-10 md:mb-16 w-full sm:w-auto"
                 >
                     <motion.div 
                         whileHover={{ scale: 1.05 }} 
@@ -186,7 +188,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-wrap items-center justify-center gap-8 md:gap-16 w-full max-w-4xl mx-auto mb-16"
+                    className="flex flex-wrap items-center justify-center gap-8 md:gap-16 w-full max-w-4xl mx-auto mb-16 px-4"
                 >
                     {[
                         { value: 67, suffix: "%", label: "Win Rate", desc: "Across tracked bets", color: "text-emerald-400" },

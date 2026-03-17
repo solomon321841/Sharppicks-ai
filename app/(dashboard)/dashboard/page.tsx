@@ -128,7 +128,7 @@ export default function DashboardPage() {
     const tierInfo = getTierFeatures(tier || 'free')
 
     return (
-        <div className="relative h-auto lg:h-full flex flex-col space-y-2 lg:space-y-3 lg:overflow-hidden px-4 md:px-0 py-2">
+        <div className="relative min-h-0 flex flex-col space-y-2 lg:space-y-3 px-4 md:px-0 py-2">
             {/* Simplified Animated Mesh Background for Performance */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
                 <motion.div
@@ -256,7 +256,7 @@ export default function DashboardPage() {
             {/* Tactical Content Grid: Viewport-Filling */}
             <div className="shrink-0 lg:flex-1 lg:min-h-0 grid gap-3 lg:gap-4 lg:grid-cols-12 relative z-10 pb-2">
                 {/* Recent Logs: Fluid container */}
-                <DashboardCard className="lg:col-span-7 flex flex-col h-[320px] lg:h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
+                <DashboardCard className="lg:col-span-7 flex flex-col min-h-[280px] h-auto lg:h-full" delay={0.4} contentClassName="p-4 flex flex-col h-full">
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex items-center justify-between border-b border-white/5 pb-3 shrink-0">
                             <div className="flex items-center gap-2">
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                 </DashboardCard>
 
                 {/* The Ticket: Optimized for vertical space */}
-                <div className="lg:col-span-5 h-auto lg:h-full lg:min-h-0">
+                <div className="lg:col-span-5 min-h-[350px] lg:h-full lg:min-h-0">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

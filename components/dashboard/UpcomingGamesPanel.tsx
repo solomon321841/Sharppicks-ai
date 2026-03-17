@@ -216,7 +216,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
             </CardHeader>
 
             {/* ── League Tabs ── */}
-            <div className="flex gap-1 pb-3 overflow-x-auto scrollbar-none">
+            <div className="flex gap-1.5 pb-3 overflow-x-auto scrollbar-none -mx-1 px-1">
                 {LEAGUE_TABS.map(tab => {
                     const count = tab.key === 'all' ? totalGames : (leagueCounts[tab.key] || 0)
                     const isActive = activeTab === tab.key
@@ -228,7 +228,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
                             className={cn(
-                                "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all duration-200 border",
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all duration-200 border active:scale-95",
                                 isActive
                                     ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25 shadow-[0_0_10px_-4px_rgba(16,185,129,0.25)]"
                                     : "bg-white/[0.03] text-zinc-500 border-white/[0.04] hover:bg-white/[0.06] hover:text-zinc-400"

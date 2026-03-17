@@ -231,12 +231,12 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="grid gap-4 py-4">
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="sportsbook" className="text-right">
+                                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+                                    <Label htmlFor="sportsbook" className="text-left sm:text-right">
                                         Book
                                     </Label>
                                     <Select value={sportsbook} onValueChange={setSportsbook}>
-                                        <SelectTrigger className="col-span-3">
+                                        <SelectTrigger className="col-span-1 sm:col-span-3">
                                             <SelectValue placeholder="Select sportsbook" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -248,8 +248,8 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="stake" className="text-right">
+                                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+                                    <Label htmlFor="stake" className="text-left sm:text-right">
                                         Wager ($)
                                     </Label>
                                     <Input
@@ -257,7 +257,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                         type="number"
                                         value={stake}
                                         onChange={(e) => setStake(e.target.value)}
-                                        className="col-span-3"
+                                        className="col-span-1 sm:col-span-3"
                                     />
                                 </div>
                             </div>

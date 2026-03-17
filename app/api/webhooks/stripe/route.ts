@@ -2,10 +2,9 @@ import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/server'
 import { prisma } from '@/lib/prisma'
-import { TIERS } from '@/lib/config/tiers'
+import { getTierByPriceId } from '@/lib/config/tiers'
 import Stripe from 'stripe'
 
-// Force dynamic to prevent static optimization
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
@@ -21,50 +20,71 @@ export async function POST(request: Request) {
             process.env.STRIPE_WEBHOOK_SECRET!
         )
     } catch (error: any) {
-        console.error(`Webhook Error: ${error.message}`)
+        console.error(`Webhook signature verification failed: ${error.message}`)
         return NextResponse.json({ error: `Webhook Error: ${error.message}` }, { status: 400 })
     }
 
-    const session = event.data.object as Stripe.Checkout.Session
-    const subscription = event.data.object as Stripe.Subscription
-
     try {
         switch (event.type) {
+            // ─── NEW SUBSCRIPTION CREATED ────────────────────────────
             case 'checkout.session.completed': {
-                // User just paid/subscribed
-                if (!session.metadata?.userId) {
-                    console.error('Webhook: Missing userId in metadata')
+                const session = event.data.object as Stripe.Checkout.Session
+
+                const userId = session.metadata?.userId
+                if (!userId) {
+                    console.error('Webhook checkout.session.completed: Missing userId in metadata')
                     break
                 }
 
-                // Retrieve subscription details to get the status
                 const subId = session.subscription as string
-                const sub = await stripe.subscriptions.retrieve(subId)
+                if (!subId) {
+                    console.error('Webhook checkout.session.completed: Missing subscription ID')
+                    break
+                }
 
-                // Find which tier matches this price
-                const planId = sub.items.data[0].price.id
-                // Reverse lookup tier from Price ID
-                const tierName = Object.values(TIERS).find(t => t.stripePriceId === planId)?.name || 'pro' // Default to pro if mapping fails, or handle error
+                // Retrieve the full subscription to get price details
+                const sub = await stripe.subscriptions.retrieve(subId)
+                const planId = sub.items.data[0]?.price?.id
+
+                if (!planId) {
+                    console.error('Webhook checkout.session.completed: Could not determine price ID')
+                    break
+                }
+
+                // Lookup the tier from price ID
+                const tierName = getTierByPriceId(planId)
+                if (!tierName) {
+                    console.error(`Webhook checkout.session.completed: Unknown price ID "${planId}". Falling back to session metadata.`)
+                }
+
+                // Use the tier from price lookup, or fall back to session metadata
+                const finalTier = tierName || session.metadata?.tier || 'starter'
 
                 await prisma.user.update({
-                    where: { id: session.metadata.userId },
+                    where: { id: userId },
                     data: {
                         stripe_customer_id: session.customer as string,
                         stripe_subscription_id: subId,
-                        subscription_tier: tierName,
+                        subscription_tier: finalTier,
                         subscription_status: sub.status,
-                        // trial_ends_at: sub.trial_end ? new Date(sub.trial_end * 1000) : null
+                        trial_ends_at: sub.trial_end ? new Date(sub.trial_end * 1000) : null
                     }
                 })
+
+                console.log(`Checkout completed: User ${userId} → tier "${finalTier}", status "${sub.status}"`)
                 break
             }
 
+            // ─── RECURRING PAYMENT SUCCEEDED ─────────────────────────
             case 'invoice.payment_succeeded': {
-                // Recurring payment successful - keep them active
-                const subId = subscription.id || (event.data.object as any).subscription
+                // Extract subscription ID from the invoice event data
+                const invoiceData = event.data.object as Record<string, any>
+                const subId = typeof invoiceData.subscription === 'string'
+                    ? invoiceData.subscription
+                    : invoiceData.subscription?.id
+
                 if (!subId) break
 
-                // We need to find the user by subscription ID since invoice doesn't always have metadata
                 const user = await prisma.user.findFirst({
                     where: { stripe_subscription_id: subId }
                 })
@@ -72,17 +92,78 @@ export async function POST(request: Request) {
                 if (user) {
                     await prisma.user.update({
                         where: { id: user.id },
-                        data: {
-                            subscription_status: 'active'
-                        }
+                        data: { subscription_status: 'active' }
                     })
+                    console.log(`Payment succeeded: User ${user.id} → status "active"`)
                 }
                 break
             }
 
-            case 'customer.subscription.deleted': {
-                // Subscription canceled/expired
+            // ─── PAYMENT FAILED ──────────────────────────────────────
+            case 'invoice.payment_failed': {
+                const failedInvoiceData = event.data.object as Record<string, any>
+                const subId = typeof failedInvoiceData.subscription === 'string'
+                    ? failedInvoiceData.subscription
+                    : failedInvoiceData.subscription?.id
+
+                if (!subId) break
+
+                const user = await prisma.user.findFirst({
+                    where: { stripe_subscription_id: subId }
+                })
+
+                if (user) {
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: { subscription_status: 'past_due' }
+                    })
+                    console.log(`Payment failed: User ${user.id} → status "past_due"`)
+                }
+                break
+            }
+
+            // ─── SUBSCRIPTION UPDATED (upgrade/downgrade via portal) ─
+            case 'customer.subscription.updated': {
+                const subscription = event.data.object as Stripe.Subscription
                 const subId = subscription.id
+                const planId = subscription.items.data[0]?.price?.id
+
+                if (!planId) break
+
+                const user = await prisma.user.findFirst({
+                    where: { stripe_subscription_id: subId }
+                })
+
+                if (user) {
+                    const tierName = getTierByPriceId(planId)
+
+                    const updateData: any = {
+                        subscription_status: subscription.status,
+                    }
+
+                    // Only update tier if we can map the price ID
+                    if (tierName) {
+                        updateData.subscription_tier = tierName
+                    }
+
+                    if (subscription.trial_end) {
+                        updateData.trial_ends_at = new Date(subscription.trial_end * 1000)
+                    }
+
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: updateData
+                    })
+                    console.log(`Subscription updated: User ${user.id} → tier "${tierName || 'unchanged'}", status "${subscription.status}"`)
+                }
+                break
+            }
+
+            // ─── SUBSCRIPTION CANCELED/EXPIRED ───────────────────────
+            case 'customer.subscription.deleted': {
+                const subscription = event.data.object as Stripe.Subscription
+                const subId = subscription.id
+
                 const user = await prisma.user.findFirst({
                     where: { stripe_subscription_id: subId }
                 })
@@ -92,24 +173,27 @@ export async function POST(request: Request) {
                         where: { id: user.id },
                         data: {
                             subscription_status: 'canceled',
-                            subscription_tier: 'free' // Downgrade to free
+                            subscription_tier: 'free'
                         }
                     })
+                    console.log(`Subscription deleted: User ${user.id} → downgraded to "free"`)
                 }
                 break
             }
 
-            case 'item.created' as any:
-                return NextResponse.json({ received: true })
-
+            // ─── ACKNOWLEDGED BUT UNHANDLED ──────────────────────────
             case 'payment_intent.succeeded':
-                return NextResponse.json({ received: true })
+            case 'payment_intent.created':
+            case 'charge.succeeded':
+            case 'charge.updated':
+                // These are normal payment flow events, just acknowledge
+                break
 
             default:
-                console.log(`Unhandled event type ${event.type}`)
+                console.log(`Unhandled Stripe event: ${event.type}`)
         }
     } catch (error: any) {
-        console.error('Webhook handler failed:', error)
+        console.error(`Webhook handler error for ${event.type}:`, error)
         return NextResponse.json({ error: 'Webhook handler failed' }, { status: 500 })
     }
 

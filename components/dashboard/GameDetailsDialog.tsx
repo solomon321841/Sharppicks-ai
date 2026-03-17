@@ -52,10 +52,10 @@ export function GameDetailsDialog({ game, open, onOpenChange }: GameDetailsDialo
 
                 <div className="grid gap-6 py-4">
                     {/* Matchup Header */}
-                    <div className="flex items-center justify-between px-4">
+                    <div className="flex items-center justify-between px-2 sm:px-4">
                         <div className="flex flex-col items-center gap-2 w-1/3">
-                            <div className="relative w-16 h-16 transform transition-transform hover:scale-110">
-                                <TeamLogo name={game.away} className="w-16 h-16" />
+                            <div className="relative w-12 h-12 sm:w-16 sm:h-16 transform transition-transform hover:scale-110">
+                                <TeamLogo name={game.away} className="w-12 h-12 sm:w-16 sm:h-16" />
                             </div>
                             <span className="text-sm font-bold text-center leading-tight">{game.away}</span>
                             <Badge variant="outline" className="mt-1 border-white/10 bg-white/5 font-mono">
@@ -68,8 +68,8 @@ export function GameDetailsDialog({ game, open, onOpenChange }: GameDetailsDialo
                         </div>
 
                         <div className="flex flex-col items-center gap-2 w-1/3">
-                            <div className="relative w-16 h-16 transform transition-transform hover:scale-110">
-                                <TeamLogo name={game.home} className="w-16 h-16" />
+                            <div className="relative w-12 h-12 sm:w-16 sm:h-16 transform transition-transform hover:scale-110">
+                                <TeamLogo name={game.home} className="w-12 h-12 sm:w-16 sm:h-16" />
                             </div>
                             <span className="text-sm font-bold text-center leading-tight">{game.home}</span>
                             <Badge variant="outline" className="mt-1 border-white/10 bg-white/5 font-mono">

@@ -9,7 +9,7 @@ import { Footer } from "@/components/landing/Footer"
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white font-sans selection:bg-emerald/30">
+    <div className="flex flex-col min-h-screen bg-black text-white font-sans selection:bg-emerald/30 overflow-x-hidden">
       <Header />
       <main className="flex-1">
         <Hero />

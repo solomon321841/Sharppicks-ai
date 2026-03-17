@@ -13,7 +13,7 @@ interface LegalPageLayoutProps {
 
 export function LegalPageLayout({ title, subtitle, children }: LegalPageLayoutProps) {
     return (
-        <div className="flex flex-col min-h-screen bg-black text-white font-sans selection:bg-emerald/30">
+        <div className="flex flex-col min-h-screen bg-black text-white font-sans selection:bg-emerald/30 overflow-x-hidden">
             <Header />
 
             <main className="flex-1 pt-32 pb-24">
@@ -22,7 +22,7 @@ export function LegalPageLayout({ title, subtitle, children }: LegalPageLayoutPr
                         <div className="max-w-3xl mx-auto">
                             {/* Header Section */}
                             <div className="mb-16">
-                                <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6 underline decoration-emerald-500/30 underline-offset-8">
+                                <h1 className="text-3xl md:text-6xl font-black text-white tracking-tighter mb-6 underline decoration-emerald-500/30 underline-offset-8">
                                     {title}
                                 </h1>
                                 {subtitle && (

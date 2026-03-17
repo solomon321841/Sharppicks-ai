@@ -64,8 +64,8 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
     ]
 
     return (
-        <div className="flex h-screen w-64 flex-col border-r bg-card px-3 py-4">
-            <div className="mb-8 px-4 flex items-center gap-3">
+        <div className="flex h-screen w-64 flex-col border-r bg-card px-3 py-4 lg:py-4">
+            <div className="mb-6 lg:mb-8 px-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
                     <span className="text-white text-[15px] font-black tracking-[-0.08em]">PP</span>
                 </div>
@@ -75,7 +75,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 </Link>
             </div>
 
-            <div className="flex-1 space-y-1">
+            <div className="flex-1 space-y-0.5 lg:space-y-1">
                 {sidebarItems.map((item) => {
                     const Icon = item.icon
                     const isActive = pathname === item.href
@@ -95,7 +95,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                             <Button
                                 variant={isActive ? 'secondary' : 'ghost'}
                                 className={cn(
-                                    'w-full justify-start gap-2 relative group',
+                                    'w-full justify-start gap-3 relative group h-11 text-[13px]',
                                     isActive ? 'bg-emerald text-emerald-foreground hover:bg-emerald/90' : 'text-muted-foreground hover:text-foreground',
                                     isLocked && 'opacity-50 cursor-not-allowed hover:bg-transparent'
                                 )}
