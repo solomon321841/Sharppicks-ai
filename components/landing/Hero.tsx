@@ -64,7 +64,7 @@ export function Hero() {
     }, [])
 
     return (
-        <section className="relative overflow-hidden flex flex-col items-center pt-28 pb-20 md:pt-36 md:pb-28 min-h-[100vh] justify-center bg-[#000000]">
+        <section className="relative overflow-hidden flex flex-col items-center pt-24 pb-12 md:pt-32 md:pb-16 min-h-[90vh] justify-center bg-[#000000]">
             
             {/* === CINEMATIC BACKGROUND SYSTEM === */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
@@ -87,7 +87,7 @@ export function Hero() {
                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                   className="mb-8 md:mb-10"
+                   className="mb-8"
                 >
                     <div className="relative group cursor-pointer inline-block">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/40 to-teal-500/40 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-700" />
@@ -107,7 +107,7 @@ export function Hero() {
                     initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center w-full max-w-4xl mx-auto mb-8 relative z-10"
+                    className="text-center w-full max-w-4xl mx-auto mb-6 relative z-10"
                 >
                     <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-tight leading-[1.05]">
                         <span className="text-white block drop-shadow-md">We Do The Math.</span>
@@ -122,7 +122,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center max-w-2xl mx-auto mb-12"
+                    className="text-center max-w-2xl mx-auto mb-10"
                 >
                     <p className="text-[16px] md:text-[19px] text-zinc-400 leading-relaxed font-normal">
                         The <span className="text-white font-medium">Opus 4.6</span> AI engine processes millions of data points instantly, uncovering hidden mathematical advantages across global sportsbooks. <br className="hidden sm:block mt-1" />
@@ -135,29 +135,27 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 mb-24 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-16 w-full sm:w-auto"
                 >
                     <motion.div 
-                        whileHover={{ scale: 1.03, y: -2 }} 
-                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.05 }} 
+                        whileTap={{ scale: 0.95 }}
                         className="relative group w-full sm:w-auto z-20"
                     >
-                        {/* Shimmering Button Glow */}
-                        <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-all duration-500 animate-[shimmer_2s_linear_infinite] bg-[length:200%_auto]" />
+                        {/* Elegant Button Glow */}
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
                         <Link 
                             href="/login"
-                            className="relative w-full sm:w-auto pl-6 pr-4 py-2 h-14 bg-white text-black rounded-xl text-[16px] font-black tracking-wide transition-all shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-between gap-4 group-hover:shadow-[0_0_60px_rgba(16,185,129,0.6)]"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-bold tracking-wide transition-all shadow-lg flex items-center justify-center gap-2"
                         >
                             Start Winning Today
-                            <div className="w-10 h-10 rounded-lg bg-black text-white flex items-center justify-center group-hover:rotate-[-10deg] transition-transform duration-300">
-                                <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
-                            </div>
+                            <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </motion.div>
                     
                     <motion.div
-                        whileHover={{ scale: 1.03, y: -2 }} 
-                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ scale: 1.05 }} 
+                        whileTap={{ scale: 0.95 }}
                         className="w-full sm:w-auto relative z-10"
                     >
                         <Link 
@@ -175,7 +173,7 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-wrap items-center justify-center gap-8 md:gap-16 w-full max-w-4xl mx-auto mb-20 md:mb-24"
+                    className="flex flex-wrap items-center justify-center gap-8 md:gap-16 w-full max-w-4xl mx-auto mb-16"
                 >
                     {[
                         { value: 67, suffix: "%", label: "Win Rate", desc: "Across tracked bets", color: "text-emerald-400" },
@@ -200,7 +198,7 @@ export function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+                    className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
                 >
                     {[
                         { icon: ShieldCheck, text: "256-bit Encryption" },
