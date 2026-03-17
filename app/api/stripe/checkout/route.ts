@@ -9,7 +9,7 @@ const VALID_PAID_TIERS: Tier[] = ['starter', 'pro', 'whale']
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { tier, returnUrl } = body
+        const { tier, returnUrl, skipTrial } = body
 
         // 1. Validate tier
         if (!tier || !VALID_PAID_TIERS.includes(tier as Tier)) {
@@ -82,11 +82,11 @@ export async function POST(request: Request) {
             }
         }
 
-        const session = await stripe.checkout.sessions.create({
+        const sessionConfig: any = {
             customer: stripeCustomerId,
             line_items: [{ price: priceId, quantity: 1 }],
             mode: 'subscription',
-            success_url: `${appUrl}/settings?success=true`,
+            success_url: `${appUrl}/dashboard?success=true`,
             cancel_url: cancelUrl,
             metadata: {
                 userId: user.id,
@@ -99,7 +99,13 @@ export async function POST(request: Request) {
                     tier: tier
                 }
             }
-        })
+        }
+
+        if (tier === 'pro' && !skipTrial) {
+            sessionConfig.subscription_data.trial_period_days = 3
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionConfig)
 
         return NextResponse.json({ url: session.url })
 

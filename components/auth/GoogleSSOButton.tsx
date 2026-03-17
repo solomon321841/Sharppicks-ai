@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 // If no Icons component, I'll use generic text or inline SVG
 
-export function GoogleSSOButton() {
+export function GoogleSSOButton({ intentUrl }: { intentUrl?: string }) {
     const [loading, setLoading] = useState(false)
 
     const handleGoogleLogin = async () => {
@@ -16,7 +16,9 @@ export function GoogleSSOButton() {
             await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${location.origin}/auth/callback`,
+                    redirectTo: intentUrl 
+                        ? `${location.origin}/callback?next=${encodeURIComponent(intentUrl)}`
+                        : `${location.origin}/callback`,
                 },
             })
         } catch (error) {

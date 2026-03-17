@@ -11,8 +11,9 @@ import { UpcomingGamesPanel } from './UpcomingGamesPanel'
 import { canAccessFeature } from '@/lib/config/tiers'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { Loader2, Activity, Lock, RefreshCw } from 'lucide-react'
+import { Loader2, Activity, Lock, RefreshCw, Zap } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 
 export function ParlayBuilder() {
@@ -23,6 +24,7 @@ export function ParlayBuilder() {
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<any>(null)
     const [errorState, setErrorState] = useState<string | null>(null)
+    const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [tier, setTier] = useState<string>('pro') // Default to pro for demo
     const [checkingTier, setCheckingTier] = useState(true)
     const [schedule, setSchedule] = useState<any[] | undefined>(undefined)
@@ -105,6 +107,12 @@ export function ParlayBuilder() {
             const data = await response.json()
 
             if (!response.ok) {
+                // If it's a trial limit error, show the upgrade modal
+                if (response.status === 403 && data.error === 'trial_limit_reached') {
+                    setShowUpgradeModal(true)
+                    return
+                }
+
                 // Handle expected business logic errors (like no games) without toast
                 if (response.status === 400 && data.error) {
                     setErrorState(data.error)
@@ -353,6 +361,53 @@ export function ParlayBuilder() {
                     </div>
                 )}
             </div>
+
+            {/* Trial Limits Reached Modal */}
+            <Dialog open={showUpgradeModal} onOpenChange={setShowUpgradeModal}>
+                <DialogContent className="sm:max-w-md bg-zinc-950 border-white/10">
+                    <DialogHeader>
+                        <div className="mx-auto w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
+                            <Zap className="h-6 w-6 text-emerald-400" />
+                        </div>
+                        <DialogTitle className="text-center text-xl font-bold">Daily Trial Limit Reached</DialogTitle>
+                        <DialogDescription className="text-center pt-2 pb-4">
+                            You've used your 1 free Custom Parlay generation for today. Upgrade your account to skip the trial line and unlock <strong>unlimited</strong> AI parlays instantly.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex-col sm:flex-col gap-2">
+                        <Button 
+                            className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold h-12 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-[1.02]"
+                            onClick={async () => {
+                                // Calls the same checkout endpoint but for Pro, forcing a regular charge instead of trial
+                                try {
+                                    setLoading(true)
+                                    const res = await fetch('/api/stripe/checkout', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ tier: 'pro', skipTrial: true }) // Backend picks up skipTrial
+                                    })
+                                    const data = await res.json()
+                                    if (data.url) window.location.href = data.url
+                                } catch (error) {
+                                    console.error('Upgrade failed', error)
+                                } finally {
+                                    setLoading(false)
+                                }
+                            }}
+                        >
+                            Upgrade for Unlimited Access
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className="w-full text-zinc-400 hover:text-white"
+                            onClick={() => setShowUpgradeModal(false)}
+                        >
+                            Wait until tomorrow
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </div >
     )
 }

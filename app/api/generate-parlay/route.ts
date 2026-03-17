@@ -22,7 +22,12 @@ export async function POST(request: Request) {
         // 2. Validate Tier
         const profile = await prisma.user.findUnique({
             where: { id: user.id },
-            select: { subscription_tier: true }
+            select: { 
+                subscription_tier: true,
+                subscription_status: true,
+                credits_used_today: true,
+                last_credit_used_at: true 
+            }
         })
         const tier = profile?.subscription_tier || 'free'
 
@@ -47,6 +52,18 @@ export async function POST(request: Request) {
             }
         }
 
+        // Stripe Pro Trial limit checking
+        if (tier === 'pro' && profile?.subscription_status === 'trialing') {
+            const now = new Date()
+            let creditsUsed = profile.credits_used_today || 0
+            if (profile.last_credit_used_at && new Date(profile.last_credit_used_at).toDateString() !== now.toDateString()) {
+                creditsUsed = 0 // Reset for new day
+            }
+            if (creditsUsed >= 1) {
+                return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
+            }
+        }
+
         if ((!sports || sports.length === 0) || !riskLevel || !numLegs || !betTypes) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
         }
@@ -63,6 +80,23 @@ export async function POST(request: Request) {
 
         if (result.error) {
             return NextResponse.json({ error: result.error }, { status: 400 })
+        }
+
+        // Successfully generated. Increment usage if in Pro Trial.
+        if (tier === 'pro' && profile?.subscription_status === 'trialing') {
+            const now = new Date()
+            let creditsUsed = profile.credits_used_today || 0
+            if (profile.last_credit_used_at && new Date(profile.last_credit_used_at).toDateString() !== now.toDateString()) {
+                creditsUsed = 0
+            }
+            
+            await prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    credits_used_today: creditsUsed + 1,
+                    last_credit_used_at: now
+                }
+            })
         }
 
         return NextResponse.json(result)

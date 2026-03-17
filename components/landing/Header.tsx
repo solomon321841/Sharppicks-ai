@@ -53,7 +53,7 @@ export function Header() {
                         Login
                     </Link>
                     <Button className="btn-shimmer bg-white text-black hover:bg-zinc-200 font-bold h-10 px-6 text-sm rounded-full transition-all hover:scale-105" asChild>
-                        <Link href="/login">Get Started</Link>
+                        <Link href="/#pricing">Get Started</Link>
                     </Button>
                     <button
                         onClick={() => setMobileOpen(!mobileOpen)}

@@ -8,16 +8,7 @@ import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
 
 const tiers = [
-    {
-        name: 'Free Trial',
-        id: 'free',
-        price: '$0',
-        description: 'Test the waters with limited access.',
-        features: ['2 Custom Parlay Credits', '3 Days Full Access', '1 Daily Pick (Safe)', 'Standard Odds Data', 'Community Support'],
-        limitations: ['No Bet Tracking', 'Limited Risk Models'],
-        cta: 'Start Free Trial',
-        popular: false,
-    },
+
     {
         name: 'Starter',
         id: 'starter',
@@ -35,9 +26,9 @@ const tiers = [
         price: '$24',
         period: '/mo',
         description: 'For serious bettors who want control.',
-        features: ['4 Daily Picks (All Risk Levels)', 'Unlimited Custom AI Parlays', 'All Sports + Player Props', 'Custom Parlay Builder', 'Advanced Risk Models (1-10)', 'Full Bet Tracking'],
-        limitations: [],
-        cta: 'Go Pro',
+        features: ['4 Daily Picks (All Risk Levels)', 'Unlimited Custom AI Parlays*', 'All Sports + Player Props', 'Custom Parlay Builder', 'Advanced Risk Models (1-10)', 'Full Bet Tracking'],
+        limitations: ['*Trial limited to 1 Custom Parlay/Day'],
+        cta: 'Start 3-Day Free Trial',
         popular: true,
     },
     {
@@ -59,10 +50,7 @@ export function Pricing() {
     const { toast } = useToast()
 
     const handleSubscribe = async (tier: any) => {
-        if (tier.id === 'free') {
-            router.push('/login')
-            return
-        }
+
 
         setLoading(tier.id)
         try {
@@ -85,7 +73,7 @@ export function Pricing() {
         } catch (error: any) {
             console.error('Subscription error:', error)
             if (error.message.includes('Unauthorized')) {
-                router.push('/login')
+                router.push(`/login?tier=${tier.id}`)
             } else {
                 toast({
                     title: "Error",
@@ -119,7 +107,7 @@ export function Pricing() {
                     </p>
                 </FadeIn>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center max-w-[1400px] mx-auto w-full pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center max-w-[1200px] mx-auto w-full pt-6">
                     {tiers.map((tier, i) => (
                         <FadeIn key={tier.name} delay={i * 0.1} className={`relative flex flex-col h-full group ${tier.popular ? 'md:scale-105 z-10' : ''}`}>
 

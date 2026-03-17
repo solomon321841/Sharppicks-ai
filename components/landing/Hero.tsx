@@ -156,7 +156,7 @@ export function Hero() {
                         {/* Elegant Button Glow */}
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
                         <Link 
-                            href="/login"
+                            href="/#pricing"
                             className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-bold tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 overflow-hidden"
                         >
                             {/* Glass Shine Effect */}
