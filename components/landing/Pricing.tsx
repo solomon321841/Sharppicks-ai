@@ -6,6 +6,7 @@ import { FadeIn } from "./FadeIn"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { createClient } from "@/lib/supabase/client"
 
 const tiers = [
 
@@ -54,6 +55,14 @@ export function Pricing() {
 
         setLoading(tier.id)
         try {
+            const supabase = createClient()
+            const { data: { session } } = await supabase.auth.getSession()
+
+            if (!session) {
+                router.push(`/login?tier=${tier.id}`)
+                return
+            }
+
             const response = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
