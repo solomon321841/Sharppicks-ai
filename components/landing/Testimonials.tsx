@@ -179,51 +179,6 @@ export function Testimonials() {
                     })}
                 </div>
 
-                {/* Testimonials section */}
-                <div className="mt-16 md:mt-32">
-                    <FadeIn className="text-center mb-16">
-                        <h3 className="text-3xl font-bold text-white mb-2">Member <span className="text-emerald-400">Voices</span></h3>
-                        <p className="text-zinc-500">Trusted by over 2,400 serious bettors worldwide.</p>
-                    </FadeIn>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
-                        {[
-                            {
-                                name: "Marcus T.",
-                                role: "Professional Bettor",
-                                quote: "The AI precision is unlike anything I've used. It consistently finds value in player props that I would have missed manually.",
-                                rating: 5
-                            },
-                            {
-                                name: "Sarah L.",
-                                role: "Data Analyst",
-                                quote: "I love the mathematical approach. The risk levels are incredibly accurate, allowing me to manage my bankroll with confidence.",
-                                rating: 5
-                            },
-                            {
-                                name: "Jason R.",
-                                role: "Sports Enthusiast",
-                                quote: "SharpPicks turned my hobby into a profitable venture. The daily picks are a must-have for my morning routine.",
-                                rating: 5
-                            }
-                        ].map((t, i) => (
-                            <FadeIn key={i} delay={i * 0.1}>
-                                <div className="bg-zinc-900/40 border border-white/5 p-5 md:p-8 rounded-3xl relative">
-                                    <div className="flex gap-1 mb-4">
-                                        {[...Array(t.rating)].map((_, i) => (
-                                            <Trophy key={i} className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
-                                        ))}
-                                    </div>
-                                    <p className="text-zinc-300 italic mb-6">&quot;{t.quote}&quot;</p>
-                                    <div>
-                                        <p className="text-white font-bold">{t.name}</p>
-                                        <p className="text-zinc-500 text-xs">{t.role}</p>
-                                    </div>
-                                </div>
-                            </FadeIn>
-                        ))}
-                    </div>
-                </div>
 
                 {/* Stats Bar - Unified Glass Bar */}
                 <FadeIn delay={0.6} className="mt-12 md:mt-24 max-w-5xl mx-auto">
