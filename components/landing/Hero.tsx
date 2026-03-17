@@ -89,14 +89,14 @@ export function Hero() {
                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                    className="mb-8"
                 >
-                    <div className="relative group cursor-pointer inline-block">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/40 to-teal-500/40 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-700" />
-                        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-zinc-950/80 backdrop-blur-md border border-white/10 rounded-full shadow-lg">
-                            <BrainCircuit className="w-4 h-4 text-emerald-400 animate-pulse ml-1" />
-                            <span className="text-[11px] font-bold text-emerald-400 tracking-widest uppercase">Powered by Opus 4.6</span>
+                    <div className="relative group cursor-default inline-block">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-full blur opacity-50 transition duration-700" />
+                        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-zinc-950/40 backdrop-blur-xl border border-white/5 rounded-full shadow-lg">
+                            <BrainCircuit className="w-3.5 h-3.5 text-emerald-400/80 ml-1" />
+                            <span className="text-[11px] font-bold text-emerald-400/90 tracking-widest uppercase">Powered by Opus 4.6</span>
                             <div className="w-px h-3 bg-white/10 mx-1" />
-                            <span className="text-[12px] text-zinc-400 font-medium tracking-wide pr-1">
-                                Engine <span className="text-white font-semibold">Active</span>
+                            <span className="text-[12px] text-zinc-400 font-medium tracking-wide pr-1 flex items-center gap-1.5">
+                                Engine <span className="text-white font-semibold inline-flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />Active</span>
                             </span>
                         </div>
                     </div>
@@ -109,9 +109,9 @@ export function Hero() {
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
                     className="text-center w-full max-w-4xl mx-auto mb-6 relative z-10"
                 >
-                    <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-tight leading-[1.05]">
-                        <span className="text-white block drop-shadow-md">We Do The Math.</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-2 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                    <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-[-0.03em] leading-[1.05]">
+                        <span className="text-white block">We Do The Math.</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-2 drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]">
                             You Place The Bet.
                         </span>
                     </h1>
@@ -160,10 +160,10 @@ export function Hero() {
                     >
                         <Link 
                             href="#how-it-works"
-                            className="relative w-full sm:w-auto px-8 h-14 bg-zinc-900 border border-white/10 hover:bg-zinc-800 hover:border-white/20 text-white rounded-xl text-[16px] font-bold transition-all flex items-center justify-center gap-2 shadow-lg group"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-transparent border border-white/10 hover:bg-white/5 text-white rounded-xl text-[16px] font-medium transition-all flex items-center justify-center gap-2 group"
                         >
                             See The Engine In Action
-                            <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                            <ChevronRight className="w-5 h-5 text-zinc-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
                         </Link>
                     </motion.div>
                 </motion.div>
