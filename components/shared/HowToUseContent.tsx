@@ -1,7 +1,7 @@
 'use client'
 
 import { DashboardCard } from "@/components/dashboard/DashboardCard"
-import { Brain, CalendarDays, PlusCircle, History, Target, Sparkles, HelpCircle } from "lucide-react"
+import { Brain, CalendarDays, PlusCircle, History, Target, Sparkles, HelpCircle, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 
 const sections = [
@@ -125,6 +125,28 @@ export function HowToUseContent({ isPublic = false }: { isPublic?: boolean }) {
                             </div>
                             <p className="text-sm text-zinc-300 leading-relaxed max-w-3xl font-medium">
                                 For the most consistent long-term results, we recommend keeping your Risk Level <span className="text-amber-400 font-bold">below 5</span>. This &quot;Sweet Spot&quot; is engineered to balance high-probability plays with sustainable bankroll growth, optimizing your ROI while minimizing the volatility of high-variance outcomes.
+                            </p>
+                        </div>
+                    </div>
+                </DashboardCard>
+
+                {/* Credit System Section */}
+                <DashboardCard delay={0.45} glowColor="purple" className="bg-purple-500/5 border-purple-500/10 mb-8">
+                    <div className="p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start">
+                        <div className="p-3 bg-purple-500/10 rounded-2xl border border-purple-500/20 shrink-0">
+                            <Zap className="w-8 h-8 text-purple-500" />
+                        </div>
+                        <div className="space-y-3">
+                            <div className="space-y-1">
+                                <h3 className="text-xl font-black text-white italic tracking-tight uppercase leading-none">
+                                    Parlay AI <span className="text-purple-500">Credits</span>
+                                </h3>
+                                <p className="text-[10px] font-bold text-purple-500/60 uppercase tracking-widest">
+                                    Fuel Your Edge
+                                </p>
+                            </div>
+                            <p className="text-sm text-zinc-300 leading-relaxed max-w-3xl font-medium">
+                                Analyzing thousands of data points to generate high-fidelity AI parlays is computationally demanding. Free users receive <span className="text-white font-bold">3 lifetime credits</span> to test the Custom Parlay Builder. To continuously build parlays, upgrade to the <span className="text-white font-bold">Pro Tier</span> for <span className="border-b border-purple-500/50 pb-0.5 text-purple-400 font-bold">50 credits refilled every month</span>, or the <span className="text-white font-bold">Whale Tier</span> for a massive <span className="border-b border-purple-500/50 pb-0.5 text-purple-400 font-bold">500 monthly credits</span>.
                             </p>
                         </div>
                     </div>
