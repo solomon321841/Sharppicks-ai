@@ -123,6 +123,13 @@ export async function POST(request: Request) {
 
         if (tier === 'pro' && !skipTrial) {
             sessionConfig.subscription_data.trial_period_days = 3
+            // Allow them to start trial without a credit card
+            sessionConfig.payment_method_collection = 'if_required'
+            sessionConfig.subscription_data.trial_settings = {
+                end_behavior: {
+                    missing_payment_method: 'cancel'
+                }
+            }
         }
 
         const session = await stripe.checkout.sessions.create(sessionConfig)
@@ -135,7 +142,7 @@ export async function POST(request: Request) {
         // Provide user-friendly error messages
         if (error.type === 'StripeInvalidRequestError') {
             return NextResponse.json(
-                { error: 'Payment configuration error. Please contact support.' },
+                { error: `Payment configuration error: ${error.message}` },
                 { status: 400 }
             )
         }
