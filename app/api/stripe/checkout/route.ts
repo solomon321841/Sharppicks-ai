@@ -121,7 +121,7 @@ export async function POST(request: Request) {
         }
 
         return NextResponse.json(
-            { error: 'Something went wrong. Please try again.' },
+            { error: `Something went wrong: ${error.message || error}` },
             { status: 500 }
         )
     }
