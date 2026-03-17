@@ -51,154 +51,46 @@ function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }: {
     return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>
 }
 
-// Abstract Edge Visualizer Component
-function EdgeVisualizer() {
+// Sleek Live Edge Ticker Component
+function EdgeTicker() {
     return (
-        <div className="relative w-full max-w-5xl mx-auto h-[400px] md:h-[500px] rounded-3xl border border-white/[0.08] bg-black/60 backdrop-blur-2xl overflow-hidden flex items-center justify-center shadow-[0_0_80px_-20px_rgba(16,185,129,0.15)] group perspective-[2000px]">
-            {/* Dark gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-emerald-500/[0.08] pointer-events-none" />
-            
-            {/* 3D Grid Pattern */}
-            <div className="absolute inset-x-0 bottom-0 h-full origin-bottom" style={{ transform: 'rotateX(60deg) scale(2.5)' }}>
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_top,black,transparent_80%)]" />
-                
-                {/* Traveling grid lines */}
-                <motion.div 
-                    className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(16,185,129,0.2),transparent)] h-2"
-                    animate={{ y: ["0%", "100%"] }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-            </div>
+        <div className="w-full max-w-6xl mx-auto overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-xl relative flex items-center h-20 shadow-[0_0_40px_-15px_rgba(16,185,129,0.15)] ring-1 ring-white/[0.02]">
+           {/* Fade edges */}
+           <div className="absolute left-0 w-32 h-full bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
+           <div className="absolute right-0 w-32 h-full bg-gradient-to-l from-black via-black/80 to-transparent z-10" />
+           
+           {/* Scanning laser line */}
+           <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent shadow-[0_0_10px_rgba(16,185,129,0.5)] z-20 pointer-events-none" />
 
-            {/* Glowing Core Elements */}
-            <div className="absolute inset-0 flex items-center justify-center mix-blend-screen pointer-events-none">
-                <div className="w-[600px] h-[600px] rounded-full bg-radial-gradient from-emerald-500/10 to-transparent blur-3xl opacity-50" />
-            </div>
-
-            {/* Simulated Floating UI - Main Dashboard Screen */}
-            <motion.div 
-                 initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
-                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-                 transition={{ duration: 1, delay: 0.2, type: "spring" }}
-                 className="relative z-10 w-[90%] md:w-[70%] h-[75%] rounded-2xl bg-[#0a0a0cd0] border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden"
-                 style={{ transformStyle: 'preserve-3d' }}
-            >
-                {/* Header */}
-                <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-white/[0.02]">
-                    <div className="flex gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/50" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-                    </div>
-                    <div className="flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-white/5">
-                        <Lock className="w-3 h-3 text-emerald-400" />
-                        <span className="text-[10px] font-mono text-zinc-400">profitpicks.ai / analyze</span>
-                    </div>
-                    <div className="w-16" /> {/* Spacer */}
-                </div>
-
-                {/* Content Area */}
-                <div className="flex-1 p-6 relative flex gap-6">
-                    {/* Main Chart Area */}
-                    <div className="flex-1 border border-white/5 rounded-xl bg-black/30 p-4 relative overflow-hidden flex flex-col justify-end">
-                        <div className="absolute top-4 left-4 flex flex-col">
-                            <span className="text-white font-bold text-lg">KC Chiefs ML</span>
-                            <span className="text-zinc-500 text-xs">+145 (DraftKings)</span>
-                        </div>
-                        <div className="absolute top-4 right-4 text-right">
-                            <span className="text-emerald-400 font-black text-2xl inline-block drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">+4.7% EV</span>
-                            <span className="text-zinc-500 text-xs block">Mathematical Edge</span>
-                        </div>
-
-                        {/* Line Chart Graphic */}
-                        <div className="w-full h-32 relative mt-12">
-                            <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">
-                                <motion.path
-                                    d="M0,45 C20,40 30,20 50,25 C70,30 80,10 100,5"
-                                    fill="none"
-                                    stroke="url(#line-gradient)"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    initial={{ pathLength: 0 }}
-                                    animate={{ pathLength: 1 }}
-                                    transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
-                                />
-                                <defs>
-                                    <linearGradient id="line-gradient" x1="0" y1="0" x2="1" y2="0">
-                                        <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
-                                        <stop offset="50%" stopColor="#10b981" stopOpacity="1" />
-                                        <stop offset="100%" stopColor="#2dd4bf" stopOpacity="1" />
-                                    </linearGradient>
-                                </defs>
-                            </svg>
-                            {/* Animated Scanner line sweeping over the chart */}
-                            <motion.div 
-                                className="absolute top-0 bottom-0 w-[1px] bg-emerald-400 shadow-[0_0_15px_2px_rgba(16,185,129,0.8)] z-10"
-                                animate={{ left: ["0%", "100%", "0%"] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Side Panel - AI Analysis */}
-                    <div className="w-48 border border-white/5 rounded-xl bg-black/30 p-3 flex flex-col gap-3">
-                        <div className="text-xs font-bold text-zinc-400 border-b border-white/10 pb-2 flex items-center justify-between">
-                            AI ANALYSIS
-                            <BrainCircuit className="w-4 h-4 text-emerald-400" />
-                        </div>
-                        
-                        {/* Fake data lines */}
-                        {[
-                            { label: "Public Money", val: "72%", col: "text-rose-400" },
-                            { label: "Sharp Money", val: "88%", col: "text-emerald-400" },
-                            { label: "Line Movement", val: "Favored", col: "text-emerald-400" },
-                        ].map((item, i) => (
-                            <div key={i} className="flex justify-between items-center text-xs">
-                                <span className="text-zinc-500">{item.label}</span>
-                                <span className={`font-mono font-bold ${item.col}`}>{item.val}</span>
-                            </div>
-                        ))}
-
-                        <div className="mt-auto border border-emerald-500/30 bg-emerald-500/10 rounded-lg p-2 text-center text-emerald-400 text-xs font-bold animate-pulse">
-                            RECOMMENDATION: BET
-                        </div>
-                    </div>
-                </div>
-
-                {/* Floating elements popping out */}
-                <motion.div 
-                    initial={{ opacity: 0, x: 20, y: -20, translateZ: 50 }}
-                    animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.5 }}
-                    className="absolute -right-6 -top-6 bg-black border border-white/20 rounded-xl p-3 shadow-2xl flex items-center gap-3"
-                    style={{ transform: 'translateZ(50px)' }}
-                >
-                    <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/50">
-                        <Activity className="w-4 h-4 text-blue-400" />
-                    </div>
-                    <div>
-                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">FanDuel Line Shift</div>
-                        <div className="text-sm font-white font-bold ml-1 text-blue-300">Chiefs +140 → +145</div>
-                    </div>
-                </motion.div>
-                
-                 <motion.div 
-                    initial={{ opacity: 0, x: -20, y: 20, translateZ: 80 }}
-                    animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.8 }}
-                    className="absolute -left-8 -bottom-4 bg-black border border-white/20 rounded-xl p-3 shadow-2xl flex items-center gap-3"
-                    style={{ transform: 'translateZ(80px)' }}
-                >
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/50">
-                        <Sparkles className="w-4 h-4 text-emerald-400" />
-                    </div>
-                    <div>
-                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Edge Verified</div>
-                        <div className="text-sm font-white font-bold ml-1 text-emerald-300">Confidence: 94.2%</div>
-                    </div>
-                </motion.div>
-
-            </motion.div>
+           <motion.div 
+               className="flex whitespace-nowrap gap-6 items-center px-4"
+               animate={{ x: ["0%", "-50%"] }}
+               transition={{ duration: 30, ease: "linear", repeat: Infinity }}
+           >
+               {[...Array(2)].map((_, i) => (
+                   <div key={i} className="flex gap-6 items-center">
+                       {[
+                           { team: "KC Chiefs ML", line: "+145", ev: "+4.7%" },
+                           { team: "LAL Lakers -4.5", line: "-110", ev: "+3.2%" },
+                           { team: "BOS Bruins U 5.5", line: "+105", ev: "+5.1%" },
+                           { team: "NYY Yankees RL", line: "+130", ev: "+2.8%" },
+                           { team: "DAL Cowboys O 48.5", line: "-115", ev: "+4.1%" },
+                           { team: "MIA Heat ML", line: "+180", ev: "+6.2%" },
+                       ].map((bet, j) => (
+                           <div key={j} className="flex items-center gap-4 bg-white/5 hover:bg-white/10 transition-colors py-2.5 px-6 rounded-full border border-white/5 cursor-default group">
+                               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
+                               <span className="text-white text-base font-bold tracking-tight">{bet.team}</span>
+                               <span className="text-zinc-500 text-sm font-semibold">{bet.line}</span>
+                               <div className="w-px h-4 bg-white/10 mx-1" />
+                               <div className="flex items-center gap-1.5">
+                                  <Sparkles className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
+                                  <span className="text-emerald-400 font-bold text-sm tracking-wide bg-emerald-400/10 px-2.5 py-1 rounded-md">{bet.ev} EV</span>
+                               </div>
+                           </div>
+                       ))}
+                   </div>
+               ))}
+           </motion.div>
         </div>
     )
 }
@@ -255,18 +147,18 @@ export function Hero() {
 
                 {/* MAIN HEADLINE */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center w-full max-w-4xl mx-auto mb-6 relative z-10"
+                    className="text-center w-full max-w-5xl mx-auto mb-8 relative z-10"
                 >
-                    <h1 className="text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold tracking-tight text-white leading-[1.1] mb-0" style={{ letterSpacing: '-0.02em' }}>
-                        Our AI Finds The Profitable Edge
-                        <br className="hidden sm:block" />
-                        <span className="relative inline-block mt-1 sm:mt-2">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
-                                You Can't.
-                            </span>
+                    <h1 className="text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] font-black tracking-[-0.04em] leading-[0.95]">
+                        <span className="text-white block drop-shadow-md">Our AI Finds The</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-1 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                            Profitable Edge
+                        </span>
+                        <span className="text-white/30 block mt-2 text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] font-extrabold tracking-[-0.02em]">
+                            You Can't.
                         </span>
                     </h1>
                 </motion.div>
@@ -354,9 +246,9 @@ export function Hero() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full relative"
+                    className="w-full relative mt-8"
                 >
-                    <EdgeVisualizer />
+                    <EdgeTicker />
                 </motion.div>
 
                 {/* Trust Badges */}
