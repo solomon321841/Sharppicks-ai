@@ -4,7 +4,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { 
     ArrowRight, 
-    BrainCircuit, 
     ChevronRight, 
     Flame, 
     Lock, 
@@ -12,9 +11,10 @@ import {
     Sparkles, 
     Target, 
     TrendingUp, 
-    Zap 
+    Zap,
+    Activity
 } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useEffect, useState, useRef } from "react"
 
 // Animated counter component
@@ -50,25 +50,91 @@ function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }: {
     return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>
 }
 
-// Rotating taglines for the live scanner
-const scannerLines = [
-    { sport: "NFL", matchup: "KC Chiefs @ Ravens", edge: "+4.7%", odds: "+145" },
-    { sport: "NBA", matchup: "Celtics @ Bucks", edge: "+6.2%", odds: "-110" },
-    { sport: "MLB", matchup: "Dodgers @ Yankees", edge: "+3.8%", odds: "+130" },
-    { sport: "NHL", matchup: "Oilers @ Panthers", edge: "+5.1%", odds: "+125" },
-]
+// Abstract Edge Visualizer Component
+function EdgeVisualizer() {
+    return (
+        <div className="relative w-full max-w-4xl mx-auto h-[260px] md:h-[320px] rounded-3xl border border-white/[0.08] bg-black/60 backdrop-blur-2xl overflow-hidden flex items-center justify-center shadow-[0_0_80px_-20px_rgba(16,185,129,0.15)] group">
+            {/* Dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-emerald-500/[0.08] pointer-events-none" />
+            
+            {/* Grid Pattern */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:2rem_2rem] pointer-events-none [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_40%,transparent_100%)]" />
+
+            {/* Simulated Live Chart / Wave */}
+            <div className="absolute inset-0 flex items-center justify-center px-8">
+                <svg viewBox="0 0 800 200" className="w-full h-full opacity-60 mix-blend-screen" preserveAspectRatio="none">
+                    <motion.path
+                        d="M 0 150 Q 50 150 100 120 T 200 140 T 300 80 T 400 130 T 500 60 T 600 90 T 700 40 T 800 60"
+                        fill="none"
+                        stroke="url(#gradient-line)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 1 }}
+                        transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+                    />
+                    <motion.path
+                        d="M 0 180 Q 80 160 150 190 T 300 150 T 450 180 T 600 130 T 800 160"
+                        fill="none"
+                        stroke="url(#gradient-line-faint)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: 0.5 }}
+                        transition={{ duration: 4, ease: "easeInOut", repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
+                    />
+                    <defs>
+                        <linearGradient id="gradient-line" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="rgba(16,185,129,0)" />
+                            <stop offset="50%" stopColor="rgba(16,185,129,1)" />
+                            <stop offset="100%" stopColor="rgba(45,212,191,1)" />
+                        </linearGradient>
+                        <linearGradient id="gradient-line-faint" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="rgba(45,212,191,0)" />
+                            <stop offset="50%" stopColor="rgba(45,212,191,0.5)" />
+                            <stop offset="100%" stopColor="rgba(16,185,129,0)" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+
+            {/* Glowing Data Point */}
+            <motion.div 
+                className="absolute w-4 h-4 rounded-full bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,1)]"
+                animate={{ 
+                    x: ["-200px", "200px", "-200px"],
+                    y: ["40px", "-40px", "40px"],
+                    scale: [1, 1.3, 1]
+                }}
+                transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
+            >
+                <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-70" />
+            </motion.div>
+
+            {/* Floating Glass UI Element */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5 }}
+                className="relative z-10 px-5 py-3 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-xl flex items-center gap-4 shadow-2xl"
+            >
+                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                    <Activity className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div className="flex flex-col pr-2">
+                    <div className="flex items-center gap-2 mb-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">Live Edge Detected</span>
+                    </div>
+                    <span className="text-sm font-semibold text-white tracking-wide">KC Chiefs +4.7% EV</span>
+                </div>
+            </motion.div>
+        </div>
+    )
+}
 
 export function Hero() {
-    const [activeScan, setActiveScan] = useState(0)
     const [liveCount, setLiveCount] = useState(2847)
-
-    // Rotate through scanner lines
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setActiveScan((prev) => (prev + 1) % scannerLines.length)
-        }, 3000)
-        return () => clearInterval(interval)
-    }, [])
 
     // Simulate live user count fluctuation
     useEffect(() => {
@@ -78,70 +144,41 @@ export function Hero() {
         return () => clearInterval(interval)
     }, [])
 
-    const currentScan = scannerLines[activeScan]
-
     return (
         <section className="relative overflow-hidden flex flex-col items-center pt-28 pb-20 md:pt-36 md:pb-28 min-h-[100vh] justify-center bg-[#000000]">
             
             {/* === CINEMATIC BACKGROUND SYSTEM === */}
-            {/* Primary soft glow at the top */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
-                 style={{ background: 'radial-gradient(ellipse at top, rgba(6,182,212,0.12) 0%, rgba(147,51,234,0.06) 40%, transparent 70%)' }} />
+                 style={{ background: 'radial-gradient(ellipse at top, rgba(16,185,129,0.08) 0%, rgba(45,212,191,0.04) 40%, transparent 70%)' }} />
             
             <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(147,51,234,0.08) 0%, transparent 60%)' }} />
+                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 60%)' }} />
 
             <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 60%)' }} />
-
-            {/* Subtle tech grid background */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 60%)' }} />
 
             {/* Glowing top line */}
-            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
-
-            {/* Floating particles */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {[...Array(8)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="absolute w-1 rounded-full bg-cyan-400/20"
-                        style={{
-                            height: `${Math.random() * 4 + 2}px`,
-                            left: `${10 + i * 12}%`,
-                            top: `${15 + (i % 4) * 20}%`,
-                            animation: `float-particle ${4 + i * 0.8}s ease-in-out ${i * 0.5}s infinite alternate`,
-                            filter: 'blur(1px)'
-                        }}
-                    />
-                ))}
-            </div>
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
 
             {/* === MAIN CONTENT === */}
-            <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-6xl mx-auto">
+            <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-5xl mx-auto">
                 
-                {/* Ultra-Modern Top Badge */}
+                {/* Sleek Top Pill */}
                 <motion.div 
                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
                    animate={{ opacity: 1, scale: 1, y: 0 }}
                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                   className="mb-10 md:mb-12"
+                   className="mb-8 md:mb-10"
                 >
                     <div className="relative group cursor-pointer inline-block">
-                        {/* Animated Glow Behind Badge */}
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full blur opacity-40 group-hover:opacity-80 transition duration-700 group-hover:duration-200" />
-                        
-                        <div className="relative flex items-center gap-3 px-4 py-2.5 bg-black border border-white/10 rounded-full flex-wrap sm:flex-nowrap justify-center sm:justify-start">
-                            <div className="px-2 py-0.5 bg-cyan-500/10 rounded-full border border-cyan-500/20 flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
-                                <span className="text-[10px] font-bold text-cyan-400 tracking-wider">LIVE</span>
-                            </div>
-                            <span className="text-[13px] text-zinc-300">
-                                <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines analyzed
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/30 to-teal-500/30 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-700" />
+                        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-white/10 rounded-full shadow-lg">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-1" />
+                            <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">Engine Active</span>
+                            <div className="w-px h-3 bg-white/10 mx-1" />
+                            <span className="text-[12px] text-zinc-400 font-medium tracking-wide pr-1">
+                                <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines scanning
                             </span>
-                            <div className="w-px h-3.5 bg-white/20 hidden sm:block" />
-                            <span className="text-[13px] text-zinc-400 font-medium hidden sm:block">ProfitPicks Engine v5.0</span>
-                            <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
                         </div>
                     </div>
                 </motion.div>
@@ -151,23 +188,15 @@ export function Hero() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center w-full max-w-[1000px] mx-auto mb-8 relative z-10"
+                    className="text-center w-full max-w-4xl mx-auto mb-6 relative z-10"
                 >
-                    <h1 className="text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] font-extrabold tracking-tight text-white leading-[1.05] mb-0" style={{ letterSpacing: '-0.02em' }}>
-                        Bet With The
-                        <br className="hidden md:block" />
-                        <span className="relative inline-block mt-1 md:mt-0">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-br from-white via-zinc-200 to-zinc-500">
-                                Mathematical{" "}
+                    <h1 className="text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold tracking-tight text-white leading-[1.1] mb-0" style={{ letterSpacing: '-0.02em' }}>
+                        Our AI Finds The Profitable Edge
+                        <br className="hidden sm:block" />
+                        <span className="relative inline-block mt-1 sm:mt-2">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">
+                                You Can't.
                             </span>
-                        </span>
-                        
-                        <span className="relative inline-block group">
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500">
-                                Advantage.
-                            </span>
-                            {/* Accent line under Advantage */}
-                            <div className="absolute bottom-1 sm:bottom-2 left-[5%] right-[5%] h-[3px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-60 rounded-full shadow-[0_0_20px_rgba(34,211,238,0.6)]"></div>
                         </span>
                     </h1>
                 </motion.div>
@@ -177,10 +206,10 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center max-w-2xl mx-auto mb-12"
+                    className="text-center max-w-2xl mx-auto mb-10"
                 >
-                    <p className="text-base sm:text-lg md:text-xl text-zinc-400 leading-relaxed font-light">
-                        We scan millions of data points across every sportsbook in real-time, instantly surfacing <strong className="text-white font-medium">positive expected value (+EV)</strong> opportunities so you can bet like a sharp.
+                    <p className="text-[15px] sm:text-[17px] text-zinc-400/90 leading-relaxed font-normal">
+                        We scan millions of data points across every major sportsbook in real-time. Our proprietary algorithms instantly surface mathematical advantages so you only bet when the numbers are in your favor.
                     </p>
                 </motion.div>
 
@@ -189,232 +218,65 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-20 w-full sm:w-auto"
                 >
                     <div className="relative group w-full sm:w-auto">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
+                        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
                         <Button 
-                            size="lg" 
-                            className="relative w-full sm:w-auto px-10 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[15px] font-bold tracking-wide transition-colors shadow-2xl flex items-center justify-center gap-2"
+                            className="relative w-full sm:w-auto px-8 h-12 bg-white hover:bg-zinc-100 text-black rounded-lg text-sm font-bold tracking-wide transition-colors shadow-2xl flex items-center justify-center gap-2"
                             asChild
                         >
                             <Link href="/login">
-                                Start Your Free Trial
+                                Start Winning Today
                                 <ArrowRight className="w-4 h-4 ml-1" />
                             </Link>
                         </Button>
                     </div>
                     
                     <Button 
-                        size="lg" 
-                        variant="outline"
-                        className="w-full sm:w-auto px-10 h-14 bg-zinc-900/50 hover:bg-zinc-800/80 text-white border border-white/10 rounded-xl text-[15px] font-semibold backdrop-blur-md transition-all flex items-center justify-center gap-2 hover:border-white/20"
+                        variant="ghost"
+                        className="w-full sm:w-auto px-6 h-12 text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 group"
                         asChild
                     >
                         <Link href="#how-it-works">
-                            <Sparkles className="w-4 h-4 text-zinc-400" />
                             See How It Works
+                            <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
                         </Link>
                     </Button>
                 </motion.div>
 
-                {/* === SOCIAL PROOF STATS BAR (BENTO-STYLE) === */}
+                {/* === SOCIAL PROOF STATS === */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto px-4 mb-24"
+                    className="flex flex-wrap items-center justify-center gap-8 md:gap-16 w-full max-w-4xl mx-auto mb-20 md:mb-24"
                 >
                     {[
-                        { value: 67, suffix: "%", label: "Proven Win Rate", desc: "Across all tracked +EV bets", icon: Target, color: "text-cyan-400", bg: "bg-cyan-400/10", border: "border-cyan-400/20" },
-                        { value: 12, suffix: "%", prefix: "+", label: "Average Edge", desc: "Found on daily algorithms", icon: TrendingUp, color: "text-blue-400", bg: "bg-blue-400/10", border: "border-blue-400/20" },
-                        { value: 50, suffix: "k+", prefix: "", label: "Lines Analyzed", desc: "Every single minute", icon: Sparkles, color: "text-purple-400", bg: "bg-purple-400/10", border: "border-purple-400/20" },
+                        { value: 67, suffix: "%", label: "Win Rate", desc: "Across tracked bets", color: "text-emerald-400" },
+                        { value: 12, suffix: "%", prefix: "+", label: "Monthly ROI", desc: "Average return", color: "text-teal-400" },
+                        { value: 50, suffix: "k+", prefix: "", label: "Picks Analyzed", desc: "Every minute", color: "text-cyan-400" },
                     ].map((stat, i) => (
-                        <div key={i} className="relative group">
-                            {/* Glow effect on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white-[0.05] to-transparent rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
-                            
-                            <div className="relative p-6 sm:p-8 rounded-2xl bg-[#0a0a0c]/80 border border-white/5 backdrop-blur-xl flex flex-col items-start text-left overflow-hidden hover:border-white/10 transition-colors shadow-2xl">
-                                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                                
-                                <div className={`w-12 h-12 rounded-xl mb-5 flex items-center justify-center ${stat.bg} ${stat.border} border`}>
-                                    <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                                </div>
-                                <div className="flex items-baseline gap-1 mb-1">
-                                    <span className="text-4xl font-extrabold text-white tracking-tight">
-                                        <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
-                                    </span>
-                                </div>
-                                <span className="text-[15px] font-semibold text-zinc-200">{stat.label}</span>
-                                <span className="text-[13px] text-zinc-500 mt-1.5">{stat.desc}</span>
+                        <div key={i} className="flex flex-col items-center text-center">
+                            <div className="flex items-baseline gap-0.5 mb-1">
+                                <span className={`text-3xl md:text-4xl font-black tracking-tight ${stat.color}`}>
+                                    <AnimatedCounter end={stat.value} suffix={stat.suffix} prefix={stat.prefix || ""} />
+                                </span>
                             </div>
+                            <span className="text-[13px] font-bold text-zinc-300 tracking-wide uppercase">{stat.label}</span>
+                            <span className="text-[11px] text-zinc-500 mt-1">{stat.desc}</span>
                         </div>
                     ))}
                 </motion.div>
 
-                {/* === THE PRODUCT SHOWCASE === */}
+                {/* === EDGE VISUALIZER SHOWCASE === */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 50 }}
+                    initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full max-w-5xl mx-auto relative group"
+                    className="w-full relative"
                 >
-                    {/* Dramatic glow behind the product showcase */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[60%] pointer-events-none transition-all duration-1000"
-                         style={{ background: 'radial-gradient(ellipse at center, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.04) 50%, transparent 70%)', filter: 'blur(80px)' }} />
-                    
-                    <div className="relative bg-[#0A0A0C]/80 backdrop-blur-3xl border border-white/[0.07] rounded-2xl md:rounded-3xl shadow-[0_50px_100px_-30px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.03)] overflow-hidden">
-                        
-                        {/* Top Chrome Bar */}
-                        <div className="bg-white/[0.02] border-b border-white/[0.05] px-5 md:px-6 py-3 md:py-3.5 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="flex gap-1.5">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06] border border-white/[0.08]" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06] border border-white/[0.08]" />
-                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30 border border-emerald-500/40 relative">
-                                        <div className="absolute inset-0 rounded-full bg-emerald-400 animate-pulse scale-50" />
-                                    </div>
-                                </div>
-                                <div className="hidden sm:flex items-center gap-2 ml-2">
-                                    <div className="px-3 py-1 rounded-md bg-white/[0.04] border border-white/[0.06]">
-                                        <span className="text-[10px] font-mono text-zinc-500">profitpicks.ai/dashboard</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Lock className="w-3 h-3 text-emerald-500/60" />
-                                <span className="text-[10px] font-bold text-emerald-500/80 uppercase tracking-widest hidden sm:inline">Encrypted</span>
-                            </div>
-                        </div>
-
-                        {/* Dashboard Content */}
-                        <div className="p-4 md:p-6 lg:p-8">
-                            
-                            {/* Dashboard Header Row */}
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]">
-                                        <BrainCircuit className="w-4.5 h-4.5 text-white" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-sm font-bold text-white tracking-tight">AI Edge Scanner</h3>
-                                        <p className="text-[10px] text-zinc-500 font-medium">Real-time odds analysis across all major sportsbooks</p>
-                                    </div>
-                                </div>
-                                <div className="hidden md:flex items-center gap-4">
-                                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Scanning Live</span>
-                                    </div>
-                                    <div className="text-[10px] text-zinc-500 font-mono">
-                                        <span className="text-zinc-400 font-semibold">{liveCount.toLocaleString()}</span> lines analyzed
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Live Picks Grid */}
-                            <div className="space-y-3">
-                                <AnimatePresence mode="wait">
-                                    {scannerLines.map((pick, i) => (
-                                        <motion.div
-                                            key={pick.sport}
-                                            initial={{ opacity: 0, x: -10 }}
-                                            animate={{ 
-                                                opacity: i === activeScan ? 1 : 0.4, 
-                                                x: 0,
-                                                scale: i === activeScan ? 1 : 0.98,
-                                            }}
-                                            transition={{ duration: 0.5 }}
-                                            className={`relative flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-xl border transition-all duration-500 ${
-                                                i === activeScan 
-                                                    ? 'bg-emerald-500/[0.04] border-emerald-500/20 shadow-[0_0_30px_-10px_rgba(16,185,129,0.15)]' 
-                                                    : 'bg-white/[0.01] border-white/[0.04]'
-                                            }`}
-                                        >
-                                            {/* Active indicator */}
-                                            {i === activeScan && (
-                                                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-8 bg-emerald-500 rounded-r-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-                                            )}
-                                            
-                                            {/* Sport Badge */}
-                                            <div className={`shrink-0 px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border ${
-                                                pick.sport === 'NFL' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                                                pick.sport === 'NBA' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-                                                pick.sport === 'MLB' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-                                                'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
-                                            }`}>
-                                                {pick.sport}
-                                            </div>
-
-                                            {/* Matchup */}
-                                            <div className="flex-1 min-w-0">
-                                                <span className="text-sm font-bold text-white truncate block">{pick.matchup}</span>
-                                                <span className="text-[10px] text-zinc-500 font-medium">Moneyline · Public: {pick.odds}</span>
-                                            </div>
-
-                                            {/* AI Model Confidence - Visual Bar */}
-                                            <div className="hidden md:flex flex-col items-end gap-1 w-32">
-                                                <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">AI Confidence</span>
-                                                <div className="w-full h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
-                                                    <motion.div 
-                                                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: i === activeScan ? '78%' : '60%' }}
-                                                        transition={{ duration: 1, delay: 0.2 }}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Edge Value */}
-                                            <div className={`shrink-0 text-right transition-all duration-500 ${i === activeScan ? 'scale-100' : 'scale-95'}`}>
-                                                <div className={`text-xl md:text-2xl font-black tracking-tighter ${
-                                                    i === activeScan 
-                                                        ? 'text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300' 
-                                                        : 'text-zinc-500'
-                                                }`}>
-                                                    {pick.edge}
-                                                </div>
-                                                <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">EV Edge</span>
-                                            </div>
-
-                                            {/* Action Button */}
-                                            {i === activeScan && (
-                                                <motion.div 
-                                                    initial={{ opacity: 0, scale: 0.8 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    className="hidden lg:block shrink-0"
-                                                >
-                                                    <div className="px-4 py-2 rounded-lg bg-emerald-500 text-black text-[10px] font-bold uppercase tracking-widest cursor-pointer hover:bg-emerald-400 transition-colors shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]">
-                                                        View Pick
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
-                            </div>
-
-                            {/* Bottom Stats Row */}
-                            <div className="mt-6 pt-5 border-t border-white/[0.04] grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {[
-                                    { label: "Today's Edges Found", value: "23", icon: Zap, color: "text-emerald-400" },
-                                    { label: "Avg Edge Size", value: "+4.8%", icon: TrendingUp, color: "text-teal-400" },
-                                    { label: "Model Accuracy", value: "67.2%", icon: Target, color: "text-emerald-400" },
-                                    { label: "Books Scanned", value: "12", icon: ShieldCheck, color: "text-zinc-400" },
-                                ].map((stat, i) => (
-                                    <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.03]">
-                                        <div className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center shrink-0">
-                                            <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                                        </div>
-                                        <div>
-                                            <div className={`text-base font-bold ${stat.color}`}>{stat.value}</div>
-                                            <div className="text-[9px] text-zinc-600 font-semibold uppercase tracking-widest">{stat.label}</div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <EdgeVisualizer />
                 </motion.div>
 
                 {/* Trust Badges */}
@@ -422,7 +284,7 @@ export function Hero() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
+                    className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
                 >
                     {[
                         { icon: ShieldCheck, text: "256-bit Encryption" },
@@ -439,3 +301,4 @@ export function Hero() {
         </section>
     )
 }
+
