@@ -31,7 +31,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: 3,
         customBuilderLimit: 0,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || ''
+        stripePriceId: (process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_STARTER || '').trim()
     },
     pro: {
         name: 'pro',
@@ -42,7 +42,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: 100,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || ''
+        stripePriceId: (process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || '').trim()
     },
     whale: {
         name: 'whale',
@@ -53,7 +53,7 @@ export const TIERS: Record<Tier, {
         canTrackBets: true,
         parlayLimit: -1,
         customBuilderLimit: 500,
-        stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || ''
+        stripePriceId: (process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || '').trim()
     }
 };
 
