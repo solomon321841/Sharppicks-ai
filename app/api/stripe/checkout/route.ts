@@ -39,17 +39,37 @@ export async function POST(request: Request) {
         }
 
         // 3. Ensure user exists in DB (sync from Supabase)
-        const profile = await prisma.user.upsert({
-            where: { id: user.id },
-            update: {},
-            create: {
-                id: user.id,
-                email: user.email!,
-                full_name: user.user_metadata?.full_name || null,
-                avatar_url: user.user_metadata?.avatar_url || null,
-                subscription_tier: 'free'
+        let profile;
+        try {
+            profile = await prisma.user.upsert({
+                where: { id: user.id },
+                update: {},
+                create: {
+                    id: user.id,
+                    email: user.email!,
+                    full_name: user.user_metadata?.full_name || null,
+                    avatar_url: user.user_metadata?.avatar_url || null,
+                    subscription_tier: 'free'
+                }
+            })
+        } catch (e: any) {
+            // Handle unique constraint failure if an account with this email was created before with a different provider
+            if (e.code === 'P2002') {
+                profile = await prisma.user.update({
+                    where: { email: user.email! },
+                    data: { id: user.id }
+                }).catch(() => null);
+                
+                if (!profile) {
+                    return NextResponse.json(
+                        { error: 'An account with this email already exists under a different login method. Please log in with that original method.' },
+                        { status: 400 }
+                    )
+                }
+            } else {
+                throw e;
             }
-        })
+        }
 
         // 4. Get or create Stripe customer
         let stripeCustomerId = profile.stripe_customer_id
