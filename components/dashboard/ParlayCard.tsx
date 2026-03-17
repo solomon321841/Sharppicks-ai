@@ -106,63 +106,63 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
             {/* Top Glow Border */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-90 shadow-[0_0_20px_rgba(52,211,153,0.8)]" />
 
-            <div className="absolute top-4 right-4 z-10">
-                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md px-3 py-1 flex items-center gap-2 text-xs font-black uppercase tracking-wider`}>
-                    <Activity className="w-4 h-4 animate-pulse" />
+            <div className="absolute top-3 right-3 z-10">
+                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md px-2 py-0.5 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider`}>
+                    <Activity className="w-3.5 h-3.5 animate-pulse" />
                     {confidence >= 70 ? 'SHARP EDGE' : confidence >= 40 ? 'SOLID VALUE' : confidence >= 20 ? 'HIGH RISK PLAY' : 'MOONSHOT'}
                 </Badge>
             </div>
 
-            <CardHeader className="flex flex-col space-y-1 pb-3 pt-5 px-6 relative z-20 border-b border-white/5">
-                <CardTitle className="text-xl font-black text-white tracking-widest uppercase flex items-center justify-between">
-                    <span className="flex items-center gap-3">
-                        <Activity className="w-5 h-5 text-emerald-400" /> AI PARLAY
+            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-4 px-4 relative z-20 border-b border-white/5">
+                <CardTitle className="text-lg font-black text-white tracking-widest uppercase flex items-center justify-between">
+                    <span className="flex items-center gap-2.5">
+                        <Activity className="w-4 h-4 text-emerald-400" /> AI PARLAY
                     </span>
                 </CardTitle>
-                <CardDescription className="flex items-center gap-3 text-sm font-bold text-emerald/70 leading-none mt-1">
+                <CardDescription className="flex items-center gap-2 text-xs font-bold text-emerald/70 leading-none mt-1">
                     <span className="text-white/80">{legs.length} LEGS</span>
-                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full" />
-                    <span className="text-emerald-400 font-black text-lg">{totalOdds}</span>
+                    <span className="w-1 h-1 bg-white/20 rounded-full" />
+                    <span className="text-emerald-400 font-black text-base">{totalOdds}</span>
                 </CardDescription>
             </CardHeader>
 
             {strategy && (
-                <div className="px-6 py-3 bg-gradient-to-r from-emerald-950/40 to-transparent border-b border-emerald-500/10">
-                    <p className="text-sm text-emerald-400/90 font-medium italic leading-relaxed">
-                        <span className="text-white not-italic font-black mr-2 uppercase text-xs tracking-widest bg-emerald-500/20 px-2 py-1 rounded">Logic:</span>
+                <div className="px-4 py-2 bg-gradient-to-r from-emerald-950/40 to-transparent border-b border-emerald-500/10">
+                    <p className="text-xs text-emerald-400/90 font-medium italic leading-relaxed">
+                        <span className="text-white not-italic font-black mr-2 uppercase tracking-widest bg-emerald-500/20 px-1.5 py-0.5 rounded text-[10px]">Logic:</span>
                         "{strategy}"
                     </p>
                 </div>
             )}
 
-            <CardContent className="space-y-3 relative z-10 px-4 py-4 flex-1 overflow-y-auto custom-scrollbar min-h-[300px]">
+            <CardContent className="space-y-2 relative z-10 px-3 py-2 flex-1 overflow-y-auto custom-scrollbar min-h-0">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
                     const subText = isProp ? `${leg.team} vs ${leg.opponent}` : `vs ${leg.opponent}`;
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-2 py-3 px-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-emerald-950/30 transition-all duration-300 hover:border-emerald-500/30 shadow-lg">
-                            <div className="relative z-10 flex justify-between items-start md:items-center gap-3">
-                                <div className="flex gap-3 items-center min-w-0">
-                                    <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                        <div key={i} className="group relative flex flex-col gap-1.5 py-2 px-3 rounded-xl border border-white/10 bg-black/40 hover:bg-emerald-950/30 transition-all duration-300 hover:border-emerald-500/30 shadow-md">
+                            <div className="relative z-10 flex justify-between items-start md:items-center gap-2">
+                                <div className="flex gap-2.5 items-center min-w-0">
+                                    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
                                         <div className="absolute inset-0 bg-white/10 rounded-full blur-[2px]" />
                                         <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/20 flex items-center justify-center overflow-hidden">
-                                            <TeamLogo name={leg.team} className="w-6 h-6 relative z-10" />
+                                            <TeamLogo name={leg.team} className="w-5 h-5 relative z-10" />
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col min-w-0">
                                         <div className="flex items-center gap-2 mb-0.5">
-                                            <span className="text-base md:text-lg font-black text-white tracking-tight truncate">
+                                            <span className="text-sm font-black text-white tracking-tight truncate">
                                                 {leg.player || leg.team}
                                             </span>
                                             {isProp && (
-                                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] h-4 px-1.5 font-bold uppercase">
+                                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[9px] h-3.5 px-1 font-bold uppercase tracking-wider">
                                                     PROP
                                                 </Badge>
                                             )}
                                         </div>
-                                        <p className="text-xs font-bold text-zinc-400 truncate uppercase flex items-center flex-wrap gap-1">
+                                        <p className="text-[10px] font-bold text-zinc-400 truncate uppercase flex items-center flex-wrap gap-1 leading-none">
                                             {isProp && leg.prop_market ? (
                                                 <>
                                                     <span className="text-emerald-500">{leg.prop_market.replace(/_/g, ' ')}</span>
@@ -180,23 +180,23 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-end shrink-0 gap-1 mt-1 md:mt-0">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm font-black text-white tracking-tighter bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                                <div className="flex flex-col items-end shrink-0 gap-0.5 mt-0.5 md:mt-0">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-xs font-black text-white tracking-tighter bg-white/5 px-1.5 py-0.5 rounded border border-white/10">
                                             {leg.line === 'Yes' ? 'WIN' : leg.line}
                                         </span>
-                                        <Badge variant="outline" className="text-sm font-mono font-black border-emerald-500/30 text-emerald-400 bg-emerald-500/10 px-2 py-0.5">
+                                        <Badge variant="outline" className="text-xs font-mono font-black border-emerald-500/30 text-emerald-400 bg-emerald-500/10 px-1.5 py-0">
                                             {leg.odds}
                                         </Badge>
                                     </div>
-                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
+                                    <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mt-0.5">
                                         {leg.sportsbook}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="relative z-10 mt-1 bg-black/60 py-2.5 px-3 rounded-xl border border-white/5">
-                                <p className="text-xs leading-relaxed text-zinc-300 group-hover:text-white transition-colors font-medium">
+                            <div className="relative z-10 mt-1 bg-black/60 py-1.5 px-2.5 rounded-lg border border-white/5">
+                                <p className="text-[11px] leading-snug text-zinc-400 group-hover:text-zinc-300 transition-colors font-medium">
                                     {leg.reasoning}
                                 </p>
                             </div>
@@ -205,21 +205,21 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-3 pt-4 pb-5 px-6 bg-gradient-to-t from-emerald-950/20 to-black/60 border-t border-white/10 relative z-20 shrink-0">
-                <div className="flex w-full gap-3">
+            <CardFooter className="flex flex-col gap-2 pt-3 pb-3 px-4 bg-gradient-to-t from-emerald-950/20 to-black/60 border-t border-white/10 relative z-20 shrink-0">
+                <div className="flex w-full gap-2.5">
                     <Button
                         onClick={handleCopy}
                         variant="outline"
-                        className="flex-1 border-white/20 bg-white/5 hover:bg-white/10 hover:text-white transition-all text-xs h-12 uppercase tracking-widest font-bold"
+                        className="flex-1 border-white/20 bg-white/5 hover:bg-white/10 hover:text-white transition-all text-[11px] h-10 uppercase tracking-widest font-bold"
                     >
                         {copied ? 'COPIED ✓' : 'COPY PARLAY'}
                     </Button>
 
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                            <Button className="flex-[2] relative overflow-hidden bg-emerald-500 hover:bg-emerald-400 text-black border-0 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] text-sm h-12 uppercase tracking-widest font-black group transition-all">
-                                <span className="relative z-10 flex items-center gap-2">
-                                    <Lock className="w-4 h-4 fill-black/20" /> LOCK IN
+                            <Button className="flex-[2] relative overflow-hidden bg-emerald-500 hover:bg-emerald-400 text-black border-0 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] text-[11px] h-10 uppercase tracking-widest font-black group transition-all">
+                                <span className="relative z-10 flex items-center gap-1.5">
+                                    <Lock className="w-3.5 h-3.5 fill-black/20" /> LOCK IN
                                 </span>
                                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0" />
                             </Button>
@@ -271,7 +271,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                         </DialogContent>
                     </Dialog>
                 </div>
-                <p className="text-[10px] text-center text-zinc-500 font-bold uppercase tracking-widest pt-1">
+                <p className="text-[9px] text-center text-zinc-500 font-bold uppercase tracking-widest pt-0.5">
                     Track & Analyze Your Performance
                 </p>
             </CardFooter>
