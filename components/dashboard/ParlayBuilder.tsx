@@ -337,15 +337,15 @@ export function ParlayBuilder() {
                     </div>
                 ) : result ? (
                     <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 h-full flex flex-col">
-                        <div className="mb-2 flex items-center justify-between">
+                        <div className="mb-4 flex items-center justify-between">
                             <div>
-                                <h3 className="text-sm font-bold text-white">AI Analysis Result</h3>
+                                <h3 className="text-lg font-black text-white uppercase tracking-widest">AI Analysis Result</h3>
                             </div>
-                            <div className="bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Success</span>
+                            <div className="bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+                                <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">Success</span>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto pr-1">
+                        <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
                             <ParlayCard
                                 legs={result.legs}
                                 totalOdds={result.totalOdds}
@@ -353,15 +353,15 @@ export function ParlayBuilder() {
                                 riskLevel={risk}
                                 strategy={result.strategy}
                             />
+                            <Button
+                                variant="ghost"
+                                className="w-full mt-4 text-zinc-400 hover:text-white hover:bg-white/5 h-12 text-sm font-bold uppercase tracking-widest border border-dashed border-white/10"
+                                onClick={() => setResult(null)}
+                            >
+                                <RefreshCw className="w-4 h-4 mr-2" />
+                                Reset & Build Another
+                            </Button>
                         </div>
-                        <Button
-                            variant="ghost"
-                            className="w-full mt-2 text-zinc-400 hover:text-white hover:bg-white/5 h-8 text-xs"
-                            onClick={() => setResult(null)}
-                        >
-                            <RefreshCw className="w-3 h-3 mr-2" />
-                            Reset & Build Another
-                        </Button>
                     </div>
                 ) : null}
 

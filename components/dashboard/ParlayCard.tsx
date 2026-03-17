@@ -102,101 +102,101 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 "bg-red-500/20 text-red-500 border-red-500/50";
 
     return (
-        <Card className="w-full bg-gradient-to-b from-zinc-900 to-black border-zinc-800 shadow-2xl relative overflow-hidden group/card">
+        <Card className="w-full bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border-white/10 shadow-2xl relative overflow-hidden group/card backdrop-blur-xl">
             {/* Top Glow Border */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-80" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-90 shadow-[0_0_20px_rgba(52,211,153,0.8)]" />
 
-            <div className="absolute top-3 right-3 z-10">
-                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md border-emerald-500/20 shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] px-2.5 py-0.5 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tighter`}>
-                    <Activity className="w-3 h-3 animate-pulse" />
+            <div className="absolute top-4 right-4 z-10">
+                <Badge variant="outline" className={`${confidenceColor} backdrop-blur-md px-3 py-1 flex items-center gap-2 text-xs font-black uppercase tracking-wider`}>
+                    <Activity className="w-4 h-4 animate-pulse" />
                     {confidence >= 70 ? 'SHARP EDGE' : confidence >= 40 ? 'SOLID VALUE' : confidence >= 20 ? 'HIGH RISK PLAY' : 'MOONSHOT'}
                 </Badge>
             </div>
 
-            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-3 px-4 relative z-20 border-b border-white/5">
-                <CardTitle className="text-sm font-black text-white tracking-widest uppercase flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                        <Activity className="w-3 h-3 text-emerald-400" /> AI PARLAY
+            <CardHeader className="flex flex-col space-y-1 pb-3 pt-5 px-6 relative z-20 border-b border-white/5">
+                <CardTitle className="text-xl font-black text-white tracking-widest uppercase flex items-center justify-between">
+                    <span className="flex items-center gap-3">
+                        <Activity className="w-5 h-5 text-emerald-400" /> AI PARLAY
                     </span>
                 </CardTitle>
-                <CardDescription className="flex items-center gap-2 text-[9px] font-bold text-emerald/70 leading-none">
+                <CardDescription className="flex items-center gap-3 text-sm font-bold text-emerald/70 leading-none mt-1">
                     <span className="text-white/80">{legs.length} LEGS</span>
-                    <span className="w-1 h-1 bg-white/20 rounded-full" />
-                    <span className="text-emerald-400 font-black">{totalOdds}</span>
+                    <span className="w-1.5 h-1.5 bg-white/20 rounded-full" />
+                    <span className="text-emerald-400 font-black text-lg">{totalOdds}</span>
                 </CardDescription>
             </CardHeader>
 
             {strategy && (
-                <div className="px-4 py-2 bg-emerald-500/5 border-b border-emerald-500/10">
-                    <p className="text-[10px] text-emerald-400/90 font-bold italic leading-relaxed">
-                        <span className="text-white not-italic font-black mr-1 uppercase text-[8px] tracking-widest">Logic:</span>
+                <div className="px-6 py-3 bg-gradient-to-r from-emerald-950/40 to-transparent border-b border-emerald-500/10">
+                    <p className="text-sm text-emerald-400/90 font-medium italic leading-relaxed">
+                        <span className="text-white not-italic font-black mr-2 uppercase text-xs tracking-widest bg-emerald-500/20 px-2 py-1 rounded">Logic:</span>
                         "{strategy}"
                     </p>
                 </div>
             )}
 
-            <CardContent className="space-y-1 relative z-10 px-2 py-1 flex-1 overflow-hidden pt-2">
+            <CardContent className="space-y-3 relative z-10 px-4 py-4 flex-1 overflow-y-auto custom-scrollbar min-h-[300px]">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
                     const subText = isProp ? `${leg.team} vs ${leg.opponent}` : `vs ${leg.opponent}`;
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-1 py-1.5 px-2 rounded-xl border border-white/[0.03] bg-zinc-900/40 hover:bg-emerald-500/[0.04] transition-all duration-300">
-                            <div className="relative z-10 flex justify-between items-center gap-2">
-                                <div className="flex gap-2 items-center min-w-0">
-                                    <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-                                        <div className="absolute inset-0 bg-white/5 rounded-full blur-[1px]" />
-                                        <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/10 flex items-center justify-center overflow-hidden">
-                                            <TeamLogo name={leg.team} className="w-3.5 h-3.5 relative z-10" />
+                        <div key={i} className="group relative flex flex-col gap-2 py-3 px-4 rounded-2xl border border-white/10 bg-black/40 hover:bg-emerald-950/30 transition-all duration-300 hover:border-emerald-500/30 shadow-lg">
+                            <div className="relative z-10 flex justify-between items-start md:items-center gap-3">
+                                <div className="flex gap-3 items-center min-w-0">
+                                    <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
+                                        <div className="absolute inset-0 bg-white/10 rounded-full blur-[2px]" />
+                                        <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/20 flex items-center justify-center overflow-hidden">
+                                            <TeamLogo name={leg.team} className="w-6 h-6 relative z-10" />
                                         </div>
                                     </div>
 
                                     <div className="flex flex-col min-w-0">
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="text-[11px] font-black text-white tracking-tight truncate">
+                                        <div className="flex items-center gap-2 mb-0.5">
+                                            <span className="text-base md:text-lg font-black text-white tracking-tight truncate">
                                                 {leg.player || leg.team}
                                             </span>
                                             {isProp && (
-                                                <Badge className="bg-emerald-500/10 text-emerald-400 border-none text-[7px] h-3 px-1 font-black leading-none">
+                                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] h-4 px-1.5 font-bold uppercase">
                                                     PROP
                                                 </Badge>
                                             )}
                                         </div>
-                                        <p className="text-[8px] font-bold text-zinc-500 truncate uppercase mt-[-1px]">
+                                        <p className="text-xs font-bold text-zinc-400 truncate uppercase flex items-center flex-wrap gap-1">
                                             {isProp && leg.prop_market ? (
                                                 <>
-                                                    <span className="text-emerald-500/80">{leg.prop_market}</span>
-                                                    {' '}
-                                                    <span className="text-zinc-700 italic lowercase font-medium">({leg.team.toLowerCase()} vs {leg.opponent.toLowerCase()})</span>
+                                                    <span className="text-emerald-500">{leg.prop_market.replace(/_/g, ' ')}</span>
+                                                    <span className="text-zinc-600 font-medium lowercase">({leg.team.toLowerCase()} vs {leg.opponent.toLowerCase()})</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    {leg.bet_type === 'moneyline' ? 'MONEYLINE' : leg.bet_type === 'spread' ? 'SPREAD' : leg.bet_type === 'totals' ? 'GAME TOTAL' : leg.bet_type.replace('_', ' ')}
-                                                    {' '}
-                                                    <span className="text-zinc-700 italic lowercase font-medium">(vs {leg.opponent.toLowerCase()})</span>
+                                                    <span className="text-emerald-500">
+                                                        {leg.bet_type === 'moneyline' ? 'MONEYLINE' : leg.bet_type === 'spread' ? 'SPREAD' : leg.bet_type === 'totals' ? 'GAME TOTAL' : leg.bet_type.replace(/_/g, ' ')}
+                                                    </span>
+                                                    <span className="text-zinc-600 font-medium lowercase">(vs {leg.opponent.toLowerCase()})</span>
                                                 </>
                                             )}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-end shrink-0">
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] font-black text-white tracking-tighter">
+                                <div className="flex flex-col items-end shrink-0 gap-1 mt-1 md:mt-0">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-black text-white tracking-tighter bg-white/5 px-2 py-0.5 rounded border border-white/10">
                                             {leg.line === 'Yes' ? 'WIN' : leg.line}
                                         </span>
-                                        <Badge variant="outline" className="text-[10px] font-mono font-black h-4 px-1.5 border-emerald-500/20 text-emerald-400 bg-emerald-500/5">
+                                        <Badge variant="outline" className="text-sm font-mono font-black border-emerald-500/30 text-emerald-400 bg-emerald-500/10 px-2 py-0.5">
                                             {leg.odds}
                                         </Badge>
                                     </div>
-                                    <span className="text-[7px] font-black text-zinc-600 uppercase tracking-tighter">
+                                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">
                                         {leg.sportsbook}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="relative z-10 bg-black/30 py-1.5 px-2 rounded-lg border border-white/[0.02]">
-                                <p className="text-[9px] leading-[1.25] text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
+                            <div className="relative z-10 mt-1 bg-black/60 py-2.5 px-3 rounded-xl border border-white/5">
+                                <p className="text-xs leading-relaxed text-zinc-300 group-hover:text-white transition-colors font-medium">
                                     {leg.reasoning}
                                 </p>
                             </div>
@@ -205,22 +205,23 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-2 pt-1.5 pb-2 px-2.5 bg-gradient-to-t from-emerald-950/20 to-transparent border-t border-white/5 relative z-20 shrink-0">
-                <div className="flex w-full gap-2">
+            <CardFooter className="flex flex-col gap-3 pt-4 pb-5 px-6 bg-gradient-to-t from-emerald-950/20 to-black/60 border-t border-white/10 relative z-20 shrink-0">
+                <div className="flex w-full gap-3">
                     <Button
                         onClick={handleCopy}
                         variant="outline"
-                        className="flex-1 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white transition-all text-[8px] h-7 uppercase tracking-widest font-bold"
+                        className="flex-1 border-white/20 bg-white/5 hover:bg-white/10 hover:text-white transition-all text-xs h-12 uppercase tracking-widest font-bold"
                     >
-                        {copied ? 'COPIED ✓' : 'COPY'}
+                        {copied ? 'COPIED ✓' : 'COPY PARLAY'}
                     </Button>
 
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
-                            <Button className="flex-[2] relative overflow-hidden bg-gradient-to-r from-emerald-600 to-emerald-400 text-white border-0 shadow-lg text-[10px] h-8 uppercase tracking-widest font-black group">
-                                <span className="relative z-10 flex items-center gap-1.5">
-                                    <Lock className="w-3 h-3" /> LOCK IN
+                            <Button className="flex-[2] relative overflow-hidden bg-emerald-500 hover:bg-emerald-400 text-black border-0 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] text-sm h-12 uppercase tracking-widest font-black group transition-all">
+                                <span className="relative z-10 flex items-center gap-2">
+                                    <Lock className="w-4 h-4 fill-black/20" /> LOCK IN
                                 </span>
+                                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0" />
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px]">
@@ -262,7 +263,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                 </div>
                             </div>
                             <DialogFooter>
-                                <Button type="submit" onClick={handleLockIn} disabled={loading} className="bg-emerald text-white">
+                                <Button type="submit" onClick={handleLockIn} disabled={loading} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full sm:w-auto">
                                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     Confirm Lock
                                 </Button>
@@ -270,7 +271,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                         </DialogContent>
                     </Dialog>
                 </div>
-                <p className="text-[10px] text-center text-muted-foreground/40 font-mono uppercase tracking-widest">
+                <p className="text-[10px] text-center text-zinc-500 font-bold uppercase tracking-widest pt-1">
                     Track & Analyze Your Performance
                 </p>
             </CardFooter>
