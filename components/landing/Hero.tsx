@@ -67,17 +67,22 @@ export function Hero() {
         <section className="relative overflow-hidden flex flex-col items-center pt-24 pb-12 md:pt-32 md:pb-16 min-h-[90vh] justify-center bg-[#000000]">
             
             {/* === CINEMATIC BACKGROUND SYSTEM === */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
-                 style={{ background: 'radial-gradient(ellipse at top, rgba(16,185,129,0.08) 0%, rgba(45,212,191,0.04) 40%, transparent 70%)' }} />
+            {/* Subtle high-tech grid */}
+            <div className="absolute inset-0 flex items-center justify-center [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#27272a_1px,transparent_1px),linear-gradient(to_bottom,#27272a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,white,transparent)] opacity-20" />
+            </div>
+
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] pointer-events-none"
+                 style={{ background: 'radial-gradient(ellipse at top, rgba(16,185,129,0.06) 0%, rgba(45,212,191,0.03) 40%, transparent 70%)' }} />
             
             <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 60%)' }} />
+                 style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.04) 0%, transparent 60%)' }} />
 
             <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none"
-                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.05) 0%, transparent 60%)' }} />
+                 style={{ background: 'radial-gradient(circle, rgba(45,212,191,0.04) 0%, transparent 60%)' }} />
 
             {/* Glowing top line */}
-            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/20 to-transparent" />
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent shadow-[0_0_20px_rgba(16,185,129,0.5)]" />
 
             {/* === MAIN CONTENT === */}
             <div className="container relative z-10 flex flex-col items-center px-4 md:px-6 w-full max-w-5xl mx-auto">
@@ -111,9 +116,13 @@ export function Hero() {
                 >
                     <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-[-0.03em] leading-[1.05]">
                         <span className="text-white block">We Do The Math.</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-2 drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                        <motion.span 
+                            animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+                            transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
+                            className="bg-[length:200%_auto] text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-400 block pb-2 drop-shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+                        >
                             You Place The Bet.
-                        </span>
+                        </motion.span>
                     </h1>
                 </motion.div>
 
@@ -146,10 +155,14 @@ export function Hero() {
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
                         <Link 
                             href="/login"
-                            className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-bold tracking-wide transition-all shadow-lg flex items-center justify-center gap-2"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-bold tracking-wide transition-all shadow-lg flex items-center justify-center gap-2 overflow-hidden"
                         >
-                            Start Winning Today
-                            <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                            {/* Glass Shine Effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out" />
+                            <span className="relative z-10 flex items-center justify-center gap-2">
+                                Start Winning Today
+                                <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                            </span>
                         </Link>
                     </motion.div>
                     
