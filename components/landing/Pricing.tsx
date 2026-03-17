@@ -69,7 +69,10 @@ export function Pricing() {
             const response = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tier: tier.id })
+                body: JSON.stringify({ 
+                    tier: tier.id,
+                    returnUrl: window.location.href 
+                })
             })
 
             const data = await response.json()

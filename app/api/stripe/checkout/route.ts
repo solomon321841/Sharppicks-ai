@@ -9,7 +9,7 @@ const VALID_PAID_TIERS: Tier[] = ['starter', 'pro', 'whale']
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { tier } = body
+        const { tier, returnUrl } = body
 
         // 1. Validate tier
         if (!tier || !VALID_PAID_TIERS.includes(tier as Tier)) {
@@ -71,8 +71,16 @@ export async function POST(request: Request) {
         const headersList = request.headers
         const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
         const appUrl = origin.replace(/\/$/, '') // Remove trailing slash if present
-        const referer = headersList.get('referer')
-        const cancelUrl = referer || `${appUrl}/`
+        
+        let cancelUrl = `${appUrl}/#pricing`
+        if (returnUrl) {
+            cancelUrl = returnUrl
+        } else {
+            const referer = headersList.get('referer')
+            if (referer) {
+                cancelUrl = referer
+            }
+        }
 
         const session = await stripe.checkout.sessions.create({
             customer: stripeCustomerId,
