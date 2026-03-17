@@ -26,6 +26,7 @@ export function ParlayBuilder() {
     const [errorState, setErrorState] = useState<string | null>(null)
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [tier, setTier] = useState<string>('pro') // Default to pro for demo
+    const [credits, setCredits] = useState<number | null>(null)
     const [checkingTier, setCheckingTier] = useState(true)
     const [schedule, setSchedule] = useState<any[] | undefined>(undefined)
     const [loadingSchedule, setLoadingSchedule] = useState(true)
@@ -38,8 +39,11 @@ export function ParlayBuilder() {
         const checkTier = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
-                const { data } = await supabase.from('users').select('subscription_tier').eq('id', user.id).single()
-                if (data) setTier(data.subscription_tier)
+                const { data } = await supabase.from('users').select('subscription_tier, parlay_credits').eq('id', user.id).single()
+                if (data) {
+                    setTier(data.subscription_tier)
+                    setCredits(data.parlay_credits ?? 0)
+                }
             }
             setCheckingTier(false)
         }
@@ -122,6 +126,7 @@ export function ParlayBuilder() {
             }
 
             setResult(data)
+            setCredits(prev => prev !== null ? Math.max(0, prev - 1) : null)
         } catch (error: any) {
             console.error('Generation error:', error)
             toast({
@@ -166,6 +171,12 @@ export function ParlayBuilder() {
                         <div className="flex items-center gap-2">
                             <h3 className="text-sm font-bold tracking-tight text-white">Parlay Config</h3>
                             <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-zinc-400">AI Powered</span>
+                            {credits !== null && (
+                                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded flex items-center gap-1 font-bold shadow-[0_0_10px_-2px_rgba(16,185,129,0.3)]">
+                                    <Zap className="w-3 h-3 fill-emerald-400" />
+                                    {credits} CREDITS LEFT
+                                </span>
+                            )}
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
