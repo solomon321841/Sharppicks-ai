@@ -51,49 +51,6 @@ function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }: {
     return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>
 }
 
-// Sleek Live Edge Ticker Component
-function EdgeTicker() {
-    return (
-        <div className="w-full max-w-6xl mx-auto overflow-hidden rounded-2xl border border-white/5 bg-black/40 backdrop-blur-xl relative flex items-center h-20 shadow-[0_0_40px_-15px_rgba(16,185,129,0.15)] ring-1 ring-white/[0.02]">
-           {/* Fade edges */}
-           <div className="absolute left-0 w-32 h-full bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
-           <div className="absolute right-0 w-32 h-full bg-gradient-to-l from-black via-black/80 to-transparent z-10" />
-           
-           {/* Scanning laser line */}
-           <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-transparent shadow-[0_0_10px_rgba(16,185,129,0.5)] z-20 pointer-events-none" />
-
-           <motion.div 
-               className="flex whitespace-nowrap gap-6 items-center px-4"
-               animate={{ x: ["0%", "-50%"] }}
-               transition={{ duration: 30, ease: "linear", repeat: Infinity }}
-           >
-               {[...Array(2)].map((_, i) => (
-                   <div key={i} className="flex gap-6 items-center">
-                       {[
-                           { team: "KC Chiefs ML", line: "+145", ev: "+4.7%" },
-                           { team: "LAL Lakers -4.5", line: "-110", ev: "+3.2%" },
-                           { team: "BOS Bruins U 5.5", line: "+105", ev: "+5.1%" },
-                           { team: "NYY Yankees RL", line: "+130", ev: "+2.8%" },
-                           { team: "DAL Cowboys O 48.5", line: "-115", ev: "+4.1%" },
-                           { team: "MIA Heat ML", line: "+180", ev: "+6.2%" },
-                       ].map((bet, j) => (
-                           <div key={j} className="flex items-center gap-4 bg-white/5 hover:bg-white/10 transition-colors py-2.5 px-6 rounded-full border border-white/5 cursor-default group">
-                               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
-                               <span className="text-white text-base font-bold tracking-tight">{bet.team}</span>
-                               <span className="text-zinc-500 text-sm font-semibold">{bet.line}</span>
-                               <div className="w-px h-4 bg-white/10 mx-1" />
-                               <div className="flex items-center gap-1.5">
-                                  <Sparkles className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
-                                  <span className="text-emerald-400 font-bold text-sm tracking-wide bg-emerald-400/10 px-2.5 py-1 rounded-md">{bet.ev} EV</span>
-                               </div>
-                           </div>
-                       ))}
-                   </div>
-               ))}
-           </motion.div>
-        </div>
-    )
-}
 
 export function Hero() {
     const [liveCount, setLiveCount] = useState(2847)
@@ -133,13 +90,13 @@ export function Hero() {
                    className="mb-8 md:mb-10"
                 >
                     <div className="relative group cursor-pointer inline-block">
-                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/30 to-teal-500/30 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-700" />
-                        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-white/10 rounded-full shadow-lg">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse ml-1" />
-                            <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">Engine Active</span>
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/40 to-teal-500/40 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-700" />
+                        <div className="relative flex items-center gap-2 px-3 py-1.5 bg-zinc-950/80 backdrop-blur-md border border-white/10 rounded-full shadow-lg">
+                            <BrainCircuit className="w-4 h-4 text-emerald-400 animate-pulse ml-1" />
+                            <span className="text-[11px] font-bold text-emerald-400 tracking-widest uppercase">Powered by Opus 4.6</span>
                             <div className="w-px h-3 bg-white/10 mx-1" />
                             <span className="text-[12px] text-zinc-400 font-medium tracking-wide pr-1">
-                                <span className="text-white font-semibold">{liveCount.toLocaleString()}</span> lines scanning
+                                Engine <span className="text-white font-semibold">Active</span>
                             </span>
                         </div>
                     </div>
@@ -150,15 +107,12 @@ export function Hero() {
                     initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                     transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center w-full max-w-5xl mx-auto mb-8 relative z-10"
+                    className="text-center w-full max-w-4xl mx-auto mb-8 relative z-10"
                 >
-                    <h1 className="text-[3.5rem] sm:text-[4.5rem] md:text-[5.5rem] lg:text-[6.5rem] font-black tracking-[-0.04em] leading-[0.95]">
-                        <span className="text-white block drop-shadow-md">Our AI Finds The</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-1 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                            Profitable Edge
-                        </span>
-                        <span className="text-white/30 block mt-2 text-[2.5rem] sm:text-[3.5rem] md:text-[4.5rem] font-extrabold tracking-[-0.02em]">
-                            You Can't.
+                    <h1 className="text-[3rem] sm:text-[4rem] md:text-[5rem] lg:text-[5.5rem] font-black tracking-tight leading-[1.05]">
+                        <span className="text-white block drop-shadow-md">We Do The Math.</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 block pb-2 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
+                            You Place The Bet.
                         </span>
                     </h1>
                 </motion.div>
@@ -170,8 +124,9 @@ export function Hero() {
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
                     className="text-center max-w-2xl mx-auto mb-12"
                 >
-                    <p className="text-[16px] sm:text-[18px] text-zinc-400 leading-relaxed font-medium">
-                        We scan <span className="text-white font-semibold">millions of data points</span> across every major sportsbook in real-time. Our <span className="text-emerald-400 font-semibold drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">AI-powered engine</span> instantly surfaces mathematical advantages so you <span className="text-white font-semibold border-b border-emerald-500/30 pb-0.5">only bet when the numbers are in your favor</span>.
+                    <p className="text-[16px] md:text-[19px] text-zinc-400 leading-relaxed font-normal">
+                        The <span className="text-white font-medium">Opus 4.6</span> AI engine processes millions of data points instantly, uncovering hidden mathematical advantages across global sportsbooks. <br className="hidden sm:block mt-1" />
+                        <span className="text-emerald-400 font-medium border-b border-emerald-500/30 pb-0.5">Bet with institutional-grade intel.</span>
                     </p>
                 </motion.div>
 
@@ -180,39 +135,37 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6 mb-24 w-full sm:w-auto"
                 >
                     <motion.div 
-                        whileHover={{ scale: 1.05 }} 
-                        whileTap={{ scale: 0.95 }}
-                        className="relative group w-full sm:w-auto"
+                        whileHover={{ scale: 1.03, y: -2 }} 
+                        whileTap={{ scale: 0.97 }}
+                        className="relative group w-full sm:w-auto z-20"
                     >
-                        {/* Animated Glow Behind Button */}
-                        <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-500 animate-pulse" />
+                        {/* Shimmering Button Glow */}
+                        <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-all duration-500 animate-[shimmer_2s_linear_infinite] bg-[length:200%_auto]" />
                         <Link 
                             href="/login"
-                            className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-black tracking-wide transition-colors shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group-hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]"
+                            className="relative w-full sm:w-auto pl-6 pr-4 py-2 h-14 bg-white text-black rounded-xl text-[16px] font-black tracking-wide transition-all shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-between gap-4 group-hover:shadow-[0_0_60px_rgba(16,185,129,0.6)]"
                         >
                             Start Winning Today
-                            <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                            <div className="w-10 h-10 rounded-lg bg-black text-white flex items-center justify-center group-hover:rotate-[-10deg] transition-transform duration-300">
+                                <Zap className="w-5 h-5 text-emerald-400 fill-emerald-400/20" />
+                            </div>
                         </Link>
                     </motion.div>
                     
                     <motion.div
-                        whileHover={{ scale: 1.05 }} 
-                        whileTap={{ scale: 0.95 }}
-                        className="w-full sm:w-auto"
+                        whileHover={{ scale: 1.03, y: -2 }} 
+                        whileTap={{ scale: 0.97 }}
+                        className="w-full sm:w-auto relative z-10"
                     >
                         <Link 
                             href="#how-it-works"
-                            className="relative w-full sm:w-auto px-8 h-14 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white rounded-xl text-[16px] font-bold transition-all flex items-center justify-center gap-2 group overflow-hidden"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-zinc-900 border border-white/10 hover:bg-zinc-800 hover:border-white/20 text-white rounded-xl text-[16px] font-bold transition-all flex items-center justify-center gap-2 shadow-lg group"
                         >
-                            <span className="relative z-10 flex items-center gap-2">
-                                See How It Works
-                                <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
-                            </span>
-                            {/* Glass shine effect on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out" />
+                            See The Engine In Action
+                            <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
                         </Link>
                     </motion.div>
                 </motion.div>
@@ -241,15 +194,6 @@ export function Hero() {
                     ))}
                 </motion.div>
 
-                {/* === EDGE VISUALIZER SHOWCASE === */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.9, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="w-full relative mt-8"
-                >
-                    <EdgeTicker />
-                </motion.div>
 
                 {/* Trust Badges */}
                 <motion.div
