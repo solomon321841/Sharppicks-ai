@@ -193,24 +193,6 @@ export function Hero() {
                 </motion.div>
 
 
-                {/* Trust Badges */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.8 }}
-                    className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3"
-                >
-                    {[
-                        { icon: ShieldCheck, text: "256-bit Encryption" },
-                        { icon: Lock, text: "Bank-Level Security" },
-                        { icon: Flame, text: "Cancel Anytime" },
-                    ].map((badge, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                            <badge.icon className="w-3.5 h-3.5 text-zinc-600" />
-                            <span className="text-[11px] text-zinc-600 font-medium">{badge.text}</span>
-                        </div>
-                    ))}
-                </motion.div>
             </div>
         </section>
     )
