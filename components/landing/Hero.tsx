@@ -12,7 +12,8 @@ import {
     Target, 
     TrendingUp, 
     Zap,
-    Activity
+    Activity,
+    BrainCircuit
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { useEffect, useState, useRef } from "react"
@@ -53,81 +54,150 @@ function AnimatedCounter({ end, suffix = "", prefix = "", duration = 2000 }: {
 // Abstract Edge Visualizer Component
 function EdgeVisualizer() {
     return (
-        <div className="relative w-full max-w-4xl mx-auto h-[260px] md:h-[320px] rounded-3xl border border-white/[0.08] bg-black/60 backdrop-blur-2xl overflow-hidden flex items-center justify-center shadow-[0_0_80px_-20px_rgba(16,185,129,0.15)] group">
+        <div className="relative w-full max-w-5xl mx-auto h-[400px] md:h-[500px] rounded-3xl border border-white/[0.08] bg-black/60 backdrop-blur-2xl overflow-hidden flex items-center justify-center shadow-[0_0_80px_-20px_rgba(16,185,129,0.15)] group perspective-[2000px]">
             {/* Dark gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-emerald-500/[0.08] pointer-events-none" />
             
-            {/* Grid Pattern */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:2rem_2rem] pointer-events-none [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_40%,transparent_100%)]" />
-
-            {/* Simulated Live Chart / Wave */}
-            <div className="absolute inset-0 flex items-center justify-center px-8">
-                <svg viewBox="0 0 800 200" className="w-full h-full opacity-60 mix-blend-screen" preserveAspectRatio="none">
-                    <motion.path
-                        d="M 0 150 Q 50 150 100 120 T 200 140 T 300 80 T 400 130 T 500 60 T 600 90 T 700 40 T 800 60"
-                        fill="none"
-                        stroke="url(#gradient-line)"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ duration: 3, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-                    />
-                    <motion.path
-                        d="M 0 180 Q 80 160 150 190 T 300 150 T 450 180 T 600 130 T 800 160"
-                        fill="none"
-                        stroke="url(#gradient-line-faint)"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 0.5 }}
-                        transition={{ duration: 4, ease: "easeInOut", repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                    />
-                    <defs>
-                        <linearGradient id="gradient-line" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="rgba(16,185,129,0)" />
-                            <stop offset="50%" stopColor="rgba(16,185,129,1)" />
-                            <stop offset="100%" stopColor="rgba(45,212,191,1)" />
-                        </linearGradient>
-                        <linearGradient id="gradient-line-faint" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="rgba(45,212,191,0)" />
-                            <stop offset="50%" stopColor="rgba(45,212,191,0.5)" />
-                            <stop offset="100%" stopColor="rgba(16,185,129,0)" />
-                        </linearGradient>
-                    </defs>
-                </svg>
+            {/* 3D Grid Pattern */}
+            <div className="absolute inset-x-0 bottom-0 h-full origin-bottom" style={{ transform: 'rotateX(60deg) scale(2.5)' }}>
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_top,black,transparent_80%)]" />
+                
+                {/* Traveling grid lines */}
+                <motion.div 
+                    className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(16,185,129,0.2),transparent)] h-2"
+                    animate={{ y: ["0%", "100%"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                />
             </div>
 
-            {/* Glowing Data Point */}
-            <motion.div 
-                className="absolute w-4 h-4 rounded-full bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,1)]"
-                animate={{ 
-                    x: ["-200px", "200px", "-200px"],
-                    y: ["40px", "-40px", "40px"],
-                    scale: [1, 1.3, 1]
-                }}
-                transition={{ duration: 8, ease: "easeInOut", repeat: Infinity }}
-            >
-                <div className="absolute inset-0 bg-white rounded-full animate-ping opacity-70" />
-            </motion.div>
+            {/* Glowing Core Elements */}
+            <div className="absolute inset-0 flex items-center justify-center mix-blend-screen pointer-events-none">
+                <div className="w-[600px] h-[600px] rounded-full bg-radial-gradient from-emerald-500/10 to-transparent blur-3xl opacity-50" />
+            </div>
 
-            {/* Floating Glass UI Element */}
+            {/* Simulated Floating UI - Main Dashboard Screen */}
             <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className="relative z-10 px-5 py-3 rounded-2xl bg-black/40 border border-white/10 backdrop-blur-xl flex items-center gap-4 shadow-2xl"
+                 initial={{ opacity: 0, scale: 0.9, rotateX: 20 }}
+                 animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+                 transition={{ duration: 1, delay: 0.2, type: "spring" }}
+                 className="relative z-10 w-[90%] md:w-[70%] h-[75%] rounded-2xl bg-[#0a0a0cd0] border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col overflow-hidden"
+                 style={{ transformStyle: 'preserve-3d' }}
             >
-                <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <Activity className="w-4 h-4 text-emerald-400" />
-                </div>
-                <div className="flex flex-col pr-2">
-                    <div className="flex items-center gap-2 mb-0.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[10px] font-bold text-emerald-400 tracking-widest uppercase">Live Edge Detected</span>
+                {/* Header */}
+                <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-white/[0.02]">
+                    <div className="flex gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-rose-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
                     </div>
-                    <span className="text-sm font-semibold text-white tracking-wide">KC Chiefs +4.7% EV</span>
+                    <div className="flex items-center gap-2 bg-black/40 px-3 py-1 rounded-full border border-white/5">
+                        <Lock className="w-3 h-3 text-emerald-400" />
+                        <span className="text-[10px] font-mono text-zinc-400">profitpicks.ai / analyze</span>
+                    </div>
+                    <div className="w-16" /> {/* Spacer */}
                 </div>
+
+                {/* Content Area */}
+                <div className="flex-1 p-6 relative flex gap-6">
+                    {/* Main Chart Area */}
+                    <div className="flex-1 border border-white/5 rounded-xl bg-black/30 p-4 relative overflow-hidden flex flex-col justify-end">
+                        <div className="absolute top-4 left-4 flex flex-col">
+                            <span className="text-white font-bold text-lg">KC Chiefs ML</span>
+                            <span className="text-zinc-500 text-xs">+145 (DraftKings)</span>
+                        </div>
+                        <div className="absolute top-4 right-4 text-right">
+                            <span className="text-emerald-400 font-black text-2xl inline-block drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]">+4.7% EV</span>
+                            <span className="text-zinc-500 text-xs block">Mathematical Edge</span>
+                        </div>
+
+                        {/* Line Chart Graphic */}
+                        <div className="w-full h-32 relative mt-12">
+                            <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full h-full drop-shadow-[0_0_10px_rgba(16,185,129,0.8)]">
+                                <motion.path
+                                    d="M0,45 C20,40 30,20 50,25 C70,30 80,10 100,5"
+                                    fill="none"
+                                    stroke="url(#line-gradient)"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    initial={{ pathLength: 0 }}
+                                    animate={{ pathLength: 1 }}
+                                    transition={{ duration: 2, delay: 0.5, ease: "easeInOut" }}
+                                />
+                                <defs>
+                                    <linearGradient id="line-gradient" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stopColor="#10b981" stopOpacity="0" />
+                                        <stop offset="50%" stopColor="#10b981" stopOpacity="1" />
+                                        <stop offset="100%" stopColor="#2dd4bf" stopOpacity="1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            {/* Animated Scanner line sweeping over the chart */}
+                            <motion.div 
+                                className="absolute top-0 bottom-0 w-[1px] bg-emerald-400 shadow-[0_0_15px_2px_rgba(16,185,129,0.8)] z-10"
+                                animate={{ left: ["0%", "100%", "0%"] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Side Panel - AI Analysis */}
+                    <div className="w-48 border border-white/5 rounded-xl bg-black/30 p-3 flex flex-col gap-3">
+                        <div className="text-xs font-bold text-zinc-400 border-b border-white/10 pb-2 flex items-center justify-between">
+                            AI ANALYSIS
+                            <BrainCircuit className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        
+                        {/* Fake data lines */}
+                        {[
+                            { label: "Public Money", val: "72%", col: "text-rose-400" },
+                            { label: "Sharp Money", val: "88%", col: "text-emerald-400" },
+                            { label: "Line Movement", val: "Favored", col: "text-emerald-400" },
+                        ].map((item, i) => (
+                            <div key={i} className="flex justify-between items-center text-xs">
+                                <span className="text-zinc-500">{item.label}</span>
+                                <span className={`font-mono font-bold ${item.col}`}>{item.val}</span>
+                            </div>
+                        ))}
+
+                        <div className="mt-auto border border-emerald-500/30 bg-emerald-500/10 rounded-lg p-2 text-center text-emerald-400 text-xs font-bold animate-pulse">
+                            RECOMMENDATION: BET
+                        </div>
+                    </div>
+                </div>
+
+                {/* Floating elements popping out */}
+                <motion.div 
+                    initial={{ opacity: 0, x: 20, y: -20, translateZ: 50 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.5 }}
+                    className="absolute -right-6 -top-6 bg-black border border-white/20 rounded-xl p-3 shadow-2xl flex items-center gap-3"
+                    style={{ transform: 'translateZ(50px)' }}
+                >
+                    <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/50">
+                        <Activity className="w-4 h-4 text-blue-400" />
+                    </div>
+                    <div>
+                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">FanDuel Line Shift</div>
+                        <div className="text-sm font-white font-bold ml-1 text-blue-300">Chiefs +140 → +145</div>
+                    </div>
+                </motion.div>
+                
+                 <motion.div 
+                    initial={{ opacity: 0, x: -20, y: 20, translateZ: 80 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ duration: 0.8, delay: 1.8 }}
+                    className="absolute -left-8 -bottom-4 bg-black border border-white/20 rounded-xl p-3 shadow-2xl flex items-center gap-3"
+                    style={{ transform: 'translateZ(80px)' }}
+                >
+                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/50">
+                        <Sparkles className="w-4 h-4 text-emerald-400" />
+                    </div>
+                    <div>
+                        <div className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Edge Verified</div>
+                        <div className="text-sm font-white font-bold ml-1 text-emerald-300">Confidence: 94.2%</div>
+                    </div>
+                </motion.div>
+
             </motion.div>
         </div>
     )
@@ -206,10 +276,10 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center max-w-2xl mx-auto mb-10"
+                    className="text-center max-w-2xl mx-auto mb-12"
                 >
-                    <p className="text-[15px] sm:text-[17px] text-zinc-400/90 leading-relaxed font-normal">
-                        We scan millions of data points across every major sportsbook in real-time. Our proprietary algorithms instantly surface mathematical advantages so you only bet when the numbers are in your favor.
+                    <p className="text-[16px] sm:text-[18px] text-zinc-400 leading-relaxed font-medium">
+                        We scan <span className="text-white font-semibold">millions of data points</span> across every major sportsbook in real-time. Our <span className="text-emerald-400 font-semibold drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]">AI-powered engine</span> instantly surfaces mathematical advantages so you <span className="text-white font-semibold border-b border-emerald-500/30 pb-0.5">only bet when the numbers are in your favor</span>.
                     </p>
                 </motion.div>
 
@@ -218,31 +288,41 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-20 w-full sm:w-auto"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-20 w-full sm:w-auto"
                 >
-                    <div className="relative group w-full sm:w-auto">
-                        <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-30 group-hover:opacity-70 transition duration-500" />
-                        <Button 
-                            className="relative w-full sm:w-auto px-8 h-12 bg-white hover:bg-zinc-100 text-black rounded-lg text-sm font-bold tracking-wide transition-colors shadow-2xl flex items-center justify-center gap-2"
-                            asChild
-                        >
-                            <Link href="/login">
-                                Start Winning Today
-                                <ArrowRight className="w-4 h-4 ml-1" />
-                            </Link>
-                        </Button>
-                    </div>
-                    
-                    <Button 
-                        variant="ghost"
-                        className="w-full sm:w-auto px-6 h-12 text-zinc-300 hover:text-white hover:bg-white/5 rounded-lg text-sm font-semibold transition-all flex items-center justify-center gap-2 group"
-                        asChild
+                    <motion.div 
+                        whileHover={{ scale: 1.05 }} 
+                        whileTap={{ scale: 0.95 }}
+                        className="relative group w-full sm:w-auto"
                     >
-                        <Link href="#how-it-works">
-                            See How It Works
-                            <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition-colors" />
+                        {/* Animated Glow Behind Button */}
+                        <div className="absolute -inset-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-500 animate-pulse" />
+                        <Link 
+                            href="/login"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-white hover:bg-zinc-100 text-black rounded-xl text-[16px] font-black tracking-wide transition-colors shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2 group-hover:shadow-[0_0_60px_rgba(16,185,129,0.5)]"
+                        >
+                            Start Winning Today
+                            <ArrowRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                    </Button>
+                    </motion.div>
+                    
+                    <motion.div
+                        whileHover={{ scale: 1.05 }} 
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full sm:w-auto"
+                    >
+                        <Link 
+                            href="#how-it-works"
+                            className="relative w-full sm:w-auto px-8 h-14 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white rounded-xl text-[16px] font-bold transition-all flex items-center justify-center gap-2 group overflow-hidden"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                See How It Works
+                                <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
+                            </span>
+                            {/* Glass shine effect on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out" />
+                        </Link>
+                    </motion.div>
                 </motion.div>
 
                 {/* === SOCIAL PROOF STATS === */}
