@@ -369,9 +369,9 @@ export function ParlayBuilder() {
                         <div className="mx-auto w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
                             <Zap className="h-6 w-6 text-emerald-400" />
                         </div>
-                        <DialogTitle className="text-center text-xl font-bold">Daily Trial Limit Reached</DialogTitle>
+                        <DialogTitle className="text-center text-xl font-bold">Out of Credits</DialogTitle>
                         <DialogDescription className="text-center pt-2 pb-4">
-                            You've used your 1 free Custom Parlay generation for today. Upgrade your account to skip the trial line and unlock <strong>unlimited</strong> AI parlays instantly.
+                            You've run out of Custom Parlay credits. Upgrade your account to unlock monthly credits and build high-EV parlays instantly.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex-col sm:flex-col gap-2">
@@ -402,7 +402,7 @@ export function ParlayBuilder() {
                             className="w-full text-zinc-400 hover:text-white"
                             onClick={() => setShowUpgradeModal(false)}
                         >
-                            Wait until tomorrow
+                            Close
                         </Button>
                     </DialogFooter>
                 </DialogContent>

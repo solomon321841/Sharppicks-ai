@@ -19,7 +19,7 @@ export const TIERS: Record<Tier, {
         canAccessDailyPicks: true,
         canTrackBets: false,
         parlayLimit: 1,
-        customBuilderLimit: 2,
+        customBuilderLimit: 3,
         stripePriceId: ''
     },
     starter: {
@@ -41,7 +41,7 @@ export const TIERS: Record<Tier, {
         canAccessDailyPicks: true,
         canTrackBets: true,
         parlayLimit: -1,
-        customBuilderLimit: -1,
+        customBuilderLimit: 100,
         stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || ''
     },
     whale: {
@@ -52,7 +52,7 @@ export const TIERS: Record<Tier, {
         canAccessDailyPicks: true,
         canTrackBets: true,
         parlayLimit: -1,
-        customBuilderLimit: -1,
+        customBuilderLimit: 500,
         stripePriceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_WHALE || ''
     }
 };

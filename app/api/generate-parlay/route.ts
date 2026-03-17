@@ -25,8 +25,8 @@ export async function POST(request: Request) {
             select: { 
                 subscription_tier: true,
                 subscription_status: true,
-                credits_used_today: true,
-                last_credit_used_at: true 
+                parlay_credits: true,
+                credits_reset_at: true 
             }
         })
         const tier = profile?.subscription_tier || 'free'
@@ -35,33 +35,29 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Upgrade required to use Custom Parlay Builder' }, { status: 403 })
         }
 
-        // 3. Check Limits
-        const { customBuilderLimit } = getTierFeatures(tier)
-        if (customBuilderLimit !== -1) {
-            const usageCount = await prisma.parlay.count({
-                where: {
-                    user_id: user.id,
-                    parlay_type: 'custom'
-                }
-            })
+        // 3. Monthly Replenishment Logic
+        let currentCredits = profile?.parlay_credits ?? 3;
+        let lastReset = profile?.credits_reset_at;
 
-            if (usageCount >= customBuilderLimit) {
-                return NextResponse.json({
-                    error: `You have used ${usageCount}/${customBuilderLimit} custom parlay credits. Upgrade for unlimited access.`
-                }, { status: 403 })
+        if (tier === 'pro' || tier === 'whale') {
+            const limit = getTierFeatures(tier).customBuilderLimit;
+            // First time they generate after subscribing (reset date is null but they are active) OR it's a new month
+            if ((profile?.subscription_status === 'active' && !lastReset) || (lastReset && new Date() >= lastReset)) {
+                currentCredits = limit;
+                const nextReset = new Date();
+                nextReset.setMonth(nextReset.getMonth() + 1);
+                lastReset = nextReset;
+
+                await prisma.user.update({
+                    where: { id: user.id },
+                    data: { parlay_credits: currentCredits, credits_reset_at: nextReset }
+                });
             }
         }
 
-        // Stripe Pro Trial limit checking
-        if (tier === 'pro' && profile?.subscription_status === 'trialing') {
-            const now = new Date()
-            let creditsUsed = profile.credits_used_today || 0
-            if (profile.last_credit_used_at && new Date(profile.last_credit_used_at).toDateString() !== now.toDateString()) {
-                creditsUsed = 0 // Reset for new day
-            }
-            if (creditsUsed >= 1) {
-                return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
-            }
+        // 4. Check Credit Limits
+        if (currentCredits <= 0) {
+            return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
         }
 
         if ((!sports || sports.length === 0) || !riskLevel || !numLegs || !betTypes) {
@@ -82,22 +78,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: result.error }, { status: 400 })
         }
 
-        // Successfully generated. Increment usage if in Pro Trial.
-        if (tier === 'pro' && profile?.subscription_status === 'trialing') {
-            const now = new Date()
-            let creditsUsed = profile.credits_used_today || 0
-            if (profile.last_credit_used_at && new Date(profile.last_credit_used_at).toDateString() !== now.toDateString()) {
-                creditsUsed = 0
+        // Successfully generated. Deduct 1 credit.
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                parlay_credits: { decrement: 1 }
             }
-            
-            await prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    credits_used_today: creditsUsed + 1,
-                    last_credit_used_at: now
-                }
-            })
-        }
+        })
 
         return NextResponse.json(result)
     } catch (error: any) {
