@@ -371,32 +371,40 @@ export function ParlayBuilder() {
                         </div>
                         <DialogTitle className="text-center text-xl font-bold">Out of Credits</DialogTitle>
                         <DialogDescription className="text-center pt-2 pb-4">
-                            You've run out of Custom Parlay credits. Upgrade your account to unlock monthly credits and build high-EV parlays instantly.
+                            {tier === 'whale' ? (
+                                "You've exhausted your 500 monthly Whale credits. Please contact support to add more to your account."
+                            ) : tier === 'pro' ? (
+                                "You've run out of Pro credits for the month. Upgrade to the Whale tier to unlock 500 monthly credits and maximize your edge."
+                            ) : (
+                                "You've run out of Custom Parlay credits. Upgrade your account to unlock monthly credits and build high-EV parlays instantly."
+                            )}
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex-col sm:flex-col gap-2">
-                        <Button 
-                            className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold h-12 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-[1.02]"
-                            onClick={async () => {
-                                // Calls the same checkout endpoint but for Pro, forcing a regular charge instead of trial
-                                try {
-                                    setLoading(true)
-                                    const res = await fetch('/api/stripe/checkout', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ tier: 'pro', skipTrial: true }) // Backend picks up skipTrial
-                                    })
-                                    const data = await res.json()
-                                    if (data.url) window.location.href = data.url
-                                } catch (error) {
-                                    console.error('Upgrade failed', error)
-                                } finally {
-                                    setLoading(false)
-                                }
-                            }}
-                        >
-                            Upgrade for Unlimited Access
-                        </Button>
+                        {tier !== 'whale' && (
+                            <Button 
+                                className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold h-12 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-[1.02]"
+                                onClick={async () => {
+                                    try {
+                                        setLoading(true)
+                                        const upgradeTier = tier === 'pro' ? 'whale' : 'pro';
+                                        const res = await fetch('/api/stripe/checkout', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ tier: upgradeTier, skipTrial: true }) 
+                                        })
+                                        const data = await res.json()
+                                        if (data.url) window.location.href = data.url
+                                    } catch (error) {
+                                        console.error('Upgrade failed', error)
+                                    } finally {
+                                        setLoading(false)
+                                    }
+                                }}
+                            >
+                                {tier === 'pro' ? 'Upgrade to Whale Plan' : 'Upgrade for Monthly Access'}
+                            </Button>
+                        )}
                         <Button
                             variant="ghost"
                             className="w-full text-zinc-400 hover:text-white"
