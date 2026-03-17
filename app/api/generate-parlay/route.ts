@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
         if (tier === 'pro' || tier === 'whale') {
             const limit = getTierFeatures(tier).customBuilderLimit;
-            // Replenish if it's their first time, OR the reset date has passed, OR their limits were manually unsynced (e.g. upgraded tier but credits are lower than the new tier's max limit and reset date is null/very old)
+            // Replenish if it's their first time, OR the reset date has passed
             if (!lastReset || new Date() >= lastReset) {
                 currentCredits = limit;
                 const nextReset = new Date();
@@ -52,10 +52,6 @@ export async function POST(request: Request) {
                     where: { id: user.id },
                     data: { parlay_credits: currentCredits, credits_reset_at: nextReset }
                 });
-            } else if (currentCredits < limit && (!lastReset || new Date(lastReset).getTime() - new Date().getTime() > 30 * 24 * 60 * 60 * 1000)) {
-               // Edge case sync
-               currentCredits = limit;
-               await prisma.user.update({ where: { id: user.id }, data: { parlay_credits: currentCredits } });
             }
         }
 
