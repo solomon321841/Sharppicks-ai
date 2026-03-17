@@ -3,12 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
+import { CreditCard, Loader2 } from "lucide-react"
 
 export function ManageSubscriptionButton() {
     const [loading, setLoading] = useState(false)
     const { toast } = useToast()
-    const router = useRouter()
 
     const handlePortal = async () => {
         setLoading(true)
@@ -35,8 +34,28 @@ export function ManageSubscriptionButton() {
     }
 
     return (
-        <Button variant="outline" onClick={handlePortal} disabled={loading}>
-            {loading ? 'Loading...' : 'Manage Subscription'}
+        <Button 
+            onClick={handlePortal} 
+            disabled={loading}
+            className={`
+                w-full sm:w-auto h-11 px-6 bg-zinc-900 border border-white/10 text-white font-bold uppercase tracking-widest relative overflow-hidden group transition-all duration-300
+                hover:border-emerald-500/30 hover:shadow-[0_0_20px_-5px_rgba(16,185,129,0.2)] hover:-translate-y-0.5
+            `}
+        >
+            {loading ? (
+                <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                    <span>Loading...</span>
+                </div>
+            ) : (
+                <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-zinc-400 group-hover:text-emerald-400 transition-colors" />
+                    <span className="group-hover:text-white transition-colors">Manage Subscription</span>
+                </div>
+            )}
+            
+            {/* Shimmer Effect on hover */}
+            {!loading && <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent z-0" />}
         </Button>
     )
 }

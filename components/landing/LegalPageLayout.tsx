@@ -21,24 +21,19 @@ export function LegalPageLayout({ title, subtitle, children }: LegalPageLayoutPr
                     <FadeIn>
                         <div className="max-w-3xl mx-auto">
                             {/* Header Section */}
-                            <div className="mb-16">
-                                <h1 className="text-3xl md:text-6xl font-black text-white tracking-tighter mb-6 underline decoration-emerald-500/30 underline-offset-8">
+                            <div className="mb-12">
+                                <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic mb-4">
                                     {title}
                                 </h1>
                                 {subtitle && (
-                                    <p className="text-xl text-zinc-400 font-medium">
+                                    <p className="text-lg md:text-xl font-bold text-zinc-400">
                                         {subtitle}
                                     </p>
                                 )}
                             </div>
 
                             {/* Content Section */}
-                            <div className="prose prose-invert prose-emerald max-w-none 
-                                prose-h2:text-2xl prose-h2:font-bold prose-h2:tracking-tight prose-h2:mb-4 prose-h2:mt-12
-                                prose-p:text-zinc-400 prose-p:leading-relaxed prose-p:mb-6
-                                prose-li:text-zinc-400 prose-li:leading-relaxed
-                                prose-strong:text-zinc-100 prose-strong:font-bold
-                            ">
+                            <div className="space-y-8">
                                 {children}
                             </div>
                         </div>

@@ -41,8 +41,8 @@ export async function POST(request: Request) {
 
         if (tier === 'pro' || tier === 'whale') {
             const limit = getTierFeatures(tier).customBuilderLimit;
-            // First time they generate after subscribing (reset date is null but they are active) OR it's a new month
-            if ((profile?.subscription_status === 'active' && !lastReset) || (lastReset && new Date() >= lastReset)) {
+            // Replenish if it's their first time, OR the reset date has passed, OR their limits were manually unsynced (e.g. upgraded tier but credits are lower than the new tier's max limit and reset date is null/very old)
+            if (!lastReset || new Date() >= lastReset) {
                 currentCredits = limit;
                 const nextReset = new Date();
                 nextReset.setMonth(nextReset.getMonth() + 1);
@@ -52,11 +52,17 @@ export async function POST(request: Request) {
                     where: { id: user.id },
                     data: { parlay_credits: currentCredits, credits_reset_at: nextReset }
                 });
+            } else if (currentCredits < limit && (!lastReset || new Date(lastReset).getTime() - new Date().getTime() > 30 * 24 * 60 * 60 * 1000)) {
+               // Edge case sync
+               currentCredits = limit;
+               await prisma.user.update({ where: { id: user.id }, data: { parlay_credits: currentCredits } });
             }
         }
 
         // 4. Check Credit Limits
-        if (currentCredits <= 0) {
+        if (currentCredits <= 0 && tier !== 'pro' && tier !== 'whale') {
+            return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
+        } else if (currentCredits <= 0) {
             return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
         }
 

@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/server'
 import { prisma } from '@/lib/prisma'
-import { getTierByPriceId } from '@/lib/config/tiers'
+import { getTierByPriceId, TIERS } from '@/lib/config/tiers'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -60,6 +60,9 @@ export async function POST(request: Request) {
                 // Use the tier from price lookup, or fall back to session metadata
                 const finalTier = tierName || session.metadata?.tier || 'starter'
 
+                const nextReset = new Date()
+                nextReset.setMonth(nextReset.getMonth() + 1)
+
                 await prisma.user.update({
                     where: { id: userId },
                     data: {
@@ -67,7 +70,9 @@ export async function POST(request: Request) {
                         stripe_subscription_id: subId,
                         subscription_tier: finalTier,
                         subscription_status: sub.status,
-                        trial_ends_at: sub.trial_end ? new Date(sub.trial_end * 1000) : null
+                        trial_ends_at: sub.trial_end ? new Date(sub.trial_end * 1000) : null,
+                        parlay_credits: TIERS[finalTier as keyof typeof TIERS]?.customBuilderLimit || 0,
+                        credits_reset_at: nextReset
                     }
                 })
 
@@ -144,6 +149,14 @@ export async function POST(request: Request) {
                     // Only update tier if we can map the price ID
                     if (tierName) {
                         updateData.subscription_tier = tierName
+
+                        // If the tier actually changed, reset credits based on the new tier limits
+                        if (tierName !== user.subscription_tier) {
+                            const nextReset = new Date()
+                            nextReset.setMonth(nextReset.getMonth() + 1)
+                            updateData.parlay_credits = TIERS[tierName as keyof typeof TIERS]?.customBuilderLimit || 0
+                            updateData.credits_reset_at = nextReset
+                        }
                     }
 
                     if (subscription.trial_end) {

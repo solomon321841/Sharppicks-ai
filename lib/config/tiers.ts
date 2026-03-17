@@ -14,7 +14,7 @@ export const TIERS: Record<Tier, {
     free: {
         name: 'free',
         label: 'Free Trial',
-        features: ['1 AI Parlay/Day', '2 Custom Builder Credits', 'Standard Odds'],
+        features: ['1 AI Parlay/Day', '3 Custom Builder Credits', 'Standard Odds'],
         canBuildParlay: true,
         canAccessDailyPicks: true,
         canTrackBets: false,
