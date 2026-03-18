@@ -277,6 +277,12 @@ export function ParlayBuilder() {
                             {/* Shine Effect */}
                             {!loading && <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0" />}
                         </Button>
+                        
+                        {loading && (
+                            <p className="text-center text-[10px] text-emerald-500/80 mt-2 font-bold animate-pulse uppercase tracking-wider">
+                                Please wait, AI analysis may take 15-30 seconds...
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
