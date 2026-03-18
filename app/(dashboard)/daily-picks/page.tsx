@@ -2,9 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Loader2, Zap, Shield, Activity, Flame, TrendingUp, ChevronRight } from "lucide-react"
+import { Loader2, Zap, Shield, Activity, Flame, TrendingUp, ChevronRight, Lock, ArrowRight } from "lucide-react"
 import { useEffect, useState } from "react"
 import { TeamLogo } from "@/components/dashboard/TeamLogo"
+import { createClient } from "@/lib/supabase/client"
+import Link from "next/link"
 
 const PARLAY_TYPES = [
     {
@@ -72,23 +74,37 @@ const PARLAY_TYPES = [
 export default function DailyPicksPage() {
     const [picks, setPicks] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+    const [tier, setTier] = useState<string>('pro')
+    const supabase = createClient()
 
     useEffect(() => {
-        const fetchDailyPicks = async () => {
-            try {
+        const fetchData = async () => {
+            // Fetch tier and picks in parallel
+            const tierPromise = (async () => {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    const { data: profile } = await supabase
+                        .from('users')
+                        .select('subscription_tier')
+                        .eq('id', user.id)
+                        .single()
+                    if (profile) setTier(profile.subscription_tier)
+                }
+            })()
+
+            const picksPromise = (async () => {
                 const res = await fetch(`/api/daily-picks?t=${Date.now()}`)
                 if (res.ok) {
                     const data = await res.json()
                     setPicks(Array.isArray(data) ? data : [data])
                 }
-            } catch (error) {
-                console.error('Failed to fetch daily picks:', error)
-            } finally {
-                setLoading(false)
-            }
+            })()
+
+            await Promise.all([tierPromise, picksPromise]).catch(console.error)
+            setLoading(false)
         }
-        fetchDailyPicks()
-    }, [])
+        fetchData()
+    }, [supabase])
 
     return (
         <div className="relative flex flex-col h-full overflow-y-auto overflow-x-hidden">
@@ -134,12 +150,33 @@ export default function DailyPicksPage() {
                     const Icon = config.icon;
                     if (!loading && !pick) return null;
 
+                    // Starter plan: lock 4th parlay (index 3 = lotto)
+                    const isLocked = tier === 'starter' && index >= 3;
+
                     return (
                         <div key={config.type} className="relative group flex flex-col min-h-0 h-auto lg:h-full">
                             {/* Card Glow Effect */}
                             <div className={`absolute inset-0 bg-gradient-to-b ${config.orb} opacity-0 group-hover:opacity-100 blur-[80px] transition-opacity duration-700 pointer-events-none rounded-3xl`} />
 
                             <Card className={`relative flex-1 flex flex-col min-h-0 bg-black/40 backdrop-blur-2xl border border-white/[0.05] hover:border-white/[0.1] rounded-[24px] overflow-hidden transition-all duration-500 ${config.glow}`}>
+
+                                {/* Lock overlay for starter users on 4th parlay */}
+                                {isLocked && (
+                                    <div className="absolute inset-0 z-20 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-[24px] p-6 text-center">
+                                        <div className="w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mb-4">
+                                            <Lock className="w-6 h-6 text-zinc-500" />
+                                        </div>
+                                        <h4 className="text-lg font-black text-white uppercase tracking-wider mb-2">Moonshot Locked</h4>
+                                        <p className="text-xs text-zinc-400 leading-relaxed mb-5 max-w-[200px]">
+                                            Upgrade to <span className="text-white font-bold">Pro</span> to unlock all 4 daily parlays including Moonshot picks.
+                                        </p>
+                                        <Button className="h-10 bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-wider text-[10px] rounded-xl shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] px-6" asChild>
+                                            <Link href="/checkout/pro">
+                                                Upgrade to Pro <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                )}
 
                                 {/* Premium Card Header */}
                                 <CardHeader className="shrink-0 p-4 pb-3 border-b border-white/[0.05] bg-gradient-to-b from-white/[0.02] to-transparent">
