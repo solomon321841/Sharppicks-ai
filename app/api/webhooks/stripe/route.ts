@@ -95,11 +95,24 @@ export async function POST(request: Request) {
                 })
 
                 if (user) {
+                    const updateData: Record<string, any> = { subscription_status: 'active' }
+
+                    // If user was trialing, refresh credits to their tier's full allocation
+                    if (user.subscription_status === 'trialing' && user.subscription_tier) {
+                        const tierConfig = TIERS[user.subscription_tier as keyof typeof TIERS]
+                        if (tierConfig) {
+                            updateData.parlay_credits = tierConfig.customBuilderLimit
+                            const nextReset = new Date()
+                            nextReset.setMonth(nextReset.getMonth() + 1)
+                            updateData.credits_reset_at = nextReset
+                        }
+                    }
+
                     await prisma.user.update({
                         where: { id: user.id },
-                        data: { subscription_status: 'active' }
+                        data: updateData
                     })
-                    console.log(`Payment succeeded: User ${user.id} → status "active"`)
+                    console.log(`Payment succeeded: User ${user.id} → status "active"${user.subscription_status === 'trialing' ? ` (trial ended, credits refreshed to ${updateData.parlay_credits})` : ''}`)
                 }
                 break
             }
@@ -152,6 +165,17 @@ export async function POST(request: Request) {
 
                         // If the tier actually changed, reset credits based on the new tier limits
                         if (tierName !== user.subscription_tier) {
+                            const nextReset = new Date()
+                            nextReset.setMonth(nextReset.getMonth() + 1)
+                            updateData.parlay_credits = TIERS[tierName as keyof typeof TIERS]?.customBuilderLimit || 0
+                            updateData.credits_reset_at = nextReset
+                        }
+
+                        // If trial just ended (trialing → active), refresh credits to full allocation
+                        if (
+                            user.subscription_status === 'trialing' &&
+                            subscription.status === 'active'
+                        ) {
                             const nextReset = new Date()
                             nextReset.setMonth(nextReset.getMonth() + 1)
                             updateData.parlay_credits = TIERS[tierName as keyof typeof TIERS]?.customBuilderLimit || 0

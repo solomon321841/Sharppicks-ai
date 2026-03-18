@@ -14,6 +14,7 @@ import { User } from "@supabase/supabase-js"
 export default function DashboardPage() {
     const [user, setUser] = useState<User | null>(null)
     const [tier, setTier] = useState<string | null>(null)
+    const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [recentBets, setRecentBets] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -52,11 +53,40 @@ export default function DashboardPage() {
                 const { data: { user } } = await supabase.auth.getUser()
                 if (user) {
                     setUser(user)
-                    const { data: profileData } = await supabase.from('users').select('subscription_tier').eq('id', user.id).single()
-                    if (profileData && profileData.subscription_tier) {
+                    // Sync subscription with Stripe (catches webhook failures)
+                    const params = new URLSearchParams(window.location.search)
+                    const justPurchased = params.get('success') === 'true'
+
+                    const { data: profileData } = await supabase
+                        .from('users')
+                        .select('subscription_tier, subscription_status, stripe_customer_id')
+                        .eq('id', user.id)
+                        .single()
+
+                    // If user just purchased or has a Stripe customer but tier is still free, sync with Stripe
+                    if (
+                        profileData?.stripe_customer_id &&
+                        (justPurchased || profileData.subscription_tier === 'free')
+                    ) {
+                        try {
+                            const syncRes = await fetch('/api/sync-subscription', { method: 'POST' })
+                            if (syncRes.ok) {
+                                const syncData = await syncRes.json()
+                                setTier(syncData.tier || 'free')
+                                setSubscriptionStatus(syncData.status || null)
+                            } else {
+                                setTier(profileData?.subscription_tier || 'free')
+                                setSubscriptionStatus(profileData?.subscription_status || null)
+                            }
+                        } catch {
+                            setTier(profileData?.subscription_tier || 'free')
+                            setSubscriptionStatus(profileData?.subscription_status || null)
+                        }
+                    } else if (profileData && profileData.subscription_tier) {
                         setTier(profileData.subscription_tier)
+                        setSubscriptionStatus(profileData.subscription_status || null)
                     } else {
-                        setTier('free') // Default or handle null
+                        setTier('free')
                     }
 
                     // Fetch bet history for "Recent Logs"
@@ -126,6 +156,7 @@ export default function DashboardPage() {
     }, [])
 
     const tierInfo = getTierFeatures(tier || 'free')
+    const displayLabel = subscriptionStatus === 'trialing' ? 'Free Trial' : tierInfo.label
 
     return (
         <div className="relative min-h-0 flex flex-col space-y-2 lg:space-y-3 px-4 md:px-0 py-2">
@@ -243,7 +274,7 @@ export default function DashboardPage() {
                         </div>
                         <div>
                             <div className="text-2xl font-black text-white tracking-tighter leading-none capitalize italic">
-                                {loading ? <Loader2 className="h-5 w-5 animate-spin text-zinc-500" /> : tierInfo.label}
+                                {loading ? <Loader2 className="h-5 w-5 animate-spin text-zinc-500" /> : displayLabel}
                             </div>
                             <div className="text-[10px] font-bold text-zinc-600 uppercase tracking-tighter mt-1">
                                 {tier === 'free' ? 'Upgrade for VIP' : 'Priority Compute Lock'}

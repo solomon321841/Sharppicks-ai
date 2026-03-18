@@ -13,7 +13,7 @@ export const TIERS: Record<Tier, {
 }> = {
     free: {
         name: 'free',
-        label: 'Free Trial',
+        label: 'Free',
         features: ['1 AI Parlay/Day', '3 Custom Builder Credits', 'Standard Odds'],
         canBuildParlay: true,
         canAccessDailyPicks: true,
@@ -41,7 +41,7 @@ export const TIERS: Record<Tier, {
         canAccessDailyPicks: true,
         canTrackBets: true,
         parlayLimit: -1,
-        customBuilderLimit: 100,
+        customBuilderLimit: 50,
         stripePriceId: (process.env.NEXT_PUBLIC_STRIPE_PRICE_ID_PRO || '').trim()
     },
     whale: {
