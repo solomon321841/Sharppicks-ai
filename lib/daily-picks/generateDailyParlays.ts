@@ -136,7 +136,7 @@ async function generateSingleParlay(
         }
 
         if (attempt < 2) {
-            await new Promise(r => setTimeout(r, 3000));
+            await new Promise(r => setTimeout(r, 1000));
         }
     }
 
@@ -228,21 +228,12 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
     const primaryCount = oddsData.filter((g: any) => new Set(PRIMARY_SPORTS).has(g.sport_key)).length;
     console.log(`[Daily Picks] ${oddsData.length} games fetched (${primaryCount} NBA/soccer).`);
 
-    // ── 2. Generate in 2 parallel batches (safe+balanced, then risky+lotto) ──
-    const batch1 = DAILY_PARLAY_CONFIGS.slice(0, 2); // safe, balanced
-    const batch2 = DAILY_PARLAY_CONFIGS.slice(2);     // risky, lotto
-
-    console.log(`[Daily Picks] Batch 1: ${batch1.map(c => c.type).join(', ')}`);
-    const results1 = await Promise.all(
-        batch1.map(config => generateSingleParlay(config, oddsData!, date, userId))
+    // ── 2. Generate all 4 parlays in parallel ──────────────────────────
+    console.log(`[Daily Picks] Generating all 4 parlays in parallel...`);
+    const results = await Promise.all(
+        DAILY_PARLAY_CONFIGS.map(config => generateSingleParlay(config, oddsData!, date, userId))
     );
 
-    console.log(`[Daily Picks] Batch 2: ${batch2.map(c => c.type).join(', ')}`);
-    const results2 = await Promise.all(
-        batch2.map(config => generateSingleParlay(config, oddsData!, date, userId))
-    );
-
-    const results = [...results1, ...results2];
     return results;
 }
 

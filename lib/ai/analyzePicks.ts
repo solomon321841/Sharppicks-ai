@@ -64,7 +64,7 @@ These are GUIDELINES for pick style, not hard rules. Always build the parlay eve
 ${riskPersonality.instructions}
 
 The user chose ${numLegs} legs. Your combined parlay odds MUST fall within the target range for this risk level. Pick individual legs with odds that will combine to hit this target:
-${riskLevel <= 2 ? '- Target combined odds: +100 to +400 (safe chalk plays)' : ''}${riskLevel >= 3 && riskLevel <= 4 ? '- Target combined odds: +150 to +600 (conservative value plays)' : ''}${riskLevel >= 5 && riskLevel <= 6 ? '- Target combined odds: +400 to +1500 (balanced sharp plays)' : ''}${riskLevel >= 7 && riskLevel <= 8 ? '- Target combined odds: +1000 to +5000 (aggressive swings)' : ''}${riskLevel >= 9 ? '- Target combined odds: +3000 to +50000 (moonshot lottery tickets)' : ''}
+${riskLevel === 1 ? '- Target combined odds: -300 to +400 (safe chalk plays)' : ''}${riskLevel === 2 ? '- Target combined odds: -200 to +500 (safe chalk plays)' : ''}${riskLevel === 3 ? '- Target combined odds: +100 to +600 (conservative value plays)' : ''}${riskLevel === 4 ? '- Target combined odds: +150 to +800 (conservative value plays)' : ''}${riskLevel === 5 ? '- Target combined odds: +300 to +1500 (balanced sharp plays)' : ''}${riskLevel === 6 ? '- Target combined odds: +400 to +2000 (balanced sharp plays)' : ''}${riskLevel === 7 ? '- Target combined odds: +800 to +5000 (aggressive swings)' : ''}${riskLevel === 8 ? '- Target combined odds: +1000 to +8000 (aggressive swings)' : ''}${riskLevel >= 9 ? '- Target combined odds: +3000 to +50000 (moonshot lottery tickets)' : ''}
 If your picks would exceed this range, choose SAFER individual legs (heavier favorites, lower prop lines).
 
 ## CORRELATION RULES
@@ -246,7 +246,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = 3
+    const maxAttempts = 2
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -259,7 +259,7 @@ export async function analyzePicks(request: ParlayRequest) {
             )
 
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('AI request timed out after 60 seconds')), 60000)
+                setTimeout(() => reject(new Error('AI request timed out after 30 seconds')), 30000)
             })
 
             const aiPromise = anthropic.messages.create({
@@ -305,8 +305,8 @@ export async function analyzePicks(request: ParlayRequest) {
 
         } catch (error: any) {
             if (error.status === 429 || error.code === 'rate_limit_error') {
-                console.warn('Rate limit hit, waiting 5s...')
-                await new Promise(resolve => setTimeout(resolve, 5000))
+                console.warn('Rate limit hit, waiting 2s...')
+                await new Promise(resolve => setTimeout(resolve, 2000))
                 lastError = 'Rate limited. Try again.'
             } else if (error.status === 400 && error.error?.message?.includes('credit balance')) {
                 return buildErrorResponse(request, 'AI service credits depleted. Please contact support.')
@@ -611,10 +611,10 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
     // Enforce risk-level odds ranges — reject if combined odds are too aggressive
     if (!validateRiskLevel(request.riskLevel, calcOdds)) {
         const targetRanges: Record<number, [number, number]> = {
-            1: [-200, 500], 2: [-200, 500],
-            3: [150, 600], 4: [150, 700],
-            5: [400, 1500], 6: [400, 1500],
-            7: [800, 5000], 8: [800, 5000],
+            1: [-300, 400], 2: [-200, 500],
+            3: [100, 600], 4: [150, 800],
+            5: [300, 1500], 6: [400, 2000],
+            7: [800, 5000], 8: [1000, 8000],
             9: [3000, 50000], 10: [3000, 50000]
         }
         const range = targetRanges[request.riskLevel] || [0, 50000]
