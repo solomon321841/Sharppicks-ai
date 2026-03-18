@@ -4,7 +4,8 @@ import {
     enforceLegCount,
     enforceBetTypes,
     checkCorrelation,
-    getUnitSize
+    getUnitSize,
+    validateRiskLevel
 } from './parlayMath'
 
 export type ParlayRequest = {
@@ -62,7 +63,9 @@ These are GUIDELINES for pick style, not hard rules. Always build the parlay eve
 
 ${riskPersonality.instructions}
 
-The user chose ${numLegs} legs. Combined odds will naturally scale with the number of legs — that's expected. Focus on the STYLE of picks (safe vs aggressive), not on hitting a specific combined odds number.
+The user chose ${numLegs} legs. Your combined parlay odds MUST fall within the target range for this risk level. Pick individual legs with odds that will combine to hit this target:
+${riskLevel <= 2 ? '- Target combined odds: +100 to +400 (safe chalk plays)' : ''}${riskLevel >= 3 && riskLevel <= 4 ? '- Target combined odds: +150 to +600 (conservative value plays)' : ''}${riskLevel >= 5 && riskLevel <= 6 ? '- Target combined odds: +400 to +1500 (balanced sharp plays)' : ''}${riskLevel >= 7 && riskLevel <= 8 ? '- Target combined odds: +1000 to +5000 (aggressive swings)' : ''}${riskLevel >= 9 ? '- Target combined odds: +3000 to +50000 (moonshot lottery tickets)' : ''}
+If your picks would exceed this range, choose SAFER individual legs (heavier favorites, lower prop lines).
 
 ## CORRELATION RULES
 - Player props from the SAME game but DIFFERENT players are always allowed at any risk level.
@@ -594,8 +597,7 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: `Correlation violation: ${corrCheck.reason}. ${request.riskLevel <= 5 ? 'At Risk 1-5, each leg must be from a DIFFERENT game.' : ''}` }
     }
 
-    // 10. Calculate combined odds for display (no rejection based on risk range —
-    //     risk level only guides the type of picks, not the combined total)
+    // 10. Calculate combined odds and enforce risk-level ranges
     const mathLegs = legs.map((l: any) => ({
         odds: parseInt(String(l.odds).replace('+', ''))
     }))
@@ -605,6 +607,28 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
 
     result.totalOdds = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
     result.true_implied_prob = mathCalc.combinedFairProb
+
+    // Enforce risk-level odds ranges — reject if combined odds are too aggressive
+    if (!validateRiskLevel(request.riskLevel, calcOdds)) {
+        const targetRanges: Record<number, [number, number]> = {
+            1: [-200, 500], 2: [-200, 500],
+            3: [150, 600], 4: [150, 700],
+            5: [400, 1500], 6: [400, 1500],
+            7: [800, 5000], 8: [800, 5000],
+            9: [3000, 50000], 10: [3000, 50000]
+        }
+        const range = targetRanges[request.riskLevel] || [0, 50000]
+        const direction = calcOdds > range[1] ? 'too aggressive' : 'too conservative'
+
+        return {
+            valid: false,
+            error: `Combined odds ${result.totalOdds} are ${direction} for Risk ${request.riskLevel}. Target range: +${range[0]} to +${range[1]}. ${
+                calcOdds > range[1]
+                    ? 'Pick SAFER legs: heavier favorites, lower prop lines, more likely outcomes.'
+                    : 'Pick slightly riskier legs to get a better payout.'
+            }`
+        }
+    }
 
     return { valid: true }
 }

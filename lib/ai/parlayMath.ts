@@ -59,17 +59,18 @@ export function calculateCombinedParlayMetrics(legs: { odds: number }[]) {
 }
 
 export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean {
-    // Ranges paired by tier: Risk 1-2 share a range, 3-4, 5-6, 7-8, 9-10
-    // This matches the risk personality tiers in analyzePicks
+    // Combined odds ranges per risk level.
+    // Low risk = lower combined odds (safer picks), high risk = higher combined odds.
+    // These ranges account for multi-leg parlays where individual safe legs still compound.
     const targetRanges: Record<number, [number, number]> = {
-        1: [-200, 500],
+        1: [-300, 400],
         2: [-200, 500],
-        3: [200, 700],
-        4: [200, 700],
-        5: [400, 1500],
-        6: [400, 1500],
+        3: [100, 600],
+        4: [150, 800],
+        5: [300, 1500],
+        6: [400, 2000],
         7: [800, 5000],
-        8: [800, 5000],
+        8: [1000, 8000],
         9: [3000, 50000],
         10: [3000, 50000]
     };
