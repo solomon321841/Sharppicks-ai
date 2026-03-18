@@ -17,6 +17,7 @@ function AuthForm() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [loading, setLoading] = useState(false)
+    const [resetSent, setResetSent] = useState(false)
     const router = useRouter()
     const searchParams = useSearchParams()
     const { toast } = useToast()
@@ -30,6 +31,26 @@ function AuthForm() {
             return `${baseUrl}?next=/checkout/${tier}`
         }
         return baseUrl
+    }
+
+    const handlePasswordReset = async () => {
+        if (!email) {
+            toast({ variant: 'destructive', title: 'Enter your email', description: 'Please enter your email address first.' })
+            return
+        }
+        setLoading(true)
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${location.origin}/callback`,
+            })
+            if (error) throw error
+            setResetSent(true)
+            toast({ title: 'Reset link sent', description: 'Check your email for a password reset link.' })
+        } catch (error: any) {
+            toast({ variant: 'destructive', title: 'Error', description: error.message })
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleEmailAuth = async (isSignUp: boolean) => {
@@ -136,7 +157,17 @@ function AuthForm() {
                                     <Input id="email" type="email" placeholder="m@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label htmlFor="password">Password</Label>
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="password">Password</Label>
+                                        <button
+                                            type="button"
+                                            onClick={handlePasswordReset}
+                                            disabled={loading}
+                                            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                                        >
+                                            {resetSent ? 'Reset link sent!' : 'Forgot password?'}
+                                        </button>
+                                    </div>
                                     <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                                 </div>
                                 <Button type="submit" disabled={loading} className="w-full bg-emerald hover:bg-emerald/90">

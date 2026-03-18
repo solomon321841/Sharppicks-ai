@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/server'
 import { TIERS, Tier } from '@/lib/config/tiers'
 import { prisma } from '@/lib/prisma'
+import { rateLimit } from '@/lib/rate-limit'
 
 const VALID_PAID_TIERS: Tier[] = ['starter', 'pro', 'whale']
 
@@ -36,6 +37,11 @@ export async function POST(request: Request) {
 
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+
+        // Rate limit: max 3 checkout attempts per minute per user
+        if (!rateLimit(user.id, 3, 60_000)) {
+            return NextResponse.json({ error: 'Too many checkout attempts. Please wait a moment.' }, { status: 429 })
         }
 
         // 3. Ensure user exists in DB (sync from Supabase)

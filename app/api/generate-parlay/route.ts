@@ -3,6 +3,7 @@ import { generateParlay } from '@/lib/ai/generateParlay'
 import { createClient } from '@/lib/supabase/server'
 import { canAccessFeature, getTierFeatures } from '@/lib/config/tiers'
 import { prisma } from '@/lib/prisma'
+import { rateLimit } from '@/lib/rate-limit'
 
 export const maxDuration = 60 // Allow longer timeout for AI generation
 
@@ -17,6 +18,11 @@ export async function POST(request: Request) {
 
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+
+        // Rate limit: max 5 parlay generations per minute per user
+        if (!rateLimit(user.id, 5, 60_000)) {
+            return NextResponse.json({ error: 'Too many requests. Please wait a moment.' }, { status: 429 })
         }
 
         // 2. Validate Tier
