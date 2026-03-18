@@ -1,7 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import {
     calculateCombinedParlayMetrics,
-    validateRiskLevel,
     enforceLegCount,
     enforceBetTypes,
     checkCorrelation,
@@ -51,22 +50,25 @@ You are an elite sports bettor. Every pick must have a clear statistical or situ
 1. You ONLY use odds, teams, players, and games from the data below. NEVER invent data.
 2. Every "odds" value must come EXACTLY from the data. Do not modify odds values.
 3. Every "game_id" must match an ID in the data.
-4. If you cannot build a valid parlay with the constraints, respond with EXACTLY: {"error": "No qualifying parlays available at Risk ${riskLevel} for the selected sports and bet types. Try adjusting your settings."}
+4. ALWAYS return a parlay. The ONLY reason to return an error is if the data below has literally zero games or zero matching bet types. If data exists, YOU MUST build a parlay — never refuse because of risk level or odds constraints. If you must error, respond with: {"error": "No games with the selected bet types are available right now."}
 
 ## BET TYPE RESTRICTION (MANDATORY)
 You may ONLY use these bet types: [${betTypesStr}]
-${request.betTypes.length === 1 ? `\nCRITICAL: Every single leg MUST be "${request.betTypes[0]}". No exceptions. If you cannot fill all legs with "${request.betTypes[0]}", return the error JSON above.` : `\nYou can use any mix of the allowed types, but NEVER use a type not in this list.`}
+${request.betTypes.length === 1 ? `\nEvery single leg MUST be "${request.betTypes[0]}". If the data has ANY "${request.betTypes[0]}" options, use them.` : `\nYou can use any mix of the allowed types, but NEVER use a type not in this list.`}
 
 ## RISK LEVEL: ${riskLevel}/10 — ${riskPersonality.label}
 
+These are GUIDELINES for pick style, not hard rules. Always build the parlay even if picks don't perfectly match the risk description.
+
 ${riskPersonality.instructions}
 
-Note: The user chose ${numLegs} legs. The combined odds will naturally scale with the number of legs — that's fine. Focus on picking the RIGHT TYPE of legs for this risk level, not on hitting a specific combined odds target.
+The user chose ${numLegs} legs. Combined odds will naturally scale with the number of legs — that's expected. Focus on the STYLE of picks (safe vs aggressive), not on hitting a specific combined odds number.
 
 ## CORRELATION RULES
-${riskLevel <= 5 ? '- NEVER combine two legs from the same game. Each leg must be from a different matchup.' : ''}
+- Player props from the SAME game but DIFFERENT players are always allowed at any risk level.
+${riskLevel <= 5 ? '- For non-prop bets (moneyline, spread, totals): each leg must be from a different matchup.' : ''}
 ${riskLevel >= 6 && riskLevel <= 7 ? '- Same-game legs are allowed, but NEVER combine Moneyline/Spread with Over/Under from the same game.' : ''}
-${riskLevel >= 8 ? '- Same-game parlays are allowed. Flag correlated legs.' : ''}
+${riskLevel >= 8 ? '- Same-game parlays are fully allowed. Flag correlated legs.' : ''}
 
 ## VARIETY RULES
 - Spread legs across different games. If 3+ games are available, use at least 2 different games.
@@ -136,7 +138,7 @@ Return ONLY the JSON. No markdown, no explanation, no wrapping.`
 }
 
 // ─── Risk personality definitions ──────────────────────────────────────
-function getRiskPersonality(risk: number): { label: string, instructions: string, oddsRange: string } {
+function getRiskPersonality(risk: number): { label: string, instructions: string } {
     if (risk <= 2) {
         return {
             label: 'SAFE — Lock It In',
@@ -147,8 +149,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
   Example: LeBron Over 15.5 Points (he averages 27), Mbappe Over 0.5 Shots (he averages 5).
 - For totals: pick the most obvious Over/Under based on team scoring trends.
 - Every pick should feel like "of course this will hit." These are chalk plays.
-- DO NOT pick any underdogs. DO NOT pick risky props with high lines.`,
-            oddsRange: `Combined odds MUST be between -200 and +500. This is a "should hit" parlay. Two heavy favorites combining to negative odds is perfectly fine.`
+- DO NOT pick any underdogs. DO NOT pick risky props with high lines.`
         }
     }
     if (risk <= 4) {
@@ -160,8 +161,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - For player props: pick lines near or slightly below the player's recent average.
   Example: Jayson Tatum Over 24.5 Points (he averages 27), Haaland Over 0.5 Goals (he scores every other game).
 - One leg can be a slight underdog (+100 to +150) if there's a clear edge.
-- Think: high-percentage plays with a slightly better payout.`,
-            oddsRange: `Combined odds MUST be between +200 and +700.`
+- Think: high-percentage plays with a slightly better payout.`
         }
     }
     if (risk <= 6) {
@@ -173,8 +173,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - For player props: pick lines right at or slightly above the player's average. These require a good game but are very achievable.
   Example: Luka Over 28.5 Points (he averages 29), Salah Over 1.5 Shots on Target (he averages 2.1).
 - You can include 1-2 slight underdogs (+110 to +200) if the edge is real.
-- This is the "everyday sharp bettor" zone. Smart picks, decent payout.`,
-            oddsRange: `Combined odds MUST be between +400 and +1500.`
+- This is the "everyday sharp bettor" zone. Smart picks, decent payout.`
         }
     }
     if (risk <= 8) {
@@ -186,9 +185,7 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
   Example: Anthony Edwards Over 32.5 Points (he averages 26), Mbappe Over 3.5 Shots (he averages 4.2 but this requires volume).
 - Underdogs (+150 to +300) are great here if there's a matchup edge.
 - You're looking for games where the underdog has a real path to victory.
-- More legs, more variance, more payout. This is a "this could really pop" parlay.
-- MATH TIP: To hit +800 combined, you need several plus-odds legs. Example: 3 legs at +150 each ≈ +1000, or 4 legs at +120 each ≈ +950. Mix underdogs and plus-odds spreads to reach the target.`,
-            oddsRange: `Combined odds MUST be between +800 and +5000. Use 3-5 underdog or plus-odds legs to reach this range.`
+- More legs, more variance, more payout. This is a "this could really pop" parlay.`
         }
     }
     // Risk 9-10
@@ -198,12 +195,10 @@ function getRiskPersonality(risk: number): { label: string, instructions: string
 - Go for the home runs. Heavy underdogs, extreme player props, long-shot outcomes.
 - For player props: pick lines WELL ABOVE average. These need career-night performances.
   Example: Role player to score 20+ points, backup goalie to make 35+ saves, underdog QB to throw 3+ TDs.
-- Target moderate underdogs (+150 to +350 per leg). Do NOT pick every leg at +400 or higher — that will overshoot.
+- Target moderate underdogs (+150 to +350 per leg).
 - Same-game parlays and correlated legs are encouraged for multiplied variance.
 - This is a "buy a lottery ticket" play. Low probability, massive payout.
-- Think about narratives: upset games, rivalry matches, contract-year players.
-- MATH TIP: With 4 legs, each leg averaging +200 gives combined ≈ +8000. Each leg averaging +300 gives ≈ +25000. Mix 2-3 underdogs (+150 to +300) with 1 bigger dog (+350 to +500) to land in range.`,
-        oddsRange: `Combined odds MUST be between +3000 and +50000. CRITICAL: Do not pick all legs at +400 or higher — this WILL overshoot. Keep most legs between +150 and +300.`
+- Think about narratives: upset games, rivalry matches, contract-year players.`
     }
 }
 
@@ -248,7 +243,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = 5
+    const maxAttempts = 3
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -494,8 +489,8 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: `Too many legs (${legs.length}). Maximum is ${request.numLegs} for Risk ${request.riskLevel}.` }
     }
 
-    if (legs.length < 3) {
-        return { valid: false, error: 'A parlay needs at least 3 legs.' }
+    if (legs.length < 2) {
+        return { valid: false, error: 'A parlay needs at least 2 legs.' }
     }
 
     // 5. Validate game IDs exist in source data

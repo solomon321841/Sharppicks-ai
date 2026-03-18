@@ -36,7 +36,7 @@ export function ParlayBuilder() {
     const supabase = createClient() // Create client instance
 
     // Fetch tier on mount
-    useState(() => {
+    useEffect(() => {
         const checkTier = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
@@ -49,7 +49,7 @@ export function ParlayBuilder() {
             setCheckingTier(false)
         }
         checkTier()
-    })
+    }, [])
 
     // Fetch Schedule on mount
     useEffect(() => {
@@ -189,7 +189,7 @@ export function ParlayBuilder() {
                                         <SelectValue placeholder="3" />
                                     </SelectTrigger>
                                     <SelectContent className="border-white/10 bg-zinc-950">
-                                        {[3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                                        {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                                             <SelectItem key={n} value={n.toString()} className="focus:bg-zinc-900 focus:text-emerald-400 font-bold">{n}</SelectItem>
                                         ))}
                                     </SelectContent>

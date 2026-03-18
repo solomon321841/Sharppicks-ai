@@ -81,8 +81,8 @@ export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean
 }
 
 export function enforceLegCount(riskLevel: number, requestedLegs: number): number {
-    // A parlay requires at least 3 legs, max 10
-    return Math.max(3, Math.min(requestedLegs, 10));
+    // A parlay requires at least 2 legs, max 10
+    return Math.max(2, Math.min(requestedLegs, 10));
 }
 
 export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): string[] {
@@ -100,17 +100,20 @@ export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): st
 
 export function checkCorrelation(legs: { game_id: string, bet_type: string }[], riskLevel: number) {
     const gameCounts: Record<string, string[]> = {};
-    let hasCorrelation = false;
+    let hasNonPropCorrelation = false;
     let isSameGameMLAndTotal = false;
 
     for (const leg of legs) {
         if (!gameCounts[leg.game_id]) gameCounts[leg.game_id] = [];
 
-        // Track the bet types inside this game
         gameCounts[leg.game_id].push(leg.bet_type);
 
         if (gameCounts[leg.game_id].length > 1) {
-            hasCorrelation = true;
+            // Player props from the same game (different players) are NOT correlated
+            const nonPropTypes = gameCounts[leg.game_id].filter(t => t !== 'player_props');
+            if (nonPropTypes.length > 1) {
+                hasNonPropCorrelation = true;
+            }
 
             // Specifically check for ML/Spread + Total in same game
             const types = gameCounts[leg.game_id];
@@ -123,15 +126,15 @@ export function checkCorrelation(legs: { game_id: string, bet_type: string }[], 
         }
     }
 
-    if (riskLevel <= 5 && hasCorrelation) {
-        return { valid: false, reason: 'Same-game parlays are blocked at Risk Level 1-5.' };
+    if (riskLevel <= 5 && hasNonPropCorrelation) {
+        return { valid: false, reason: 'Same-game parlays (non-prop) are blocked at Risk Level 1-5.' };
     }
 
     if (riskLevel <= 7 && isSameGameMLAndTotal) {
         return { valid: false, reason: 'Combining Moneyline/Spread with Over/Under from the same game is blocked below Risk 8.' };
     }
 
-    return { valid: true, correlated: hasCorrelation };
+    return { valid: true, correlated: hasNonPropCorrelation };
 }
 
 export function getUnitSize(riskLevel: number): string {
