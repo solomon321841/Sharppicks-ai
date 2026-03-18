@@ -17,6 +17,7 @@ export type ParlayRequest = {
     statsContext?: Map<string, any>   // ESPN team stats + injuries per game
     shoppingData?: Map<string, any>   // Line shopping data per game
     sportFocus?: string               // AI hint for which sports to prioritize
+    _varietyRetried?: boolean          // Internal: tracks if variety nudge was already attempted
 }
 
 // ─── Bet type normalization ────────────────────────────────────────────
@@ -71,7 +72,7 @@ ${riskLevel >= 8 ? '- Same-game parlays are allowed. Flag correlated legs.' : ''
 ## VARIETY RULES
 - Spread legs across different games. If 3+ games are available, use at least 2 different games.
 - If 5+ games are available, use at least 3 different games.
-${hasProps ? `- For player props: MIX different stat categories. Do NOT make every prop the same category (e.g., all Points). Vary: Points, Rebounds, Assists, Threes, Goals, Shots, Saves, etc.` : ''}
+${hasProps ? `- PROP VARIETY: When picking 2+ player props, STRONGLY PREFER mixing different stat categories. For NBA: mix Points, Rebounds, Assists, Threes, Blocks, Steals. For soccer: mix Goals, Shots, Shots on Target, Assists. Same-category props are okay if there's a compelling statistical edge, but default to variety. A parlay with 3 different prop types is more interesting than 3 of the same.` : ''}
 - For mixed bet types: vary bet types across legs. Don't make them all the same type.
 
 ## REQUEST PARAMETERS
@@ -572,7 +573,22 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         sigs.add(sig)
     }
 
-    // 8. Correlation check
+    // 8. Player prop variety nudge — ask for variety on first attempt only
+    const propLegs = legs.filter((l: any) => l.bet_type === 'player_props' && l.prop_market)
+    if (propLegs.length >= 3) {
+        const normalizeMarket = (m: string) => m.toLowerCase().replace(/[_\s]+/g, ' ').trim()
+        const uniqueMarkets = new Set(propLegs.map((l: any) => normalizeMarket(l.prop_market)))
+        if (uniqueMarkets.size === 1 && !request._varietyRetried) {
+            (request as any)._varietyRetried = true
+            const market = Array.from(uniqueMarkets)[0]
+            return {
+                valid: false,
+                error: `All ${propLegs.length} player prop legs are "${market}". Try mixing different prop categories (e.g., Points + Rebounds, Goals + Shots) for a more interesting parlay — unless every leg has a strong statistical edge in that same category.`
+            }
+        }
+    }
+
+    // 9. Correlation check
     const correlationInput = legs.map((l: any) => ({
         game_id: l.game_id,
         bet_type: l.bet_type,
@@ -584,7 +600,7 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: `Correlation violation: ${corrCheck.reason}. ${request.riskLevel <= 5 ? 'At Risk 1-5, each leg must be from a DIFFERENT game.' : ''}` }
     }
 
-    // 9. Math validation — recalculate combined odds and check risk range
+    // 10. Math validation — recalculate combined odds and check risk range
     const mathLegs = legs.map((l: any) => ({
         odds: parseInt(String(l.odds).replace('+', ''))
     }))
