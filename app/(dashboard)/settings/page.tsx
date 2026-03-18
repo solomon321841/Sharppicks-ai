@@ -185,19 +185,22 @@ export default async function SettingsPage() {
                             {/* Footer Actions */}
                             <div className="mt-auto pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
-                                    {tier === 'free' 
-                                        ? "Upgrade to Pro or Whale to unlock unlimited AI analysis and real-time alerts." 
-                                        : "Want to change your plan? Manage your billing and tier securely via Stripe."}
+                                    {tier === 'free'
+                                        ? "Upgrade to unlock AI analysis, custom parlays, and more."
+                                        : tier === 'whale'
+                                        ? "You're on the top tier. Manage your billing securely via Stripe."
+                                        : "Upgrade to unlock more features, or manage your billing via Stripe."}
                                 </p>
                                 
-                                <div className="shrink-0 w-full sm:w-auto">
-                                    {tier === 'free' ? (
-                                        <Link href="/pricing" className="w-full inline-block">
+                                <div className="shrink-0 w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                                    {tier !== 'whale' && (
+                                        <Link href={tier === 'free' ? '/#pricing' : tier === 'starter' ? '/checkout/pro' : '/checkout/whale'} className="w-full sm:w-auto inline-block">
                                             <Button className="w-full sm:w-auto h-11 bg-emerald-600 hover:bg-emerald-500 text-white font-black px-8 uppercase tracking-widest shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] transition-all hover:-translate-y-0.5 whitespace-nowrap">
                                                 Upgrade Plan
                                             </Button>
                                         </Link>
-                                    ) : (
+                                    )}
+                                    {tier !== 'free' && (
                                         <ManageSubscriptionButton />
                                     )}
                                 </div>

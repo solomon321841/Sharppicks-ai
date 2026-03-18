@@ -71,7 +71,7 @@ export function TierGate({ feature, children, featureName }: TierGateProps) {
 
             <div className="flex flex-col gap-3 w-full max-w-[280px]">
                 <Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-wider text-xs rounded-xl shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)]" asChild>
-                    <Link href="/#pricing">
+                    <Link href={tier === 'starter' ? '/checkout/pro' : '/#pricing'}>
                         Upgrade Plan <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                 </Button>
