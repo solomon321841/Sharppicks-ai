@@ -94,44 +94,65 @@ export async function POST(request: Request) {
         }
 
         // 5. If user has an existing active subscription, upgrade it directly
-        if (profile.stripe_subscription_id) {
+        let existingSub = null
+        try {
+            if (profile.stripe_subscription_id) {
+                existingSub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
+            } else if (stripeCustomerId) {
+                // Subscription ID not in DB (webhook missed) — look up via customer
+                const subs = await stripe.subscriptions.list({
+                    customer: stripeCustomerId,
+                    status: 'active',
+                    limit: 1,
+                })
+                if (!subs.data.length) {
+                    const trialingSubs = await stripe.subscriptions.list({
+                        customer: stripeCustomerId,
+                        status: 'trialing',
+                        limit: 1,
+                    })
+                    existingSub = trialingSubs.data[0] || null
+                } else {
+                    existingSub = subs.data[0]
+                }
+            }
+        } catch (e: any) {
+            console.warn(`Could not find existing subscription: ${e.message}`)
+        }
+
+        if (existingSub && (existingSub.status === 'active' || existingSub.status === 'trialing')) {
             try {
-                const existingSub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
+                const itemId = existingSub.items.data[0]?.id
+                if (itemId) {
+                    const updatedSub = await stripe.subscriptions.update(existingSub.id, {
+                        items: [{ id: itemId, price: priceId }],
+                        proration_behavior: 'create_prorations',
+                        metadata: { userId: user.id, tier: tier },
+                        trial_end: 'now', // End any active trial immediately
+                    })
 
-                if (existingSub.status === 'active' || existingSub.status === 'trialing') {
-                    // Swap the price on the existing subscription (prorated)
-                    const itemId = existingSub.items.data[0]?.id
-                    if (itemId) {
-                        const updatedSub = await stripe.subscriptions.update(profile.stripe_subscription_id, {
-                            items: [{ id: itemId, price: priceId }],
-                            proration_behavior: 'create_prorations',
-                            metadata: { userId: user.id, tier: tier },
-                            trial_end: 'now', // End any active trial immediately
-                        })
+                    // Update DB immediately (don't wait for webhook)
+                    const nextReset = new Date()
+                    nextReset.setMonth(nextReset.getMonth() + 1)
 
-                        // Update DB immediately (don't wait for webhook)
-                        const nextReset = new Date()
-                        nextReset.setMonth(nextReset.getMonth() + 1)
+                    await prisma.user.update({
+                        where: { id: user.id },
+                        data: {
+                            subscription_tier: tier,
+                            subscription_status: updatedSub.status,
+                            stripe_subscription_id: existingSub.id, // Persist the sub ID
+                            parlay_credits: targetTier.customBuilderLimit,
+                            credits_reset_at: nextReset,
+                        }
+                    })
 
-                        await prisma.user.update({
-                            where: { id: user.id },
-                            data: {
-                                subscription_tier: tier,
-                                subscription_status: updatedSub.status,
-                                parlay_credits: targetTier.customBuilderLimit,
-                                credits_reset_at: nextReset,
-                            }
-                        })
+                    console.log(`Subscription upgraded: User ${user.id} → tier "${tier}"`)
 
-                        console.log(`Subscription upgraded: User ${user.id} → tier "${tier}"`)
-
-                        const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-                        const appUrl = origin.replace(/\/$/, '')
-                        return NextResponse.json({ url: `${appUrl}/dashboard?success=true` })
-                    }
+                    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+                    const appUrl = origin.replace(/\/$/, '')
+                    return NextResponse.json({ url: `${appUrl}/dashboard?success=true` })
                 }
             } catch (e: any) {
-                // If retrieving the old subscription fails (e.g. it was deleted), fall through to new checkout
                 console.warn(`Could not upgrade existing subscription: ${e.message}. Creating new checkout.`)
             }
         }
