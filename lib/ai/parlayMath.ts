@@ -81,17 +81,8 @@ export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean
 }
 
 export function enforceLegCount(riskLevel: number, requestedLegs: number): number {
-    const maxLegs: Record<number, number> = {
-        1: 3, 2: 3,
-        3: 4, 4: 4,
-        5: 5, 6: 5,
-        7: 6, 8: 6,
-        9: 7, 10: 10
-    };
-
-    const limit = maxLegs[riskLevel] || 10;
-    // A parlay requires at least 3 legs
-    return Math.max(3, Math.min(requestedLegs, limit));
+    // A parlay requires at least 3 legs, max 10
+    return Math.max(3, Math.min(requestedLegs, 10));
 }
 
 export function enforceBetTypes(riskLevel: number, requestedTypes: string[]): string[] {

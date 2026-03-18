@@ -69,17 +69,6 @@ export function ParlayBuilder() {
         fetchSchedule()
     }, [])
 
-    // Max legs by risk level (matches parlayMath.ts enforceLegCount)
-    const maxLegsForRisk: Record<number, number> = {
-        1: 3, 2: 3, 3: 4, 4: 4, 5: 5, 6: 5, 7: 6, 8: 6, 9: 7, 10: 10
-    }
-    const maxLegs = maxLegsForRisk[risk] || 10
-
-    // Auto-clamp legs when risk changes
-    useEffect(() => {
-        if (numLegs > maxLegs) setNumLegs(maxLegs)
-    }, [risk])
-
     // Automatically remove forbidden bet types if soccer is selected
     useEffect(() => {
         const isSoccerSelected = sports.some(s => s === 'soccer_epl' || s === 'soccer_spain_la_liga' || s === 'soccer_uefa_champs_league');
@@ -200,7 +189,7 @@ export function ParlayBuilder() {
                                         <SelectValue placeholder="3" />
                                     </SelectTrigger>
                                     <SelectContent className="border-white/10 bg-zinc-950">
-                                        {Array.from({ length: maxLegs - 2 }, (_, i) => i + 3).map(n => (
+                                        {[3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                                             <SelectItem key={n} value={n.toString()} className="focus:bg-zinc-900 focus:text-emerald-400 font-bold">{n}</SelectItem>
                                         ))}
                                     </SelectContent>
