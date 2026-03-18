@@ -1,0 +1,102 @@
+
+> sharppicks-ai@0.1.0 build
+> prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.10.0) to ./node_modules/@prisma/client in 84ms
+
+Start using Prisma Client in Node.js (See: https://pris.ly/d/client)
+```
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+or start using Prisma Client at the edge (See: https://pris.ly/d/accelerate)
+```
+import { PrismaClient } from '@prisma/client/edge'
+const prisma = new PrismaClient()
+```
+
+See other ways of importing Prisma Client: http://pris.ly/d/importing-client
+
+┌─────────────────────────────────────────────────────────────┐
+│  Deploying your app to serverless or edge functions?        │
+│  Try Prisma Accelerate for connection pooling and caching.  │
+│  https://pris.ly/cli/accelerate                             │
+└─────────────────────────────────────────────────────────────┘
+
+  ▲ Next.js 14.2.35
+  - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/23) ...
+   Generating static pages (5/23) 
+   Generating static pages (11/23) 
+[Cron] Error: B [Error]: Dynamic server usage: Route /api/cron/check-results couldn't be rendered statically because it used `request.headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+    at V (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:21778)
+    at Object.get (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:29465)
+    at g (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/.next/server/app/api/cron/check-results/route.js:1:653)
+    at /Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:38417
+    at /Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/server/lib/trace/tracer.js:140:36
+    at NoopContextManager.with (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:7062)
+    at ContextAPI.with (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:518)
+    at NoopTracer.startActiveSpan (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18093)
+    at ProxyTracer.startActiveSpan (/Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/compiled/@opentelemetry/api/index.js:1:18854)
+    at /Users/solomonroth/Desktop/AI-Sports/sharppicks-ai/node_modules/next/dist/server/lib/trace/tracer.js:122:103 {
+  description: "Route /api/cron/check-results couldn't be rendered statically because it used `request.headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (17/23) 
+ ✓ Generating static pages (23/23)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    12.7 kB         169 kB
+├ ○ /_not-found                          873 B          88.2 kB
+├ ƒ /api/audit                           0 B                0 B
+├ ƒ /api/bet-history                     0 B                0 B
+├ ƒ /api/check-results                   0 B                0 B
+├ ƒ /api/cron/check-results              0 B                0 B
+├ ƒ /api/cron/generate-daily-picks       0 B                0 B
+├ ƒ /api/daily-picks                     0 B                0 B
+├ ○ /api/debug-odds                      0 B                0 B
+├ ƒ /api/debug-status                    0 B                0 B
+├ ƒ /api/generate-parlay                 0 B                0 B
+├ ƒ /api/get-schedule                    0 B                0 B
+├ ƒ /api/live-games                      0 B                0 B
+├ ƒ /api/p                               0 B                0 B
+├ ƒ /api/stripe/checkout                 0 B                0 B
+├ ƒ /api/stripe/portal                   0 B                0 B
+├ ƒ /api/track-bet                       0 B                0 B
+├ ƒ /api/webhooks/stripe                 0 B                0 B
+├ ○ /audit                               4.03 kB        99.8 kB
+├ ○ /bet-history                         6.89 kB         212 kB
+├ ○ /build-parlay                        43.9 kB         220 kB
+├ ƒ /callback                            0 B                0 B
+├ ƒ /checkout/[tier]                     2.31 kB        89.7 kB
+├ ○ /daily-picks                         5.02 kB         111 kB
+├ ○ /dashboard                           8.41 kB         210 kB
+├ ○ /how-it-works                        6.84 kB         154 kB
+├ ○ /how-to-use                          5.33 kB         134 kB
+├ ○ /login                               9.41 kB         162 kB
+├ ○ /privacy                             2.92 kB         150 kB
+├ ○ /responsible-gaming                  2.92 kB         150 kB
+├ ƒ /settings                            2.21 kB         107 kB
+└ ○ /terms                               2.92 kB         150 kB
++ First Load JS shared by all            87.3 kB
+  ├ chunks/117-474785f760adfd2c.js       31.7 kB
+  ├ chunks/fd9d1056-eabcefd8a17f0848.js  53.6 kB
+  └ other shared chunks (total)          1.96 kB
+
+
+ƒ Middleware                             74.4 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

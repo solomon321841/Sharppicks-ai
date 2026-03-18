@@ -24,6 +24,7 @@ export function ParlayBuilder() {
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<any>(null)
     const [errorState, setErrorState] = useState<string | null>(null)
+    const [warnings, setWarnings] = useState<string[]>([])
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
     const [tier, setTier] = useState<string>('pro') // Default to pro for demo
     const [credits, setCredits] = useState<number | null>(null)
@@ -68,6 +69,17 @@ export function ParlayBuilder() {
         fetchSchedule()
     }, [])
 
+    // Max legs by risk level (matches parlayMath.ts enforceLegCount)
+    const maxLegsForRisk: Record<number, number> = {
+        1: 3, 2: 3, 3: 4, 4: 4, 5: 5, 6: 5, 7: 6, 8: 6, 9: 7, 10: 10
+    }
+    const maxLegs = maxLegsForRisk[risk] || 10
+
+    // Auto-clamp legs when risk changes
+    useEffect(() => {
+        if (numLegs > maxLegs) setNumLegs(maxLegs)
+    }, [risk])
+
     // Automatically remove forbidden bet types if soccer is selected
     useEffect(() => {
         const isSoccerSelected = sports.some(s => s === 'soccer_epl' || s === 'soccer_spain_la_liga' || s === 'soccer_uefa_champs_league');
@@ -95,6 +107,7 @@ export function ParlayBuilder() {
         setLoading(true)
         setResult(null)
         setErrorState(null)
+        setWarnings([])
 
         try {
             const response = await fetch('/api/generate-parlay', {
@@ -126,6 +139,7 @@ export function ParlayBuilder() {
             }
 
             setResult(data)
+            setWarnings(data.warnings || [])
             setCredits(prev => prev !== null ? Math.max(0, prev - 1) : null)
         } catch (error: any) {
             console.error('Generation error:', error)
@@ -186,7 +200,7 @@ export function ParlayBuilder() {
                                         <SelectValue placeholder="3" />
                                     </SelectTrigger>
                                     <SelectContent className="border-white/10 bg-zinc-950">
-                                        {[2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
+                                        {Array.from({ length: maxLegs - 2 }, (_, i) => i + 3).map(n => (
                                             <SelectItem key={n} value={n.toString()} className="focus:bg-zinc-900 focus:text-emerald-400 font-bold">{n}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -346,6 +360,16 @@ export function ParlayBuilder() {
                             </div>
                         </div>
                         <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
+                            {warnings.length > 0 && (
+                                <div className="mb-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
+                                    {warnings.map((w, i) => (
+                                        <p key={i} className="text-xs text-amber-400 flex items-start gap-2">
+                                            <span className="shrink-0 mt-0.5">&#9888;</span>
+                                            <span>{w}</span>
+                                        </p>
+                                    ))}
+                                </div>
+                            )}
                             <ParlayCard
                                 legs={result.legs}
                                 totalOdds={result.totalOdds}

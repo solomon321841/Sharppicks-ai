@@ -1,6 +1,9 @@
 
-// Mock process.env
-process.env.ODDS_API_KEY = 'ff4ef13bb0192313085f97891f5b058d';
+// Ensure required env vars are set
+if (!process.env.ODDS_API_KEY) {
+    console.error('❌ ODDS_API_KEY not set. Export it or add to .env.local');
+    process.exit(1);
+}
 
 import { getSchedule } from '../lib/odds/getSchedule';
 

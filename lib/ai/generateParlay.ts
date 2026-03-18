@@ -14,6 +14,7 @@ export async function generateParlay(params: {
 }) {
     let oddsData = params.oddsData
     const sports = params.sports
+    const warnings: string[] = []
 
     // ── 1. Fetch live odds ──────────────────────────────────────────
     if (!oddsData) {
@@ -39,6 +40,7 @@ export async function generateParlay(params: {
 
             if (!propsFound) {
                 console.warn('[ParlayGen] Props requested but none returned from API.')
+                warnings.push('Player props are not available right now for the selected sports. Your parlay was built without props.')
                 params.betTypes = params.betTypes.filter(t => !t.includes('prop') && !t.includes('player'))
 
                 if (params.betTypes.length === 0) {
@@ -55,6 +57,9 @@ export async function generateParlay(params: {
             markets = 'h2h,spreads,totals'
             oddsData = await getOdds(sports, 'us', markets)
 
+            if (!warnings.some(w => w.includes('Player props'))) {
+                warnings.push('Player props are not available right now for the selected sports. Your parlay was built without props.')
+            }
             params.betTypes = params.betTypes.filter(t => !t.includes('prop') && !t.includes('player'))
             if (params.betTypes.length === 0) {
                 return {
@@ -100,6 +105,9 @@ export async function generateParlay(params: {
 
     // ── 4. Enforce constraints ──────────────────────────────────────
     const targetLegs = enforceLegCount(params.riskLevel, params.numLegs)
+    if (targetLegs !== params.numLegs) {
+        warnings.push(`Leg count adjusted from ${params.numLegs} to ${targetLegs} for Risk Level ${params.riskLevel}.`)
+    }
     const allowedBetTypes = enforceBetTypes(params.riskLevel, params.betTypes)
 
     // Shuffle games for variety between generations
@@ -116,6 +124,10 @@ export async function generateParlay(params: {
         shoppingData,
         sportFocus: params.sportFocus
     })
+
+    if (warnings.length > 0) {
+        result.warnings = warnings
+    }
 
     return result
 }

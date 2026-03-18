@@ -1,8 +1,15 @@
 // Test AI-First Parlay Generation System
 // Verifies that Claude makes intelligent picks based on player context and line difficulty
 
-process.env.ODDS_API_KEY = 'fe678aa8c0189bb5b58903cc2b9bc5bf';
-process.env.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || 'sk-ant-api03-placeholder';
+// Ensure required env vars are set (load from .env.local or environment)
+if (!process.env.ODDS_API_KEY) {
+    console.error('❌ ODDS_API_KEY not set. Export it or add to .env.local');
+    process.exit(1);
+}
+if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('❌ ANTHROPIC_API_KEY not set. Export it or add to .env.local');
+    process.exit(1);
+}
 
 import { generateParlay } from '../lib/ai/generateParlay';
 

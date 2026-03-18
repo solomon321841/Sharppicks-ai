@@ -15,9 +15,10 @@ interface Bet {
         legs: {
             team: string,
             bet_type: string,
-            specific_bet_type?: string,
-            player_name?: string,
-            stat_value?: number,
+            player?: string,
+            prop_market?: string,
+            line?: string,
+            opponent?: string,
             odds: string,
             result: string,
             league?: string,
@@ -284,7 +285,7 @@ export default function BetHistoryPage() {
                                                                         <div key={i} className="group/leg relative bg-zinc-950/30 border border-white/[0.02] rounded-lg p-3 transition-colors hover:border-white/[0.05]">
                                                                             <div className="space-y-1">
                                                                                 <div className="flex items-center justify-between gap-2 overflow-hidden">
-                                                                                    <div className="text-[10px] font-black text-zinc-300 italic truncate">{leg.team}</div>
+                                                                                    <div className="text-[10px] font-black text-zinc-300 italic truncate">{leg.player || leg.team}</div>
                                                                                     {status === 'live' && (
                                                                                         <span className="flex items-center gap-1 text-[9px] md:text-[7px] font-black text-emerald-500 uppercase tracking-tighter shrink-0 animate-pulse bg-emerald-500/10 px-1 rounded ring-1 ring-emerald-500/20">
                                                                                             <Zap className="w-2 h-2 fill-current" />
@@ -295,9 +296,12 @@ export default function BetHistoryPage() {
                                                                                 <div className="flex items-center justify-between">
                                                                                     <div className="flex flex-col">
                                                                                         <span className="text-[10px] md:text-[8px] font-bold text-zinc-600 uppercase">
-                                                                                            {leg.bet_type === 'Player Props' || leg.bet_type === 'PLAYER_PROPS' 
-                                                                                                ? `${leg.player_name || 'Player'} - ${leg.specific_bet_type?.replace(/_/g, ' ') || 'Prop'} Over ${leg.stat_value || ''}`
-                                                                                                : leg.specific_bet_type?.replace(/_/g, ' ') || leg.bet_type}
+                                                                                            {leg.player ? (
+                                                                                                `${leg.prop_market?.replace(/_/g, ' ') || 'Prop'} ${leg.line || ''}`
+                                                                                            ) : (
+                                                                                                leg.bet_type === 'moneyline' ? 'MONEYLINE' : leg.bet_type === 'spread' ? `SPREAD ${leg.line || ''}` : leg.bet_type === 'totals' ? `TOTAL ${leg.line || ''}` : leg.bet_type.replace(/_/g, ' ')
+                                                                                            )}
+                                                                                            {leg.opponent ? ` (vs ${leg.opponent})` : ''}
                                                                                         </span>
                                                                                     </div>
                                                                                     <span className="text-[10px] md:text-[9px] font-mono font-bold text-emerald-500/60">{leg.odds}</span>
