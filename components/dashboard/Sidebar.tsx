@@ -67,11 +67,11 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex h-screen w-64 flex-col border-r bg-card px-3 py-4 lg:py-4">
             <div className="mb-6 lg:mb-8 px-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
-                    <span className="text-white text-[15px] font-black tracking-[-0.08em]">PP</span>
+                    <span className="text-white text-[15px] font-black tracking-[-0.08em]">SP</span>
                 </div>
                 <Link href="/" className="flex flex-col leading-none group">
-                    <span className="text-[17px] font-black tracking-tight text-foreground group-hover:text-emerald-500 transition-colors">ProfitPicks</span>
-                    <span className="text-[10px] font-bold text-emerald-500/80 tracking-[0.15em] mt-0.5">ANALYTICS</span>
+                    <span className="text-[17px] font-black tracking-tight text-foreground group-hover:text-emerald-500 transition-colors">SharpPicks</span>
+                    <span className="text-[10px] font-bold text-emerald-500/80 tracking-[0.15em] mt-0.5">AI ANALYTICS</span>
                 </Link>
             </div>
 

@@ -66,7 +66,7 @@ export function TierGate({ feature, children, featureName }: TierGateProps) {
                 <span className="text-white font-semibold">
                     {featureName || 'this feature'}
                 </span>{' '}
-                and get the full ProfitPicks experience.
+                and get the full SharpPicks experience.
             </p>
 
             <div className="flex flex-col gap-3 w-full max-w-[280px]">

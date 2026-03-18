@@ -130,7 +130,7 @@ export function HowItWorks() {
 
                         <h4 className="text-xl md:text-2xl font-bold text-white mb-4 md:mb-6 flex items-center justify-center gap-3">
                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            Coming Soon to ProfitPicks
+                            Coming Soon to SharpPicks
                         </h4>
 
                         <div className="flex flex-wrap justify-center gap-3 md:gap-6">

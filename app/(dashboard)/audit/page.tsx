@@ -1,7 +1,7 @@
 import { AuditDashboard } from '@/components/dashboard/AuditDashboard'
 
 export const metadata = {
-    title: 'Performance Audit | ProfitPicks AI',
+    title: 'Performance Audit | SharpPicks AI',
 }
 
 export default function AuditPage() {

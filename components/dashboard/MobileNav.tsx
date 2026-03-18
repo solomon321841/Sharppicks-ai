@@ -15,10 +15,10 @@ export function MobileNav() {
             <header className="sticky top-0 z-40 flex items-center justify-between border-b bg-card/95 backdrop-blur-md px-4 py-3 shadow-sm pt-safe">
                 <Link href="/" className="flex items-center gap-2 group">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 border border-white/10">
-                        <span className="text-white text-xs font-black tracking-[-0.08em]">PP</span>
+                        <span className="text-white text-xs font-black tracking-[-0.08em]">SP</span>
                     </div>
                     <div className="flex flex-col leading-none">
-                        <span className="text-sm font-black tracking-tight text-foreground group-hover:text-emerald-500 transition-colors">ProfitPicks</span>
+                        <span className="text-sm font-black tracking-tight text-foreground group-hover:text-emerald-500 transition-colors">SharpPicks</span>
                     </div>
                 </Link>
 

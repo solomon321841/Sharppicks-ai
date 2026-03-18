@@ -14,11 +14,11 @@ export function Header() {
                 {/* Logo */}
                 <Link className="flex items-center justify-center gap-3 group" href="/">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-[0_0_20px_-5px_rgba(16,185,129,0.5)] border border-white/10 group-hover:scale-105 transition-transform duration-300">
-                        <span className="text-white text-base font-black tracking-tighter">PP</span>
+                        <span className="text-white text-base font-black tracking-tighter">SP</span>
                     </div>
                     <div className="flex flex-col leading-none">
-                        <span className="text-lg font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">ProfitPicks</span>
-                        <span className="text-[9px] font-bold text-emerald-500/80 tracking-[0.2em] group-hover:text-emerald-400/80 transition-colors">ANALYTICS</span>
+                        <span className="text-lg font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">SharpPicks</span>
+                        <span className="text-[9px] font-bold text-emerald-500/80 tracking-[0.2em] group-hover:text-emerald-400/80 transition-colors">AI ANALYTICS</span>
                     </div>
                 </Link>
 

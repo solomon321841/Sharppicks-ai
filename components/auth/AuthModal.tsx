@@ -70,7 +70,7 @@ export function AuthModal({ defaultOpen = false }: { defaultOpen?: boolean }) {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Welcome to ProfitPicks AI</DialogTitle>
+                    <DialogTitle>Welcome to SharpPicks AI</DialogTitle>
                     <DialogDescription>
                         Sign in to access AI-powered sports betting parlays.
                     </DialogDescription>
