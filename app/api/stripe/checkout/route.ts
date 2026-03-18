@@ -139,8 +139,11 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error('Stripe Checkout Error:', error)
 
+        const message = error?.message || 'Unknown error'
+        const stripeCode = error?.code || error?.type || ''
+
         return NextResponse.json(
-            { error: 'Something went wrong with checkout. Please try again.' },
+            { error: `Checkout failed: ${message}${stripeCode ? ` (${stripeCode})` : ''}` },
             { status: 500 }
         )
     }
