@@ -339,8 +339,8 @@ export function ParlayBuilder() {
                         </Button>
                     </div>
                 ) : result ? (
-                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 h-full flex flex-col">
-                        <div className="mb-4 flex items-center justify-between">
+                    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 h-full flex flex-col min-h-0">
+                        <div className="mb-4 flex items-center justify-between shrink-0">
                             <div>
                                 <h3 className="text-lg font-black text-white uppercase tracking-widest">AI Analysis Result</h3>
                             </div>
@@ -348,9 +348,9 @@ export function ParlayBuilder() {
                                 <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">Success</span>
                             </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto pr-1 pb-4 custom-scrollbar">
+                        <div className="flex-1 min-h-0 flex flex-col">
                             {warnings.length > 0 && (
-                                <div className="mb-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
+                                <div className="mb-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 shrink-0">
                                     {warnings.map((w, i) => (
                                         <p key={i} className="text-xs text-amber-400 flex items-start gap-2">
                                             <span className="shrink-0 mt-0.5">&#9888;</span>
@@ -359,16 +359,18 @@ export function ParlayBuilder() {
                                     ))}
                                 </div>
                             )}
-                            <ParlayCard
-                                legs={result.legs}
-                                totalOdds={result.totalOdds}
-                                confidence={result.confidence}
-                                riskLevel={risk}
-                                strategy={result.strategy}
-                            />
+                            <div className="flex-1 min-h-0">
+                                <ParlayCard
+                                    legs={result.legs}
+                                    totalOdds={result.totalOdds}
+                                    confidence={result.confidence}
+                                    riskLevel={risk}
+                                    strategy={result.strategy}
+                                />
+                            </div>
                             <Button
                                 variant="ghost"
-                                className="w-full mt-4 text-zinc-400 hover:text-white hover:bg-white/5 h-12 text-sm font-bold uppercase tracking-widest border border-dashed border-white/10"
+                                className="w-full mt-4 shrink-0 text-zinc-400 hover:text-white hover:bg-white/5 h-12 text-sm font-bold uppercase tracking-widest border border-dashed border-white/10"
                                 onClick={() => setResult(null)}
                             >
                                 <RefreshCw className="w-4 h-4 mr-2" />

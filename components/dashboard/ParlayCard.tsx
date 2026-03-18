@@ -102,7 +102,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 "bg-red-500/20 text-red-500 border-red-500/50";
 
     return (
-        <Card className="w-full bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border-white/10 shadow-2xl relative overflow-hidden group/card backdrop-blur-xl">
+        <Card className="flex flex-col h-full w-full bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border-white/10 shadow-2xl relative overflow-hidden group/card backdrop-blur-xl">
             {/* Top Glow Border */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-90 shadow-[0_0_20px_rgba(52,211,153,0.8)]" />
 
@@ -113,7 +113,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 </Badge>
             </div>
 
-            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-4 px-4 relative z-20 border-b border-white/5">
+            <CardHeader className="flex flex-col space-y-0.5 pb-2 pt-4 px-4 relative z-20 border-b border-white/5 shrink-0">
                 <CardTitle className="text-lg font-black text-white tracking-widest uppercase flex items-center justify-between">
                     <span className="flex items-center gap-2.5">
                         <Activity className="w-4 h-4 text-emerald-400" /> AI PARLAY
@@ -127,7 +127,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
             </CardHeader>
 
             {strategy && (
-                <div className="px-4 py-2 bg-gradient-to-r from-emerald-950/40 to-transparent border-b border-emerald-500/10">
+                <div className="px-4 py-2 bg-gradient-to-r from-emerald-950/40 to-transparent border-b border-emerald-500/10 shrink-0">
                     <p className="text-xs text-emerald-400/90 font-medium italic leading-relaxed">
                         <span className="text-white not-italic font-black mr-2 uppercase tracking-widest bg-emerald-500/20 px-1.5 py-0.5 rounded text-[10px]">Logic:</span>
                         "{strategy}"
