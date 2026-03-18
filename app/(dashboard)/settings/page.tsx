@@ -7,6 +7,8 @@ import { Shield, Mail, CreditCard, Activity, Clock, Crown, Zap, User } from 'luc
 import { Button } from "@/components/ui/button"
 import { getTierFeatures } from "@/lib/config/tiers"
 
+export const dynamic = 'force-dynamic'
+
 export default async function SettingsPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
