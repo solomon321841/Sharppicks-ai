@@ -22,18 +22,18 @@ export function RiskSlider({ value, onChange }: { value: number, onChange: (val:
 
     return (
         <div className="space-y-4 select-none">
-            <div className="flex items-center justify-between">
-                <div>
-                    <label className="text-sm font-black leading-none text-white tracking-wide">RISK LEVEL</label>
-                    <p className="text-[10px] text-zinc-400 mt-1 font-bold tracking-wider">ADJUST AI AGGRESSION</p>
+            <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                    <label className="text-xs sm:text-sm font-black leading-none text-white tracking-wide">RISK LEVEL</label>
+                    <p className="text-[10px] text-zinc-400 mt-1 font-bold tracking-wider hidden sm:block">ADJUST AI AGGRESSION</p>
                 </div>
                 <div className={cn(
-                    "flex items-center gap-2 px-3 py-1.5 rounded-lg border backdrop-blur-md transition-all duration-300 shadow-lg",
+                    "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg border backdrop-blur-md transition-all duration-300 shadow-lg shrink-0",
                     color
                 )}>
                     <span className="text-sm font-black tracking-tighter">{value}</span>
                     <span className="text-[8px] font-bold opacity-60">/ 10</span>
-                    <span className="w-px h-3 bg-white/10 mx-1" />
+                    <span className="w-px h-3 bg-white/10 mx-0.5 sm:mx-1" />
                     <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
                 </div>
             </div>
@@ -65,14 +65,14 @@ export function RiskSlider({ value, onChange }: { value: number, onChange: (val:
                 </SliderPrimitive.Root>
             </div>
 
-            <div className="flex justify-between items-center text-[9px] font-bold text-zinc-500 uppercase tracking-widest px-1">
-                <span className="flex items-center gap-1.5 transition-colors duration-300 hover:text-emerald-400 cursor-help group/safe">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] group-hover/safe:scale-125 transition-transform" />
-                    Safe (Favorites)
+            <div className="flex justify-between items-center text-[8px] sm:text-[9px] font-bold text-zinc-500 uppercase tracking-wider sm:tracking-widest px-1">
+                <span className="flex items-center gap-1 sm:gap-1.5 transition-colors duration-300 hover:text-emerald-400 cursor-help group/safe">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] group-hover/safe:scale-125 transition-transform shrink-0" />
+                    Safe
                 </span>
-                <span className="flex items-center gap-1.5 transition-colors duration-300 hover:text-red-400 cursor-help group/risky">
-                    High Risk (Underdogs)
-                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] group-hover/risky:scale-125 transition-transform" />
+                <span className="flex items-center gap-1 sm:gap-1.5 transition-colors duration-300 hover:text-red-400 cursor-help group/risky">
+                    High Risk
+                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)] group-hover/risky:scale-125 transition-transform shrink-0" />
                 </span>
             </div>
         </div>

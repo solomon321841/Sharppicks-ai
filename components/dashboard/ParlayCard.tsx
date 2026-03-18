@@ -102,7 +102,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 "bg-red-500/20 text-red-500 border-red-500/50";
 
     return (
-        <Card className="flex flex-col h-full w-full bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border-white/10 shadow-2xl relative overflow-hidden group/card backdrop-blur-xl">
+        <Card className="flex flex-col h-full w-full bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border-white/10 shadow-2xl relative overflow-hidden group/card backdrop-blur-xl min-w-0">
             {/* Top Glow Border */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-400 to-emerald-600 opacity-90 shadow-[0_0_20px_rgba(52,211,153,0.8)]" />
 
@@ -135,29 +135,29 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 </div>
             )}
 
-            <CardContent className="space-y-2 relative z-10 px-3 py-2 flex-1 overflow-y-auto custom-scrollbar min-h-0">
+            <CardContent className="space-y-2 relative z-10 px-2 sm:px-3 py-2 flex-1 overflow-y-auto custom-scrollbar min-h-0">
                 {legs.map((leg: any, i: number) => {
                     const isProp = leg.player && leg.player.length > 0;
                     const subText = isProp ? `${leg.team} vs ${leg.opponent}` : `vs ${leg.opponent}`;
 
                     return (
-                        <div key={i} className="group relative flex flex-col gap-1.5 py-2 px-3 rounded-xl border border-white/10 bg-black/40 hover:bg-emerald-950/30 transition-all duration-300 hover:border-emerald-500/30 shadow-md">
-                            <div className="relative z-10 flex justify-between items-start md:items-center gap-2">
-                                <div className="flex gap-2.5 items-center min-w-0">
-                                    <div className="relative w-8 h-8 flex items-center justify-center shrink-0">
+                        <div key={i} className="group relative flex flex-col gap-1.5 py-2 px-2 sm:px-3 rounded-xl border border-white/10 bg-black/40 hover:bg-emerald-950/30 transition-all duration-300 hover:border-emerald-500/30 shadow-md min-w-0">
+                            <div className="relative z-10 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 min-w-0">
+                                <div className="flex gap-2 sm:gap-2.5 items-center min-w-0">
+                                    <div className="relative w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center shrink-0">
                                         <div className="absolute inset-0 bg-white/10 rounded-full blur-[2px]" />
                                         <div className="relative w-full h-full rounded-full bg-zinc-950 border border-white/20 flex items-center justify-center overflow-hidden">
-                                            <TeamLogo name={leg.team} className="w-5 h-5 relative z-10" />
+                                            <TeamLogo name={leg.team} className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" />
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-col min-w-0">
-                                        <div className="flex items-center gap-2 mb-0.5">
-                                            <span className="text-sm font-black text-white tracking-tight truncate">
+                                    <div className="flex flex-col min-w-0 flex-1">
+                                        <div className="flex items-center gap-2 mb-0.5 min-w-0">
+                                            <span className="text-xs sm:text-sm font-black text-white tracking-tight truncate">
                                                 {leg.player || leg.team}
                                             </span>
                                             {isProp && (
-                                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[9px] h-3.5 px-1 font-bold uppercase tracking-wider">
+                                                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[9px] h-3.5 px-1 font-bold uppercase tracking-wider shrink-0">
                                                     PROP
                                                 </Badge>
                                             )}
@@ -166,21 +166,30 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                             {isProp && leg.prop_market ? (
                                                 <>
                                                     <span className="text-emerald-500">{leg.prop_market.replace(/_/g, ' ')}</span>
-                                                    <span className="text-zinc-600 font-medium lowercase">({leg.team.toLowerCase()} vs {leg.opponent.toLowerCase()})</span>
+                                                    <span className="text-zinc-600 font-medium lowercase truncate">({leg.team.toLowerCase()} vs {leg.opponent.toLowerCase()})</span>
                                                 </>
                                             ) : (
                                                 <>
                                                     <span className="text-emerald-500">
-                                                        {leg.bet_type === 'moneyline' ? 'MONEYLINE' : leg.bet_type === 'spread' ? 'SPREAD' : leg.bet_type === 'totals' ? 'GAME TOTAL' : leg.bet_type.replace(/_/g, ' ')}
+                                                        {leg.bet_type === 'moneyline' ? 'ML' : leg.bet_type === 'spread' ? 'SPREAD' : leg.bet_type === 'totals' ? 'TOTAL' : leg.bet_type.replace(/_/g, ' ')}
                                                     </span>
-                                                    <span className="text-zinc-600 font-medium lowercase">(vs {leg.opponent.toLowerCase()})</span>
+                                                    <span className="text-zinc-600 font-medium lowercase truncate">(vs {leg.opponent.toLowerCase()})</span>
                                                 </>
                                             )}
                                         </p>
                                     </div>
+
+                                    <div className="flex items-center gap-1.5 shrink-0 sm:hidden">
+                                        <span className="text-[11px] font-black text-white tracking-tighter bg-white/5 px-1.5 py-0.5 rounded border border-white/10">
+                                            {leg.line === 'Yes' ? 'WIN' : leg.line}
+                                        </span>
+                                        <Badge variant="outline" className="text-[11px] font-mono font-black border-emerald-500/30 text-emerald-400 bg-emerald-500/10 px-1.5 py-0">
+                                            {leg.odds}
+                                        </Badge>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col items-end shrink-0 gap-0.5 mt-0.5 md:mt-0">
+                                <div className="hidden sm:flex flex-col items-end shrink-0 gap-0.5">
                                     <div className="flex items-center gap-1.5">
                                         <span className="text-xs font-black text-white tracking-tighter bg-white/5 px-1.5 py-0.5 rounded border border-white/10">
                                             {leg.line === 'Yes' ? 'WIN' : leg.line}
@@ -205,7 +214,7 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                 })}
             </CardContent>
 
-            <CardFooter className="flex flex-col gap-2 pt-3 pb-3 px-4 bg-gradient-to-t from-emerald-950/20 to-black/60 border-t border-white/10 relative z-20 shrink-0">
+            <CardFooter className="flex flex-col gap-2 pt-3 pb-3 px-2 sm:px-4 bg-gradient-to-t from-emerald-950/20 to-black/60 border-t border-white/10 relative z-20 shrink-0">
                 <div className="flex w-full gap-2.5">
                     <Button
                         onClick={handleCopy}

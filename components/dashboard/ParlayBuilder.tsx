@@ -165,23 +165,23 @@ export function ParlayBuilder() {
     }
 
     return (
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-stretch lg:h-[calc(100vh-140px)] lg:min-h-[500px]">
-            <div className="lg:col-span-7 h-auto lg:h-full flex flex-col">
-                <div className="flex-1 space-y-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-4 shadow-2xl flex flex-col">
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-stretch lg:h-[calc(100vh-140px)] lg:min-h-[500px] w-full min-w-0 overflow-hidden">
+            <div className="lg:col-span-7 h-auto lg:h-full flex flex-col min-w-0">
+                <div className="flex-1 space-y-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl p-3 sm:p-4 shadow-2xl flex flex-col min-w-0">
 
                     {/* Compact Header */}
-                    <div className="flex justify-between items-center border-b border-white/5 pb-2 min-h-[40px]">
-                        <div className="flex items-center gap-2">
-                            <h3 className="text-sm font-bold tracking-tight text-white">Parlay Config</h3>
-                            <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-zinc-400">AI Powered</span>
+                    <div className="flex flex-wrap justify-between items-center gap-2 border-b border-white/5 pb-2 min-h-[40px]">
+                        <div className="flex items-center gap-2 min-w-0 flex-wrap">
+                            <h3 className="text-sm font-bold tracking-tight text-white whitespace-nowrap">Parlay Config</h3>
+                            <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-zinc-400 hidden sm:inline">AI Powered</span>
                             {credits !== null && (
                                 <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded flex items-center gap-1 font-bold shadow-[0_0_10px_-2px_rgba(16,185,129,0.3)]">
-                                    <Zap className="w-3 h-3 fill-emerald-400" />
-                                    {credits} CREDITS LEFT
+                                    <Zap className="w-3 h-3 fill-emerald-400 shrink-0" />
+                                    <span className="whitespace-nowrap">{credits} LEFT</span>
                                 </span>
                             )}
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-4 shrink-0">
                             <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
                                 <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Legs</label>
                                 <Select value={numLegs.toString()} onValueChange={(val) => setNumLegs(parseInt(val))}>
@@ -239,10 +239,10 @@ export function ParlayBuilder() {
 
                             {/* Content */}
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between mb-1">
-                                    <h4 className="text-[11px] font-bold text-zinc-300 uppercase tracking-wide">Exclude Players & Teams</h4>
-                                    <span className="text-[8px] font-bold uppercase tracking-widest text-amber-400/70 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/15 whitespace-nowrap">
-                                        Coming Soon
+                                <div className="flex items-center justify-between gap-2 mb-1">
+                                    <h4 className="text-[10px] sm:text-[11px] font-bold text-zinc-300 uppercase tracking-wide truncate">Exclude Players & Teams</h4>
+                                    <span className="text-[8px] font-bold uppercase tracking-widest text-amber-400/70 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/15 whitespace-nowrap shrink-0">
+                                        Soon
                                     </span>
                                 </div>
                                 <p className="text-[10px] text-zinc-600 leading-relaxed">
@@ -287,7 +287,7 @@ export function ParlayBuilder() {
                 </div>
             </div>
 
-            <div className="lg:col-span-5 h-[auto] lg:h-full flex flex-col space-y-4 min-h-0">
+            <div className="lg:col-span-5 h-[auto] lg:h-full flex flex-col space-y-4 min-h-0 min-w-0">
                 {/* Schedule / Results Column */}
                 {!result && !errorState && schedule && (
                 <div className="h-full max-h-[500px] lg:max-h-none rounded-[24px] border border-white/[0.08] bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-xl overflow-hidden flex flex-col relative shadow-2xl">

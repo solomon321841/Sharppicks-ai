@@ -315,7 +315,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                 )}
                                             
                                                 {/* Header / Time Row */}
-                                                <div className="relative z-10 flex items-center justify-between px-4 pt-3 pb-2 border-b border-transparent group-hover/game:border-white/[0.04] transition-colors">
+                                                <div className="relative z-10 flex items-center justify-between px-3 sm:px-4 pt-3 pb-2 border-b border-transparent group-hover/game:border-white/[0.04] transition-colors">
                                                     <span className={cn(
                                                         "flex items-center gap-1.5 text-[10px] font-black tracking-[0.2em] uppercase rounded-full px-2 py-0.5",
                                                         isLive ? "text-red-400 bg-red-400/10 shadow-[0_0_10px_rgba(248,113,113,0.3)]" : "text-emerald-400 bg-emerald-400/10"
@@ -341,15 +341,15 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                 </div>
                                             
                                                 {/* Matchup Body */}
-                                                <div className="relative z-10 px-4 py-3 flex flex-col gap-3">
+                                                <div className="relative z-10 px-3 sm:px-4 py-3 flex flex-col gap-3">
                                                     {/* Teams Area - Modern Face-Off Stack Layout */}
-                                                    <div className="relative flex justify-between items-center bg-black/20 rounded-xl p-3 border border-white/[0.03] group-hover/game:border-white/[0.08] transition-colors">
+                                                    <div className="relative flex justify-between items-center bg-black/20 rounded-xl p-2 sm:p-3 border border-white/[0.03] group-hover/game:border-white/[0.08] transition-colors">
                                                         {/* Away Team */}
-                                                        <div className="flex flex-col items-center gap-2 w-[40%]">
-                                                            <div className="relative w-10 h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110">
+                                                        <div className="flex flex-col items-center gap-1.5 sm:gap-2 w-[40%] min-w-0">
+                                                            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1 sm:p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110 shrink-0">
                                                                 <TeamLogo name={game.away} className="w-full h-full object-contain" />
                                                             </div>
-                                                            <span className="text-[11px] font-black text-white text-center leading-tight">
+                                                            <span className="text-[10px] sm:text-[11px] font-black text-white text-center leading-tight truncate w-full">
                                                                 {game.away}
                                                             </span>
                                                         </div>
@@ -362,11 +362,11 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                         </div>
                                             
                                                         {/* Home Team */}
-                                                        <div className="flex flex-col items-center gap-2 w-[40%]">
-                                                            <div className="relative w-10 h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110">
+                                                        <div className="flex flex-col items-center gap-1.5 sm:gap-2 w-[40%] min-w-0">
+                                                            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-b from-zinc-800 to-black border border-white/10 p-1 sm:p-1.5 flex items-center justify-center shadow-lg group-hover/game:border-white/30 transition-all duration-300 group-hover/game:scale-110 shrink-0">
                                                                 <TeamLogo name={game.home} className="w-full h-full object-contain" />
                                                             </div>
-                                                            <span className="text-[11px] font-black text-white text-center leading-tight">
+                                                            <span className="text-[10px] sm:text-[11px] font-black text-white text-center leading-tight truncate w-full">
                                                                 {game.home}
                                                             </span>
                                                         </div>
@@ -386,7 +386,7 @@ export function UpcomingGamesPanel({ schedule }: { schedule: SportSchedule[] }) 
                                                     "relative z-10 overflow-hidden transition-all duration-500 ease-in-out",
                                                     isExpanded ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
                                                 )}>
-                                                    <div className="mx-4 mb-4 pt-4 border-t border-white/[0.08]">
+                                                    <div className="mx-3 sm:mx-4 mb-4 pt-4 border-t border-white/[0.08]">
                                                         <div className="grid grid-cols-2 gap-3">
                                                             <div className="group/odds flex flex-col items-center gap-1.5 p-3 rounded-xl bg-gradient-to-br from-black/60 to-black/80 border border-white/[0.05] hover:border-emerald-500/40 hover:bg-emerald-500/[0.02] cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]">
                                                                 <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-black group-hover/odds:text-zinc-400 transition-colors">Away ML</span>
