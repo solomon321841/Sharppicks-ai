@@ -56,9 +56,9 @@ export function Pricing() {
         setLoading(tier.id)
         try {
             const supabase = createClient()
-            const { data: { session } } = await supabase.auth.getSession()
+            const { data: { user } } = await supabase.auth.getUser()
 
-            if (!session) {
+            if (!user) {
                 router.push(`/login?tier=${tier.id}`)
                 return
             }
@@ -66,9 +66,9 @@ export function Pricing() {
             const response = await fetch('/api/stripe/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     tier: tier.id,
-                    returnUrl: window.location.href 
+                    returnUrl: window.location.href
                 })
             })
 

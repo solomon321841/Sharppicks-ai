@@ -91,6 +91,6 @@ export async function POST(request: Request) {
         return NextResponse.json(result)
     } catch (error: any) {
         console.error('API Error:', error)
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 })
+        return NextResponse.json({ error: 'Something went wrong generating your parlay. Please try again.' }, { status: 500 })
     }
 }

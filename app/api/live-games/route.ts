@@ -63,6 +63,6 @@ export async function GET() {
 
     } catch (error: any) {
         console.error('Live games API error:', error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
+        return NextResponse.json({ error: 'Failed to load live games.' }, { status: 500 })
     }
 }

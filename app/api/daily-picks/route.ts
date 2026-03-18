@@ -44,6 +44,6 @@ export async function GET() {
 
     } catch (error: any) {
         console.error('Daily Pick API Error:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Failed to load daily picks. Please try again.' }, { status: 500 });
     }
 }

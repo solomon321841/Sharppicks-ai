@@ -29,7 +29,11 @@ async function testOdds() {
 // 2. Test DB Connection
 async function testDB() {
     console.log('\nTesting Database Connection...')
-    const connectionString = 'postgresql://postgres.qmqpfgnzxmfrmzboisju:9B%40i8mil!!!@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true'
+    const connectionString = process.env.DATABASE_URL
+    if (!connectionString) {
+        console.error('DATABASE_URL not set')
+        return
+    }
 
     const client = new PrismaClient({
         datasourceUrl: connectionString,

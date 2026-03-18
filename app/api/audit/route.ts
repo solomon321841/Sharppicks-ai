@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     } catch (error) {
         console.error('[Audit API] Error:', error)
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Failed to fetch audit data' },
+            { error: 'Failed to fetch audit data. Please try again.' },
             { status: 500 }
         )
     }

@@ -15,6 +15,9 @@ interface Bet {
         legs: {
             team: string,
             bet_type: string,
+            specific_bet_type?: string,
+            player_name?: string,
+            stat_value?: number,
             odds: string,
             result: string,
             league?: string,
@@ -290,7 +293,13 @@ export default function BetHistoryPage() {
                                                                                     )}
                                                                                 </div>
                                                                                 <div className="flex items-center justify-between">
-                                                                                    <span className="text-[10px] md:text-[8px] font-bold text-zinc-600 uppercase">{leg.bet_type}</span>
+                                                                                    <div className="flex flex-col">
+                                                                                        <span className="text-[10px] md:text-[8px] font-bold text-zinc-600 uppercase">
+                                                                                            {leg.bet_type === 'Player Props' || leg.bet_type === 'PLAYER_PROPS' 
+                                                                                                ? `${leg.player_name || 'Player'} - ${leg.specific_bet_type?.replace(/_/g, ' ') || 'Prop'} Over ${leg.stat_value || ''}`
+                                                                                                : leg.specific_bet_type?.replace(/_/g, ' ') || leg.bet_type}
+                                                                                        </span>
+                                                                                    </div>
                                                                                     <span className="text-[10px] md:text-[9px] font-mono font-bold text-emerald-500/60">{leg.odds}</span>
                                                                                 </div>
                                                                             </div>

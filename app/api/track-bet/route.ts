@@ -82,6 +82,6 @@ export async function POST(request: Request) {
 
     } catch (error) {
         console.error('Track Bet Error:', error)
-        return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to track bet' }, { status: 500 })
+        return NextResponse.json({ error: 'Failed to track bet. Please try again.' }, { status: 500 })
     }
 }

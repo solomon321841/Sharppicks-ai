@@ -139,16 +139,8 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error('Stripe Checkout Error:', error)
 
-        // Provide user-friendly error messages
-        if (error.type === 'StripeInvalidRequestError') {
-            return NextResponse.json(
-                { error: `Payment configuration error: ${error.message}` },
-                { status: 400 }
-            )
-        }
-
         return NextResponse.json(
-            { error: `Something went wrong: ${error.message || error}` },
+            { error: 'Something went wrong with checkout. Please try again.' },
             { status: 500 }
         )
     }

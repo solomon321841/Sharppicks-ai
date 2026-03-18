@@ -5,7 +5,16 @@ import { getOdds } from '@/lib/odds/getOdds'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(request: Request) {
+    // Only allow in development or with valid CRON_SECRET
+    const authHeader = request.headers.get('authorization')
+    const cronSecret = process.env.CRON_SECRET
+    const isDev = process.env.NODE_ENV === 'development'
+    const isAuthed = !!(cronSecret && authHeader === `Bearer ${cronSecret}`)
+
+    if (!isDev && !isAuthed) {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
     const status: any = {
         database: { status: 'unknown', error: null },
         oddsApi: { status: 'unknown', error: null },

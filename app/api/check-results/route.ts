@@ -20,9 +20,19 @@ export const maxDuration = 60
 
 export async function POST(request: Request) {
     try {
+        // Auth: require either valid CRON_SECRET or authenticated user session
         const authHeader = request.headers.get('authorization')
         const cronSecret = process.env.CRON_SECRET
-        const isCron = authHeader === `Bearer ${cronSecret}`
+        const isCron = !!(cronSecret && authHeader === `Bearer ${cronSecret}`)
+
+        if (!isCron) {
+            const { createClient } = await import('@/lib/supabase/server')
+            const supabase = createClient()
+            const { data: { user } } = await supabase.auth.getUser()
+            if (!user) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+            }
+        }
 
         console.log(`[CheckResults] Starting result check (cron: ${isCron})...`)
 
@@ -169,7 +179,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error('[CheckResults] Error:', error)
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Failed to check results' },
+            { error: 'Failed to check results. Please try again later.' },
             { status: 500 }
         )
     }

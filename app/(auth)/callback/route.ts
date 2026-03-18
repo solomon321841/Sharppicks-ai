@@ -6,8 +6,9 @@ import { prisma } from '@/lib/prisma'
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
-    // if "next" is in param, use it as the redirect URL
-    const next = searchParams.get('next')
+    // if "next" is in param, use it as the redirect URL (validated to prevent open redirect)
+    const rawNext = searchParams.get('next')
+    const next = (rawNext && rawNext.startsWith('/') && !rawNext.startsWith('//')) ? rawNext : null
 
     if (code) {
         const supabase = createClient()
