@@ -63,11 +63,8 @@ export default function DashboardPage() {
                         .eq('id', user.id)
                         .single()
 
-                    // If user just purchased or has a Stripe customer but tier is still free, sync with Stripe
-                    if (
-                        profileData?.stripe_customer_id &&
-                        (justPurchased || profileData.subscription_tier === 'free')
-                    ) {
+                    // Sync with Stripe whenever user has a customer ID (catches webhook failures & upgrades)
+                    if (profileData?.stripe_customer_id) {
                         try {
                             const syncRes = await fetch('/api/sync-subscription', { method: 'POST' })
                             if (syncRes.ok) {
