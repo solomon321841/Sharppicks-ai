@@ -8,7 +8,7 @@ import { generateDailyParlays, getSystemUser } from '@/lib/daily-picks/generateD
 import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function GET(request: NextRequest) {
     try {
