@@ -59,7 +59,6 @@ export async function POST(request: Request) {
                 }
             })
         } catch (e: any) {
-            // Handle unique constraint failure if an account with this email was created before with a different provider
             if (e.code === 'P2002') {
                 profile = await prisma.user.update({
                     where: { email: user.email! },
@@ -93,74 +92,35 @@ export async function POST(request: Request) {
             })
         }
 
-        // 5. If user has an existing active subscription, upgrade it directly
-        let existingSub = null
-        try {
-            if (profile.stripe_subscription_id) {
-                existingSub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id)
-            } else if (stripeCustomerId) {
-                // Subscription ID not in DB (webhook missed) — look up via customer
-                const subs = await stripe.subscriptions.list({
-                    customer: stripeCustomerId,
-                    status: 'active',
-                    limit: 1,
-                })
-                if (!subs.data.length) {
-                    const trialingSubs = await stripe.subscriptions.list({
-                        customer: stripeCustomerId,
-                        status: 'trialing',
-                        limit: 1,
-                    })
-                    existingSub = trialingSubs.data[0] || null
-                } else {
-                    existingSub = subs.data[0]
-                }
-            }
-        } catch (e: any) {
-            console.warn(`Could not find existing subscription: ${e.message}`)
-        }
-
-        if (existingSub && (existingSub.status === 'active' || existingSub.status === 'trialing')) {
+        // 5. Cancel ALL existing subscriptions before creating a new one
+        const isExistingSubscriber = profile.subscription_tier !== 'free' || profile.stripe_subscription_id
+        if (stripeCustomerId) {
             try {
-                const itemId = existingSub.items.data[0]?.id
-                if (itemId) {
-                    const updatedSub = await stripe.subscriptions.update(existingSub.id, {
-                        items: [{ id: itemId, price: priceId }],
-                        proration_behavior: 'create_prorations',
-                        metadata: { userId: user.id, tier: tier },
-                        trial_end: 'now', // End any active trial immediately
-                    })
-
-                    // Update DB immediately (don't wait for webhook)
-                    const nextReset = new Date()
-                    nextReset.setMonth(nextReset.getMonth() + 1)
-
-                    await prisma.user.update({
-                        where: { id: user.id },
-                        data: {
-                            subscription_tier: tier,
-                            subscription_status: updatedSub.status,
-                            stripe_subscription_id: existingSub.id, // Persist the sub ID
-                            parlay_credits: targetTier.customBuilderLimit,
-                            credits_reset_at: nextReset,
-                        }
-                    })
-
-                    console.log(`Subscription upgraded: User ${user.id} → tier "${tier}"`)
-
-                    const origin = request.headers.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-                    const appUrl = origin.replace(/\/$/, '')
-                    return NextResponse.json({ url: `${appUrl}/dashboard?success=true` })
+                const allSubs = await stripe.subscriptions.list({
+                    customer: stripeCustomerId,
+                    limit: 100,
+                })
+                for (const sub of allSubs.data) {
+                    if (sub.status === 'active' || sub.status === 'trialing' || sub.status === 'past_due') {
+                        await stripe.subscriptions.cancel(sub.id)
+                        console.log(`Canceled old subscription ${sub.id} for customer ${stripeCustomerId}`)
+                    }
                 }
             } catch (e: any) {
-                console.warn(`Could not upgrade existing subscription: ${e.message}. Creating new checkout.`)
+                console.warn(`Error canceling old subscriptions: ${e.message}`)
             }
+
+            // Clear the old subscription ID from DB
+            await prisma.user.update({
+                where: { id: user.id },
+                data: { stripe_subscription_id: null }
+            })
         }
 
-        // 6. No existing subscription — create a new checkout session
+        // 6. Create a new checkout session for the target tier
         const headersList = request.headers
         const origin = headersList.get('origin') || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-        const appUrl = origin.replace(/\/$/, '') // Remove trailing slash if present
+        const appUrl = origin.replace(/\/$/, '')
 
         let cancelUrl = `${appUrl}/#pricing`
         if (returnUrl) {
@@ -191,11 +151,9 @@ export async function POST(request: Request) {
             }
         }
 
-        // Only offer trial for Pro if user is brand new (free tier, no existing subscription)
-        const isExistingSubscriber = profile.subscription_tier !== 'free' || profile.stripe_subscription_id
+        // Only offer trial for Pro if user has never had a subscription
         if (tier === 'pro' && !skipTrial && !isExistingSubscriber) {
             sessionConfig.subscription_data.trial_period_days = 3
-            // Allow them to start trial without a credit card
             sessionConfig.payment_method_collection = 'if_required'
             sessionConfig.subscription_data.trial_settings = {
                 end_behavior: {
