@@ -127,7 +127,9 @@ export async function POST(request: Request) {
             }
         }
 
-        if (tier === 'pro' && !skipTrial) {
+        // Only offer trial for Pro if user is brand new (free tier, no existing subscription)
+        const isExistingSubscriber = profile.subscription_tier !== 'free' || profile.stripe_subscription_id
+        if (tier === 'pro' && !skipTrial && !isExistingSubscriber) {
             sessionConfig.subscription_data.trial_period_days = 3
             // Allow them to start trial without a credit card
             sessionConfig.payment_method_collection = 'if_required'

@@ -84,20 +84,15 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                     const showBadge = item.name === 'Bet History' && hasNewBet
 
                     return (
-                        <Link key={item.href} href={item.href} onClick={(e) => {
-                            if (isLocked) {
-                                e.preventDefault();
-                                // Optional: Trigger upgrade modal here
-                            } else if (onNavigate) {
-                                onNavigate();
-                            }
+                        <Link key={item.href} href={item.href} onClick={() => {
+                            if (onNavigate) onNavigate();
                         }}>
                             <Button
                                 variant={isActive ? 'secondary' : 'ghost'}
                                 className={cn(
                                     'w-full justify-start gap-3 relative group h-11 text-[13px]',
                                     isActive ? 'bg-emerald text-emerald-foreground hover:bg-emerald/90' : 'text-muted-foreground hover:text-foreground',
-                                    isLocked && 'opacity-50 cursor-not-allowed hover:bg-transparent'
+                                    isLocked && 'opacity-60'
                                 )}
                             >
                                 <div className="relative">
