@@ -61,8 +61,7 @@ ${request.betTypes.length === 1 ? `\nCRITICAL: Every single leg MUST be "${reque
 
 ${riskPersonality.instructions}
 
-## TARGET COMBINED ODDS RANGE
-${riskPersonality.oddsRange}
+Note: The user chose ${numLegs} legs. The combined odds will naturally scale with the number of legs — that's fine. Focus on picking the RIGHT TYPE of legs for this risk level, not on hitting a specific combined odds target.
 
 ## CORRELATION RULES
 ${riskLevel <= 5 ? '- NEVER combine two legs from the same game. Each leg must be from a different matchup.' : ''}
@@ -600,7 +599,8 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: `Correlation violation: ${corrCheck.reason}. ${request.riskLevel <= 5 ? 'At Risk 1-5, each leg must be from a DIFFERENT game.' : ''}` }
     }
 
-    // 10. Math validation — recalculate combined odds and check risk range
+    // 10. Calculate combined odds for display (no rejection based on risk range —
+    //     risk level only guides the type of picks, not the combined total)
     const mathLegs = legs.map((l: any) => ({
         odds: parseInt(String(l.odds).replace('+', ''))
     }))
@@ -608,22 +608,6 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
     const mathCalc = calculateCombinedParlayMetrics(mathLegs)
     const calcOdds = mathCalc.combinedAmericanOdds
 
-    const rangeValid = validateRiskLevel(request.riskLevel, calcOdds)
-    if (!rangeValid) {
-        const targetRanges: Record<number, [number, number]> = {
-            1: [-200, 500], 2: [-200, 500], 3: [200, 700], 4: [200, 700],
-            5: [400, 1500], 6: [400, 1500], 7: [800, 5000], 8: [800, 5000],
-            9: [3000, 50000], 10: [3000, 50000]
-        }
-        const [lo, hi] = targetRanges[request.riskLevel] || [0, 99999]
-        const oddsDisplay = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
-        const direction = calcOdds < lo
-            ? `TOO LOW (${oddsDisplay}). Pick riskier legs or add more legs. Target: +${lo} to +${hi}.`
-            : `TOO HIGH (${oddsDisplay}). Pick safer legs or remove a leg. Target: +${lo} to +${hi}.`
-        return { valid: false, error: `Combined odds ${oddsDisplay} outside Risk ${request.riskLevel} range. ${direction}` }
-    }
-
-    // Store the math-calculated odds (more accurate than AI's estimate)
     result.totalOdds = calcOdds > 0 ? `+${calcOdds}` : `${calcOdds}`
     result.true_implied_prob = mathCalc.combinedFairProb
 
