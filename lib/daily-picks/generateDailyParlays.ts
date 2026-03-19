@@ -7,9 +7,9 @@
 import { prisma } from '@/lib/prisma';
 import { generateParlay } from '@/lib/ai/generateParlay';
 
-// ─── Sport priority: NBA + Soccer first, others as fallback ──────────
+// ─── Allowed leagues: NBA, NFL, NHL, EPL, La Liga, UCL ──────────
 const PRIMARY_SPORTS = ['basketball_nba', 'soccer_epl', 'soccer_spain_la_liga'];
-const SECONDARY_SPORTS = ['soccer_uefa_champs_league', 'icehockey_nhl', 'basketball_ncaab'];
+const SECONDARY_SPORTS = ['americanfootball_nfl', 'icehockey_nhl', 'soccer_uefa_champs_league'];
 const ALL_SPORTS = [...PRIMARY_SPORTS, ...SECONDARY_SPORTS];
 
 // ─── Parlay configurations ───────────────────────────────────────────
@@ -28,7 +28,7 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
         risk: 2,
         numLegs: 3,
         betTypes: ['moneyline', 'spread'],
-        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Pick ONLY heavy favorites from well-known leagues. Only use NHL or NCAAB if NBA/soccer games are insufficient.',
+        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Pick ONLY heavy favorites. Only use NFL, NHL, or UCL if NBA/soccer games are insufficient.',
         description: 'Heavy favorites - high probability outcomes'
     },
     {
@@ -36,7 +36,7 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
         risk: 5,
         numLegs: 3,
         betTypes: ['moneyline', 'spread', 'totals'],
-        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Look for value plays with statistical edges. Only use other sports if needed.',
+        sportFocus: 'Prioritize NBA and Soccer (EPL, La Liga) games. Look for value plays with statistical edges. Only use NFL, NHL, or UCL if needed.',
         description: 'Value-driven picks with moderate risk'
     },
     {
@@ -44,7 +44,7 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
         risk: 7,
         numLegs: 4,
         betTypes: ['moneyline', 'spread', 'totals', 'player_props'],
-        sportFocus: 'Use NBA and Soccer games as your base, but include any sport where you see a strong underdog or high-value prop.',
+        sportFocus: 'Use NBA and Soccer games as your base, but include NFL, NHL, or UCL where you see a strong underdog or high-value prop.',
         description: 'Underdogs and bold predictions with real upside'
     },
     {
@@ -52,7 +52,7 @@ const DAILY_PARLAY_CONFIGS: DailyParlayConfig[] = [
         risk: 10,
         numLegs: 4,
         betTypes: ['moneyline', 'spread', 'totals', 'player_props'],
-        sportFocus: 'Spread across all available sports for maximum variance. NBA and Soccer should still be represented but mix in NHL, NCAAB, Champions League for diversity.',
+        sportFocus: 'Spread across all available leagues (NBA, EPL, La Liga, NFL, NHL, UCL) for maximum variance. NBA and Soccer should still be represented but mix in NFL, NHL, UCL for diversity.',
         description: 'Moonshot picks for massive potential payouts'
     }
 ];
