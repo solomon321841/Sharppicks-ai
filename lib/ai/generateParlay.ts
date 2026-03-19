@@ -10,7 +10,8 @@ export async function generateParlay(params: {
     numLegs: number,
     betTypes: string[],
     oddsData?: any[],
-    sportFocus?: string
+    sportFocus?: string,
+    fastMode?: boolean
 }) {
     let oddsData = params.oddsData
     const sports = params.sports
@@ -122,7 +123,8 @@ export async function generateParlay(params: {
         oddsData: shuffledOdds,
         statsContext,
         shoppingData,
-        sportFocus: params.sportFocus
+        sportFocus: params.sportFocus,
+        fastMode: params.fastMode
     })
 
     if (warnings.length > 0) {

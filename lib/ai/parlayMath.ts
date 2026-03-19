@@ -64,12 +64,12 @@ export function getTargetRange(riskLevel: number, numLegs?: number): [number, nu
         2: [-200, 500],
         3: [100, 600],
         4: [150, 800],
-        5: [300, 1500],
-        6: [400, 2000],
-        7: [800, 5000],
-        8: [1000, 8000],
-        9: [3000, 50000],
-        10: [3000, 50000]
+        5: [200, 1500],
+        6: [300, 2500],
+        7: [500, 6000],
+        8: [800, 10000],
+        9: [2000, 50000],
+        10: [2000, 50000]
     };
 
     const range = baseRanges[riskLevel];
@@ -77,12 +77,16 @@ export function getTargetRange(riskLevel: number, numLegs?: number): [number, nu
 
     let [lower, upper] = range;
 
-    // Scale upper bound for more legs — each additional leg beyond 2 naturally
+    // Scale bounds for more legs — each additional leg beyond 2 naturally
     // compounds the combined odds even when every individual pick is safe.
-    // e.g. 3 legs of -115 each ≈ +600 combined, which exceeds the base risk-2 cap of +500.
+    // e.g. 3 legs of -115 each ≈ +600 combined, which exceeds a base cap of +500.
     if (numLegs && numLegs > 2) {
         const extraLegs = numLegs - 2;
         upper = Math.round(upper * Math.pow(1.5, extraLegs));
+        // Also scale lower bound down slightly so the AI has room
+        if (lower > 0) {
+            lower = Math.round(lower * Math.pow(0.8, extraLegs));
+        }
     }
 
     return [lower, upper];

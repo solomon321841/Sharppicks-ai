@@ -19,6 +19,7 @@ export type ParlayRequest = {
     shoppingData?: Map<string, any>   // Line shopping data per game
     sportFocus?: string               // AI hint for which sports to prioritize
     _varietyRetried?: boolean          // Internal: tracks if variety nudge was already attempted
+    fastMode?: boolean                // Skip retries + use shorter timeout (for cron jobs)
 }
 
 // ─── Bet type normalization ────────────────────────────────────────────
@@ -247,7 +248,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = 3
+    const maxAttempts = request.fastMode ? 1 : 2
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -259,12 +260,13 @@ export async function analyzePicks(request: ParlayRequest) {
                 attempt > 1 ? lastError : undefined
             )
 
+            const timeoutMs = request.fastMode ? 20000 : 40000
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('AI request timed out after 40 seconds')), 40000)
+                setTimeout(() => reject(new Error(`AI request timed out after ${timeoutMs / 1000}s`)), timeoutMs)
             })
 
             const aiPromise = anthropic.messages.create({
-                model: 'claude-sonnet-4-20250514',
+                model: request.fastMode ? 'claude-haiku-4-5-20251001' : 'claude-sonnet-4-20250514',
                 max_tokens: 4000,
                 temperature: 0.3,
                 messages: [{ role: 'user', content: prompt }],
@@ -306,13 +308,15 @@ export async function analyzePicks(request: ParlayRequest) {
 
         } catch (error: any) {
             if (error.status === 429 || error.code === 'rate_limit_error') {
-                console.warn('Rate limit hit, waiting 2s...')
-                await new Promise(resolve => setTimeout(resolve, 2000))
+                console.warn('Rate limit hit, waiting 5s...')
+                await new Promise(resolve => setTimeout(resolve, 5000))
                 lastError = 'Rate limited. Try again.'
             } else if (error.status === 400 && error.error?.message?.includes('credit balance')) {
                 return buildErrorResponse(request, 'AI service credits depleted. Please contact support.')
-            } else if (error.status >= 500 || error.status === 529) {
-                return buildErrorResponse(request, 'AI servers are temporarily overloaded. Please try again in a few moments.')
+            } else if (error.status === 529 || (error.status >= 500 && error.status < 600)) {
+                console.warn(`AI server error (${error.status}), waiting 3s before retry...`)
+                await new Promise(resolve => setTimeout(resolve, 3000))
+                lastError = 'AI server overloaded. Retrying.'
             } else if (error instanceof SyntaxError) {
                 lastError = 'Invalid JSON returned. Output ONLY clean JSON, no markdown.'
             } else {
@@ -331,7 +335,7 @@ export async function analyzePicks(request: ParlayRequest) {
 
 // ─── Minify games for AI context ───────────────────────────────────────
 function minifyGames(request: ParlayRequest): any[] {
-    return request.oddsData.slice(0, 15).map(g => {
+    return request.oddsData.slice(0, 10).map(g => {
         const requiredMarkets: string[] = []
         if (request.betTypes.includes('moneyline')) requiredMarkets.push('h2h')
         if (request.betTypes.includes('spread')) requiredMarkets.push('spreads')
