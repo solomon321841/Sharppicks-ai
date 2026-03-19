@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 // The client you created from the Server-Side Auth instructions
 import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import { sendWelcomeEmail } from '@/lib/email/resend'
 
 export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
@@ -39,6 +40,12 @@ export async function GET(request: Request) {
                         // If user is on free tier with no active subscription, send to pricing
                         if (profile.subscription_tier === 'free' && profile.subscription_status !== 'active') {
                             redirectPath = '/#pricing'
+                        }
+
+                        // Send welcome email for brand new users (created_at within last 60 seconds)
+                        const isNewUser = (Date.now() - new Date(profile.created_at).getTime()) < 60_000
+                        if (isNewUser) {
+                            sendWelcomeEmail(profile.email, profile.full_name || undefined).catch(() => {})
                         }
                     }
                 } catch (err) {

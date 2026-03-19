@@ -62,14 +62,23 @@ export async function POST(request: Request) {
         }
 
         // 4. Check Credit Limits
-        if (currentCredits <= 0 && tier !== 'pro' && tier !== 'whale') {
-            return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
-        } else if (currentCredits <= 0) {
+        if (currentCredits <= 0) {
             return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
         }
 
-        if ((!sports || sports.length === 0) || !riskLevel || !numLegs || !betTypes) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+        // 5. Validate input types and ranges
+        if (!Array.isArray(sports) || sports.length === 0 || sports.some((s: any) => typeof s !== 'string')) {
+            return NextResponse.json({ error: 'Invalid sports selection' }, { status: 400 })
+        }
+        if (typeof riskLevel !== 'number' || riskLevel < 1 || riskLevel > 10 || !Number.isInteger(riskLevel)) {
+            return NextResponse.json({ error: 'Risk level must be an integer between 1 and 10' }, { status: 400 })
+        }
+        if (typeof numLegs !== 'number' || numLegs < 2 || numLegs > 10 || !Number.isInteger(numLegs)) {
+            return NextResponse.json({ error: 'Number of legs must be between 2 and 10' }, { status: 400 })
+        }
+        const validBetTypes = ['moneyline', 'spread', 'totals', 'player_props']
+        if (!Array.isArray(betTypes) || betTypes.length === 0 || betTypes.some((t: any) => !validBetTypes.includes(t))) {
+            return NextResponse.json({ error: 'Invalid bet types' }, { status: 400 })
         }
 
         const result = await generateParlay({
@@ -86,13 +95,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: result.error }, { status: 400 })
         }
 
-        // Successfully generated. Deduct 1 credit.
-        await prisma.user.update({
-            where: { id: user.id },
+        // Successfully generated. Atomically deduct 1 credit (only if > 0 to prevent overdraw).
+        const updated = await prisma.user.updateMany({
+            where: { id: user.id, parlay_credits: { gt: 0 } },
             data: {
                 parlay_credits: { decrement: 1 }
             }
         })
+
+        if (updated.count === 0) {
+            // Race condition: credits were exhausted between check and decrement
+            return NextResponse.json({ error: 'trial_limit_reached' }, { status: 403 })
+        }
 
         return NextResponse.json(result)
     } catch (error: any) {

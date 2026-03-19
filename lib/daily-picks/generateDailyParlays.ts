@@ -107,42 +107,27 @@ async function generateSingleParlay(
 ): Promise<ParlayResult> {
     console.log(`[Daily Picks] Generating ${config.type} parlay (Risk ${config.risk}, ${config.numLegs} legs)...`);
 
+    // Single attempt — analyzePicks already has its own 2-attempt retry loop internally.
+    // No outer retry to stay within the 60s Vercel Hobby timeout.
     let generated: any = null;
-    let lastError = '';
-
-    // Try up to 2 times
-    for (let attempt = 1; attempt <= 2; attempt++) {
-        try {
-            generated = await generateParlay({
-                sports: ALL_SPORTS,
-                riskLevel: config.risk,
-                numLegs: config.numLegs,
-                betTypes: config.betTypes,
-                oddsData,
-                sportFocus: config.sportFocus
-            });
-
-            if (generated && !generated.error && generated.legs?.length > 0) {
-                break;
-            }
-
-            lastError = generated?.error || 'No legs returned';
-            console.warn(`[Daily Picks] ${config.type} attempt ${attempt} failed: ${lastError}`);
-            generated = null;
-        } catch (err: any) {
-            lastError = err.message || 'Unknown error';
-            console.error(`[Daily Picks] ${config.type} attempt ${attempt} crashed: ${lastError}`);
-            generated = null;
-        }
-
-        if (attempt < 2) {
-            await new Promise(r => setTimeout(r, 1000));
-        }
+    try {
+        generated = await generateParlay({
+            sports: ALL_SPORTS,
+            riskLevel: config.risk,
+            numLegs: config.numLegs,
+            betTypes: config.betTypes,
+            oddsData,
+            sportFocus: config.sportFocus
+        });
+    } catch (err: any) {
+        console.error(`[Daily Picks] ${config.type} crashed: ${err.message}`);
+        return { type: config.type, success: false, error: err.message };
     }
 
-    if (!generated || generated.error || !generated.legs) {
-        console.error(`[Daily Picks] Failed ${config.type}: ${lastError}`);
-        return { type: config.type, success: false, error: lastError };
+    if (!generated || generated.error || !generated.legs?.length) {
+        const errorMsg = generated?.error || 'No legs returned';
+        console.error(`[Daily Picks] Failed ${config.type}: ${errorMsg}`);
+        return { type: config.type, success: false, error: errorMsg };
     }
 
     // Save to database
@@ -228,13 +213,26 @@ export async function generateDailyParlays(date: Date, userId: string): Promise<
     const primaryCount = oddsData.filter((g: any) => new Set(PRIMARY_SPORTS).has(g.sport_key)).length;
     console.log(`[Daily Picks] ${oddsData.length} games fetched (${primaryCount} NBA/soccer).`);
 
-    // ── 2. Generate all 4 parlays in parallel ──────────────────────────
-    console.log(`[Daily Picks] Generating all 4 parlays in parallel...`);
-    const results = await Promise.all(
-        DAILY_PARLAY_CONFIGS.map(config => generateSingleParlay(config, oddsData!, date, userId))
+    // ── 2. Generate parlays in 2 sequential batches of 2 ──────────────
+    // Running all 4 in parallel causes Anthropic API rate limits / contention.
+    // Batching 2-at-a-time stays within the 60s Vercel limit while avoiding 429s.
+    console.log(`[Daily Picks] Generating 4 parlays in 2 batches...`);
+
+    const batch1 = DAILY_PARLAY_CONFIGS.slice(0, 2);
+    const batch2 = DAILY_PARLAY_CONFIGS.slice(2);
+
+    const results1 = await Promise.all(
+        batch1.map(config => generateSingleParlay(config, oddsData!, date, userId))
     );
 
-    return results;
+    // Brief delay between batches to avoid rate limits
+    await new Promise(r => setTimeout(r, 500));
+
+    const results2 = await Promise.all(
+        batch2.map(config => generateSingleParlay(config, oddsData!, date, userId))
+    );
+
+    return [...results1, ...results2];
 }
 
 /**

@@ -5,7 +5,8 @@ import {
     enforceBetTypes,
     checkCorrelation,
     getUnitSize,
-    validateRiskLevel
+    validateRiskLevel,
+    getTargetRange
 } from './parlayMath'
 
 export type ParlayRequest = {
@@ -63,8 +64,8 @@ These are GUIDELINES for pick style, not hard rules. Always build the parlay eve
 
 ${riskPersonality.instructions}
 
-The user chose ${numLegs} legs. Your combined parlay odds MUST fall within the target range for this risk level. Pick individual legs with odds that will combine to hit this target:
-${riskLevel === 1 ? '- Target combined odds: -300 to +400 (safe chalk plays)' : ''}${riskLevel === 2 ? '- Target combined odds: -200 to +500 (safe chalk plays)' : ''}${riskLevel === 3 ? '- Target combined odds: +100 to +600 (conservative value plays)' : ''}${riskLevel === 4 ? '- Target combined odds: +150 to +800 (conservative value plays)' : ''}${riskLevel === 5 ? '- Target combined odds: +300 to +1500 (balanced sharp plays)' : ''}${riskLevel === 6 ? '- Target combined odds: +400 to +2000 (balanced sharp plays)' : ''}${riskLevel === 7 ? '- Target combined odds: +800 to +5000 (aggressive swings)' : ''}${riskLevel === 8 ? '- Target combined odds: +1000 to +8000 (aggressive swings)' : ''}${riskLevel >= 9 ? '- Target combined odds: +3000 to +50000 (moonshot lottery tickets)' : ''}
+The user chose ${numLegs} legs. Your combined parlay odds MUST fall within the target range for this risk level and leg count. Pick individual legs with odds that will combine to hit this target:
+${(() => { const [lo, hi] = getTargetRange(riskLevel, numLegs); return `- Target combined odds: ${lo > 0 ? '+' : ''}${lo} to +${hi}`; })()}
 If your picks would exceed this range, choose SAFER individual legs (heavier favorites, lower prop lines).
 
 ## CORRELATION RULES
@@ -259,7 +260,7 @@ export async function analyzePicks(request: ParlayRequest) {
             )
 
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('AI request timed out after 30 seconds')), 30000)
+                setTimeout(() => reject(new Error('AI request timed out after 25 seconds')), 25000)
             })
 
             const aiPromise = anthropic.messages.create({
@@ -609,21 +610,15 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
     result.true_implied_prob = mathCalc.combinedFairProb
 
     // Enforce risk-level odds ranges — reject if combined odds are too aggressive
-    if (!validateRiskLevel(request.riskLevel, calcOdds)) {
-        const targetRanges: Record<number, [number, number]> = {
-            1: [-300, 400], 2: [-200, 500],
-            3: [100, 600], 4: [150, 800],
-            5: [300, 1500], 6: [400, 2000],
-            7: [800, 5000], 8: [1000, 8000],
-            9: [3000, 50000], 10: [3000, 50000]
-        }
-        const range = targetRanges[request.riskLevel] || [0, 50000]
-        const direction = calcOdds > range[1] ? 'too aggressive' : 'too conservative'
+    // Pass numLegs so the range scales for multi-leg parlays (safe picks still compound)
+    if (!validateRiskLevel(request.riskLevel, calcOdds, request.numLegs)) {
+        const [rangeLo, rangeHi] = getTargetRange(request.riskLevel, request.numLegs)
+        const direction = calcOdds > rangeHi ? 'too aggressive' : 'too conservative'
 
         return {
             valid: false,
-            error: `Combined odds ${result.totalOdds} are ${direction} for Risk ${request.riskLevel}. Target range: +${range[0]} to +${range[1]}. ${
-                calcOdds > range[1]
+            error: `Combined odds ${result.totalOdds} are ${direction} for Risk ${request.riskLevel} with ${request.numLegs} legs. Target range: ${rangeLo > 0 ? '+' : ''}${rangeLo} to +${rangeHi}. ${
+                calcOdds > rangeHi
                     ? 'Pick SAFER legs: heavier favorites, lower prop lines, more likely outcomes.'
                     : 'Pick slightly riskier legs to get a better payout.'
             }`

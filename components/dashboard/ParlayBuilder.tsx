@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
 import { SportSelector } from './SportSelector'
 import { RiskSlider } from './RiskSlider'
 import { BetTypeSelector } from './BetTypeSelector'
@@ -26,11 +25,12 @@ export function ParlayBuilder() {
     const [errorState, setErrorState] = useState<string | null>(null)
     const [warnings, setWarnings] = useState<string[]>([])
     const [showUpgradeModal, setShowUpgradeModal] = useState(false)
-    const [tier, setTier] = useState<string>('pro') // Default to pro for demo
+    const [tier, setTier] = useState<string>('free')
     const [credits, setCredits] = useState<number | null>(null)
     const [checkingTier, setCheckingTier] = useState(true)
     const [schedule, setSchedule] = useState<any[] | undefined>(undefined)
     const [loadingSchedule, setLoadingSchedule] = useState(true)
+    const [upgrading, setUpgrading] = useState(false)
 
     const { toast } = useToast()
     const supabase = createClient() // Create client instance
@@ -119,10 +119,16 @@ export function ParlayBuilder() {
                     return
                 }
 
+                // Handle rate limiting
+                if (response.status === 429) {
+                    toast({ variant: "destructive", title: "Slow down", description: data.error || "Too many requests. Please wait a moment." })
+                    return
+                }
+
                 // Handle expected business logic errors (like no games) without toast
                 if (response.status === 400 && data.error) {
                     setErrorState(data.error)
-                    return // Stop further execution, don't throw
+                    return
                 }
                 throw new Error(data.error || 'Failed to generate parlay')
             }
@@ -158,7 +164,7 @@ export function ParlayBuilder() {
                 </p>
                 <div className="flex gap-4">
                     <Button variant="outline" asChild><Link href="/dashboard">Back to Dashboard</Link></Button>
-                    <Button className="bg-emerald-500 hover:bg-emerald-600 text-white border-0">Upgrade to Pro</Button>
+                    <Button className="bg-emerald-500 hover:bg-emerald-600 text-white border-0" asChild><Link href="/dashboard/settings">Upgrade to Pro</Link></Button>
                 </div>
             </div>
         )
@@ -414,23 +420,28 @@ export function ParlayBuilder() {
                     </DialogHeader>
                     <DialogFooter className="flex-col sm:flex-col gap-2">
                         {tier !== 'whale' && (
-                            <Button 
+                            <Button
                                 className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold h-12 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-[1.02]"
+                                disabled={upgrading}
                                 onClick={async () => {
                                     try {
-                                        setLoading(true)
+                                        setUpgrading(true)
                                         const upgradeTier = tier === 'pro' ? 'whale' : 'pro';
                                         const res = await fetch('/api/stripe/checkout', {
                                             method: 'POST',
                                             headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ tier: upgradeTier, skipTrial: true }) 
+                                            body: JSON.stringify({ tier: upgradeTier, skipTrial: true })
                                         })
                                         const data = await res.json()
-                                        if (data.url) window.location.href = data.url
+                                        if (data.url) {
+                                            window.location.href = data.url
+                                        } else {
+                                            toast({ variant: "destructive", title: "Upgrade failed", description: "Could not start checkout. Please try again." })
+                                        }
                                     } catch (error) {
-                                        console.error('Upgrade failed', error)
+                                        toast({ variant: "destructive", title: "Upgrade failed", description: "Something went wrong. Please try again." })
                                     } finally {
-                                        setLoading(false)
+                                        setUpgrading(false)
                                     }
                                 }}
                             >

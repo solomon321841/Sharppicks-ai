@@ -58,11 +58,8 @@ export function calculateCombinedParlayMetrics(legs: { odds: number }[]) {
     };
 }
 
-export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean {
-    // Combined odds ranges per risk level.
-    // Low risk = lower combined odds (safer picks), high risk = higher combined odds.
-    // These ranges account for multi-leg parlays where individual safe legs still compound.
-    const targetRanges: Record<number, [number, number]> = {
+export function getTargetRange(riskLevel: number, numLegs?: number): [number, number] {
+    const baseRanges: Record<number, [number, number]> = {
         1: [-300, 400],
         2: [-200, 500],
         3: [100, 600],
@@ -75,10 +72,25 @@ export function validateRiskLevel(riskLevel: number, totalOdds: number): boolean
         10: [3000, 50000]
     };
 
-    const range = targetRanges[riskLevel];
-    if (!range) return false;
+    const range = baseRanges[riskLevel];
+    if (!range) return [0, 50000];
 
-    return totalOdds >= range[0] && totalOdds <= range[1];
+    let [lower, upper] = range;
+
+    // Scale upper bound for more legs — each additional leg beyond 2 naturally
+    // compounds the combined odds even when every individual pick is safe.
+    // e.g. 3 legs of -115 each ≈ +600 combined, which exceeds the base risk-2 cap of +500.
+    if (numLegs && numLegs > 2) {
+        const extraLegs = numLegs - 2;
+        upper = Math.round(upper * Math.pow(1.5, extraLegs));
+    }
+
+    return [lower, upper];
+}
+
+export function validateRiskLevel(riskLevel: number, totalOdds: number, numLegs?: number): boolean {
+    const [lower, upper] = getTargetRange(riskLevel, numLegs);
+    return totalOdds >= lower && totalOdds <= upper;
 }
 
 export function enforceLegCount(riskLevel: number, requestedLegs: number): number {

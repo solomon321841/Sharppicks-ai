@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/server'
 import { prisma } from '@/lib/prisma'
 import { getTierByPriceId, TIERS } from '@/lib/config/tiers'
+import { sendSubscriptionConfirmation, sendPaymentFailedEmail, sendSubscriptionCanceledEmail } from '@/lib/email/resend'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -77,6 +78,12 @@ export async function POST(request: Request) {
                 })
 
                 console.log(`Checkout completed: User ${userId} → tier "${finalTier}", status "${sub.status}"`)
+
+                // Send subscription confirmation email
+                const checkoutUser = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+                if (checkoutUser?.email) {
+                    sendSubscriptionConfirmation(checkoutUser.email, finalTier).catch(() => {})
+                }
                 break
             }
 
@@ -136,6 +143,7 @@ export async function POST(request: Request) {
                         data: { subscription_status: 'past_due' }
                     })
                     console.log(`Payment failed: User ${user.id} → status "past_due"`)
+                    sendPaymentFailedEmail(user.email).catch(() => {})
                 }
                 break
             }
@@ -214,6 +222,7 @@ export async function POST(request: Request) {
                         }
                     })
                     console.log(`Subscription deleted: User ${user.id} → downgraded to "free"`)
+                    sendSubscriptionCanceledEmail(user.email).catch(() => {})
                 }
                 break
             }

@@ -4,6 +4,7 @@ import { getScores, GameScore } from '@/lib/odds/getScores'
 import { gradeBatch, type LegToGrade } from '@/lib/audit/grader'
 import { calculatePayout } from '@/lib/audit/calculator'
 import { calculateLegCLV } from '@/lib/audit/clv'
+import { sendBetResultEmail } from '@/lib/email/resend'
 
 export const maxDuration = 60
 
@@ -147,6 +148,20 @@ export async function GET(request: Request) {
                         graded_at: new Date()
                     }
                 })
+            }
+
+            // Email users who bet on this parlay
+            for (const bet of betHistories) {
+                try {
+                    const betUser = await prisma.user.findUnique({ where: { id: bet.user_id }, select: { email: true } })
+                    if (betUser?.email) {
+                        sendBetResultEmail(betUser.email, parlayResult as 'won' | 'lost', {
+                            legs: allLegs.length,
+                            odds: parlay?.total_odds || '+100',
+                            payout: parlayResult === 'won' && bet.payout ? Number(bet.payout) : undefined,
+                        }).catch(() => {})
+                    }
+                } catch { /* don't let email failures break the cron */ }
             }
 
             console.log(`[Cron] Parlay ${parlayId.slice(0, 8)}: ${parlayResult.toUpperCase()}`)
