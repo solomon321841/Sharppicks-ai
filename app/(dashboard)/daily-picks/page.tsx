@@ -1,12 +1,26 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Loader2, Zap, Shield, Activity, Flame, TrendingUp, ChevronRight, Lock, ArrowRight } from "lucide-react"
+import { Loader2, Zap, Shield, Activity, Flame, TrendingUp, Lock, ArrowRight } from "lucide-react"
 import { useEffect, useState } from "react"
 import { TeamLogo } from "@/components/dashboard/TeamLogo"
 import { createClient } from "@/lib/supabase/client"
 import Link from "next/link"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useToast } from "@/hooks/use-toast"
+import { useNotification } from "@/contexts/NotificationContext"
 
 const PARLAY_TYPES = [
     {
@@ -75,7 +89,53 @@ export default function DailyPicksPage() {
     const [picks, setPicks] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [tier, setTier] = useState<string>('pro')
+    const [lockDialog, setLockDialog] = useState<string | null>(null)
+    const [stake, setStake] = useState("10")
+    const [sportsbook, setSportsbook] = useState("FanDuel")
+    const [locking, setLocking] = useState(false)
+    const { toast } = useToast()
+    const { triggerNewBetNotification } = useNotification()
     const supabase = createClient()
+
+    const handleLockIn = async (pick: any) => {
+        const parsedStake = parseFloat(stake)
+        if (isNaN(parsedStake) || parsedStake <= 0) {
+            toast({ variant: "destructive", title: "Invalid wager", description: "Please enter a valid wager amount." })
+            return
+        }
+        setLocking(true)
+        try {
+            const riskMap: Record<string, number> = { safe: 2, balanced: 5, risky: 8, lotto: 10 }
+            const response = await fetch('/api/track-bet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    stake: parsedStake,
+                    sportsbook,
+                    legs: pick.legs,
+                    totalOdds: pick.total_odds,
+                    confidence: pick.ai_confidence,
+                    riskLevel: riskMap[pick.parlay_type] || 5
+                })
+            })
+            if (!response.ok) {
+                const data = await response.json()
+                throw new Error(data.error || 'Failed to track')
+            }
+            toast({ title: "Bet Locked In! 🔒", description: "Added to your Bet History." })
+            triggerNewBetNotification()
+            setLockDialog(null)
+            setStake("10")
+        } catch (error) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: error instanceof Error ? error.message : "Failed to lock in bet."
+            })
+        } finally {
+            setLocking(false)
+        }
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -274,15 +334,63 @@ export default function DailyPicksPage() {
                                     ) : null}
                                 </CardContent>
 
-                                {/* Premium Floating Action Button CTA */}
+                                {/* Lock In Button */}
                                 {pick && !loading && (
                                     <div className="shrink-0 p-3 mt-auto border-t border-white/[0.03] bg-gradient-to-t from-black/40 to-transparent">
-                                        <Button className={`w-full h-10 rounded-[12px] font-black uppercase tracking-[0.2em] text-[10px] group border transition-all duration-300 ${config.button}`}>
-                                            <span className="flex items-center gap-2 relative z-10 transition-transform group-hover:-translate-x-1">
-                                                Execute Strategy
-                                                <ChevronRight className="w-3.5 h-3.5 transition-all group-hover:translate-x-2 group-hover:opacity-100 opacity-50" />
-                                            </span>
-                                        </Button>
+                                        <Dialog open={lockDialog === config.type} onOpenChange={(open) => setLockDialog(open ? config.type : null)}>
+                                            <DialogTrigger asChild>
+                                                <Button className={`w-full h-10 rounded-[12px] font-black uppercase tracking-[0.2em] text-[10px] group border transition-all duration-300 ${config.button}`}>
+                                                    <span className="flex items-center gap-2 relative z-10">
+                                                        <Lock className="w-3.5 h-3.5" /> LOCK IN
+                                                    </span>
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[425px]">
+                                                <DialogHeader>
+                                                    <DialogTitle>Lock In Bet</DialogTitle>
+                                                    <DialogDescription>
+                                                        Track this bet to calculate your winnings and hit rate.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <div className="grid gap-4 py-4">
+                                                    <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+                                                        <Label htmlFor="sportsbook" className="text-left sm:text-right">
+                                                            Book
+                                                        </Label>
+                                                        <Select value={sportsbook} onValueChange={setSportsbook}>
+                                                            <SelectTrigger className="col-span-1 sm:col-span-3">
+                                                                <SelectValue placeholder="Select sportsbook" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="FanDuel">FanDuel</SelectItem>
+                                                                <SelectItem value="DraftKings">DraftKings</SelectItem>
+                                                                <SelectItem value="BetMGM">BetMGM</SelectItem>
+                                                                <SelectItem value="Caesars">Caesars</SelectItem>
+                                                                <SelectItem value="Other">Other</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+                                                        <Label htmlFor="stake" className="text-left sm:text-right">
+                                                            Wager ($)
+                                                        </Label>
+                                                        <Input
+                                                            id="stake"
+                                                            type="number"
+                                                            value={stake}
+                                                            onChange={(e) => setStake(e.target.value)}
+                                                            className="col-span-1 sm:col-span-3"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button type="submit" onClick={() => handleLockIn(pick)} disabled={locking} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full sm:w-auto">
+                                                        {locking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                                        Confirm Lock
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                     </div>
                                 )}
                             </Card>
