@@ -247,7 +247,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = 2
+    const maxAttempts = 3
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -260,7 +260,7 @@ export async function analyzePicks(request: ParlayRequest) {
             )
 
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('AI request timed out after 25 seconds')), 25000)
+                setTimeout(() => reject(new Error('AI request timed out after 40 seconds')), 40000)
             })
 
             const aiPromise = anthropic.messages.create({
@@ -322,9 +322,11 @@ export async function analyzePicks(request: ParlayRequest) {
         }
     }
 
-    // All attempts failed
+    // All attempts failed — include raw error in response for debugging
     console.error(`[AI] All ${maxAttempts} attempts failed. Last: ${lastError}`)
-    return buildErrorResponse(request, lastError)
+    const response = buildErrorResponse(request, lastError)
+    response._rawError = lastError
+    return response
 }
 
 // ─── Minify games for AI context ───────────────────────────────────────
@@ -571,18 +573,14 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         sigs.add(sig)
     }
 
-    // 8. Player prop variety nudge — ask for variety on first attempt only
+    // 8. Player prop variety — soft warning only, don't waste a retry on this
     const propLegs = legs.filter((l: any) => l.bet_type === 'player_props' && l.prop_market)
     if (propLegs.length >= 3) {
         const normalizeMarket = (m: string) => m.toLowerCase().replace(/[_\s]+/g, ' ').trim()
         const uniqueMarkets = new Set(propLegs.map((l: any) => normalizeMarket(l.prop_market)))
-        if (uniqueMarkets.size === 1 && !request._varietyRetried) {
-            (request as any)._varietyRetried = true
+        if (uniqueMarkets.size === 1) {
             const market = Array.from(uniqueMarkets)[0]
-            return {
-                valid: false,
-                error: `All ${propLegs.length} player prop legs are "${market}". Try mixing different prop categories (e.g., Points + Rebounds, Goals + Shots) for a more interesting parlay — unless every leg has a strong statistical edge in that same category.`
-            }
+            console.warn(`[AI Variety] All ${propLegs.length} prop legs are "${market}" — allowing but noting low variety`)
         }
     }
 
@@ -842,7 +840,7 @@ function buildErrorResponse(request: ParlayRequest, rawError: string): any {
     const err = rawError.toLowerCase()
 
     if (err.includes('no qualifying') || err.includes('no games') || err.includes('not available')) {
-        message = rawError // Use the AI's or our specific message directly
+        message = rawError
     } else if (err.includes('combined odds') || err.includes('risk') || err.includes('outside')) {
         message = `Couldn't build a parlay matching Risk Level ${request.riskLevel} with the current games. Try adjusting the risk slider or selecting more sports.`
     } else if (err.includes('wrong bet type') || err.includes('bet type')) {
@@ -853,10 +851,17 @@ function buildErrorResponse(request: ParlayRequest, rawError: string): any {
         message = `Can't build a safe parlay with only ${new Set(request.oddsData.map(g => g.id)).size} game(s). Select more sports for more games.`
     } else if (err.includes('credit') || err.includes('billing')) {
         message = 'AI service is temporarily unavailable. Please try again later or contact support.'
-    } else if (err.includes('server') || err.includes('overload') || err.includes('timeout')) {
+    } else if (err.includes('server') || err.includes('overload') || err.includes('timeout') || err.includes('timed out')) {
         message = 'AI servers are temporarily busy. Please try again in a moment.'
+    } else if (err.includes('json') || err.includes('no legs') || err.includes('syntax')) {
+        message = 'AI returned an invalid response. Please try again.'
+    } else if (err.includes('game_id') || err.includes('invalid') || err.includes('team')) {
+        message = 'AI picked data that doesn\'t match live odds. Please try again — results vary each attempt.'
+    } else if (err.includes('rate limit') || err.includes('rate_limit')) {
+        message = 'Too many requests to the AI. Please wait a moment and try again.'
     } else {
-        message = `Couldn't generate a valid parlay with your settings. Try adjusting the risk level, number of legs, or sport selection.`
+        console.error(`[ParlayGen] Unhandled error: "${rawError}"`)
+        message = `Couldn't generate a valid parlay. Please try again — the AI may return different results on retry.`
     }
 
     return {
