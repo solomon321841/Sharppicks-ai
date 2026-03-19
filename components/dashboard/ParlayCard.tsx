@@ -266,6 +266,9 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                             <SelectItem value="DraftKings" className="focus:bg-white/10 cursor-pointer font-medium">DraftKings</SelectItem>
                                             <SelectItem value="BetMGM" className="focus:bg-white/10 cursor-pointer font-medium">BetMGM</SelectItem>
                                             <SelectItem value="Caesars" className="focus:bg-white/10 cursor-pointer font-medium">Caesars</SelectItem>
+                                            <SelectItem value="Hard Rock" className="focus:bg-white/10 cursor-pointer font-medium">Hard Rock Bet</SelectItem>
+                                            <SelectItem value="PrizePicks" className="focus:bg-white/10 cursor-pointer font-medium">PrizePicks</SelectItem>
+                                            <SelectItem value="Underdog" className="focus:bg-white/10 cursor-pointer font-medium">Underdog Fantasy</SelectItem>
                                             <SelectItem value="Other" className="focus:bg-white/10 cursor-pointer font-medium">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
