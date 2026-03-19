@@ -240,48 +240,70 @@ export function ParlayCard({ legs, totalOdds, confidence, riskLevel, strategy }:
                                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent z-0" />
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Lock In Bet</DialogTitle>
-                                <DialogDescription>
+                        <DialogContent className="sm:max-w-[425px] bg-zinc-950 border border-white/[0.08] shadow-2xl rounded-2xl p-6">
+                            <DialogHeader className="mb-4 text-left">
+                                <DialogTitle className="text-2xl font-black text-white tracking-tight flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                                        <Lock className="w-5 h-5 text-emerald-400" />
+                                    </div>
+                                    Lock In Bet
+                                </DialogTitle>
+                                <DialogDescription className="text-sm text-zinc-400 mt-2 font-medium">
                                     Track this bet to calculate your winnings and hit rate.
                                 </DialogDescription>
                             </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-                                    <Label htmlFor="sportsbook" className="text-left sm:text-right">
-                                        Book
+                            <div className="space-y-6 py-2">
+                                <div className="space-y-2">
+                                    <Label htmlFor="sportsbook" className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                                        Sportsbook
                                     </Label>
                                     <Select value={sportsbook} onValueChange={setSportsbook}>
-                                        <SelectTrigger className="col-span-1 sm:col-span-3">
+                                        <SelectTrigger className="w-full bg-black/50 border border-white/[0.08] hover:border-white/[0.15] text-white h-12 rounded-xl focus:ring-emerald-500/30 transition-all font-medium">
                                             <SelectValue placeholder="Select sportsbook" />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="FanDuel">FanDuel</SelectItem>
-                                            <SelectItem value="DraftKings">DraftKings</SelectItem>
-                                            <SelectItem value="BetMGM">BetMGM</SelectItem>
-                                            <SelectItem value="Caesars">Caesars</SelectItem>
-                                            <SelectItem value="Other">Other</SelectItem>
+                                        <SelectContent className="bg-zinc-900 border-white/[0.08] text-white rounded-xl shadow-xl">
+                                            <SelectItem value="FanDuel" className="focus:bg-white/10 cursor-pointer font-medium">FanDuel</SelectItem>
+                                            <SelectItem value="DraftKings" className="focus:bg-white/10 cursor-pointer font-medium">DraftKings</SelectItem>
+                                            <SelectItem value="BetMGM" className="focus:bg-white/10 cursor-pointer font-medium">BetMGM</SelectItem>
+                                            <SelectItem value="Caesars" className="focus:bg-white/10 cursor-pointer font-medium">Caesars</SelectItem>
+                                            <SelectItem value="Other" className="focus:bg-white/10 cursor-pointer font-medium">Other</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-                                    <Label htmlFor="stake" className="text-left sm:text-right">
-                                        Wager ($)
+                                <div className="space-y-2">
+                                    <Label htmlFor="stake" className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+                                        Wager Amount
                                     </Label>
-                                    <Input
-                                        id="stake"
-                                        type="number"
-                                        value={stake}
-                                        onChange={(e) => setStake(e.target.value)}
-                                        className="col-span-1 sm:col-span-3"
-                                    />
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <span className="text-emerald-500 font-bold">$</span>
+                                        </div>
+                                        <Input
+                                            id="stake"
+                                            type="number"
+                                            value={stake}
+                                            onChange={(e) => setStake(e.target.value)}
+                                            className="w-full bg-black/50 border border-white/[0.08] hover:border-white/[0.15] focus:border-emerald-500/50 text-white pl-8 h-12 rounded-xl text-lg font-black focus-visible:ring-emerald-500/30 transition-all"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <DialogFooter>
-                                <Button type="submit" onClick={handleLockIn} disabled={loading} className="bg-emerald-500 hover:bg-emerald-600 text-white w-full sm:w-auto">
-                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Confirm Lock
+                            <DialogFooter className="mt-6">
+                                <Button 
+                                    type="submit" 
+                                    onClick={handleLockIn} 
+                                    disabled={loading} 
+                                    className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-black font-black uppercase tracking-wider text-sm rounded-xl shadow-[0_0_20px_-5px_rgba(16,185,129,0.4)] transition-all"
+                                >
+                                    {loading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            Locking...
+                                        </>
+                                    ) : (
+                                        "Confirm Lock"
+                                    )}
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
