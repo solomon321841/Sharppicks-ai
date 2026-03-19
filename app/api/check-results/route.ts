@@ -66,12 +66,17 @@ export async function POST(request: Request) {
         console.log(`[CheckResults] Sports to check: ${uniqueSports.join(', ')}`)
 
         const scoresBySport: Record<string, GameScore[]> = {}
-        for (const sport of uniqueSports) {
-            try {
-                scoresBySport[sport] = await getScores(sport)
-            } catch (err) {
-                console.error(`[CheckResults] Failed to get scores for ${sport}:`, err)
-                scoresBySport[sport] = []
+        const scoreResults = await Promise.allSettled(
+            uniqueSports.map(async sport => ({
+                sport,
+                scores: await getScores(sport)
+            }))
+        )
+        for (const result of scoreResults) {
+            if (result.status === 'fulfilled') {
+                scoresBySport[result.value.sport] = result.value.scores
+            } else {
+                console.error(`[CheckResults] Failed to get scores:`, result.reason)
             }
         }
 
@@ -99,58 +104,54 @@ export async function POST(request: Request) {
 
             const gradeResults = await gradeBatch(legsToGrade, scores)
 
-            // 4. Update each graded leg (including CLV calculation)
+            // 4. Update all graded legs in parallel (including CLV calculation)
+            const legUpdates: Promise<void>[] = []
             for (const [legId, grade] of Array.from(gradeResults.entries())) {
                 if (grade.result === 'pending') continue
 
-                // Calculate CLV from pick odds vs consensus odds
                 const leg = sportLegs.find(l => l.id === legId)
                 const clv = leg ? calculateLegCLV(leg.odds, leg.consensus_odds) : null
 
-                await prisma.parlayLeg.update({
-                    where: { id: legId },
-                    data: {
-                        result: grade.result,
-                        actual_value: grade.actualValue ?? null,
-                        graded_at: grade.gradedAt ?? new Date(),
-                        clv: clv ?? null
-                    }
-                })
-
-                resolved++
-                if (grade.result === 'won') won++
-                else if (grade.result === 'lost') lost++
-
-                console.log(`[CheckResults] ${leg?.team} ${leg?.bet_type}: ${grade.result.toUpperCase()}${grade.actualValue !== undefined ? ` (actual: ${grade.actualValue})` : ''}${clv !== null ? ` (CLV: ${clv > 0 ? '+' : ''}${clv}%)` : ''}`)
+                legUpdates.push(
+                    prisma.parlayLeg.update({
+                        where: { id: legId },
+                        data: {
+                            result: grade.result,
+                            actual_value: grade.actualValue ?? null,
+                            graded_at: grade.gradedAt ?? new Date(),
+                            clv: clv ?? null
+                        }
+                    }).then(() => {
+                        resolved++
+                        if (grade.result === 'won') won++
+                        else if (grade.result === 'lost') lost++
+                        console.log(`[CheckResults] ${leg?.team} ${leg?.bet_type}: ${grade.result.toUpperCase()}${grade.actualValue !== undefined ? ` (actual: ${grade.actualValue})` : ''}${clv !== null ? ` (CLV: ${clv > 0 ? '+' : ''}${clv}%)` : ''}`)
+                    })
+                )
             }
+            await Promise.all(legUpdates)
         }
 
-        // 5. Resolve full parlays and calculate payouts
+        // 5. Resolve full parlays and calculate payouts (in parallel)
         const affectedParlayIds = Array.from(new Set(pendingLegs.map(l => l.parlay_id)))
 
-        for (const parlayId of affectedParlayIds) {
-            const allLegs = await prisma.parlayLeg.findMany({
-                where: { parlay_id: parlayId }
-            })
+        await Promise.all(affectedParlayIds.map(async (parlayId) => {
+            const [allLegs, parlay] = await Promise.all([
+                prisma.parlayLeg.findMany({ where: { parlay_id: parlayId } }),
+                prisma.parlay.findUnique({ where: { id: parlayId }, select: { total_odds: true } })
+            ])
 
             const stillPending = allLegs.some(l => l.result === 'pending')
-            if (stillPending) continue
+            if (stillPending) return
 
             const anyLost = allLegs.some(l => l.result === 'lost')
             const parlayResult = anyLost ? 'lost' : 'won'
 
-            // Get the parlay for odds info
-            const parlay = await prisma.parlay.findUnique({
-                where: { id: parlayId },
-                select: { total_odds: true }
-            })
-
-            // Update BetHistory with result + payout
             const betHistories = await prisma.betHistory.findMany({
                 where: { parlay_id: parlayId, result: 'pending' }
             })
 
-            for (const bet of betHistories) {
+            await Promise.all(betHistories.map(async (bet) => {
                 const stake = bet.stake_amount ? Number(bet.stake_amount) : 0
                 const payout = parlayResult === 'won'
                     ? calculatePayout(stake, parlay?.total_odds || '+100')
@@ -166,10 +167,10 @@ export async function POST(request: Request) {
                         graded_at: new Date()
                     }
                 })
-            }
+            }))
 
             console.log(`[CheckResults] Parlay ${parlayId.slice(0, 8)}: ${parlayResult.toUpperCase()}`)
-        }
+        }))
 
         const summary = { resolved, won, lost, checked: pendingLegs.length }
         console.log(`[CheckResults] Done.`, summary)

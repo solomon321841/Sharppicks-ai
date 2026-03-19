@@ -114,6 +114,88 @@ export async function gradePlayerPropLeg(
     }
 }
 
+/**
+ * Cached version of gradePlayerPropLeg — shares ESPN fetches across props in the same game.
+ */
+async function gradePlayerPropLegCached(
+    sportKey: string,
+    playerName: string,
+    propMarket: string | null,
+    line: string,
+    team: string,
+    opponent: string | null,
+    scoreboardCache: Map<string, any>,
+    summaryCache: Map<string, any>
+): Promise<GradeResult> {
+    if (!propMarket || !line) return { result: 'pending' }
+
+    const parsed = parsePropLine(line)
+    if (!parsed) return { result: 'pending' }
+
+    const actualValue = await getPlayerActualStatCached(
+        sportKey, playerName, propMarket, team, opponent,
+        scoreboardCache, summaryCache
+    )
+
+    if (actualValue === null) {
+        console.log(`[Grader] Could not resolve prop: ${playerName} ${propMarket} ${line}`)
+        return { result: 'pending' }
+    }
+
+    if (actualValue === parsed.value) {
+        return { result: 'push', actualValue, gradedAt: new Date() }
+    }
+
+    const hit = parsed.direction === 'over'
+        ? actualValue > parsed.value
+        : actualValue < parsed.value
+
+    return {
+        result: hit ? 'won' : 'lost',
+        actualValue,
+        gradedAt: new Date()
+    }
+}
+
+/**
+ * Cached version of getPlayerActualStat — avoids redundant ESPN fetches.
+ */
+async function getPlayerActualStatCached(
+    sportKey: string,
+    playerName: string,
+    propMarket: string,
+    team: string,
+    opponent: string | null,
+    scoreboardCache: Map<string, any>,
+    summaryCache: Map<string, any>
+): Promise<number | null> {
+    const mapping = getESPNMapping(sportKey)
+    if (!mapping) return null
+
+    // Cache scoreboard per sport
+    if (!scoreboardCache.has(sportKey)) {
+        scoreboardCache.set(sportKey, await getScoreboard(sportKey))
+    }
+    const scoreboard = scoreboardCache.get(sportKey)
+    if (!scoreboard?.events) return null
+
+    const event = findESPNEvent(scoreboard.events, team, opponent)
+    if (!event) return null
+
+    const status = event.status?.type?.name || ''
+    if (status !== 'STATUS_FINAL' && status !== 'STATUS_FULL_TIME') return null
+
+    // Cache event summary per event ID
+    const eventId = event.id
+    if (!summaryCache.has(eventId)) {
+        summaryCache.set(eventId, await getEventSummary(sportKey, eventId))
+    }
+    const summary = summaryCache.get(eventId)
+    if (!summary) return null
+
+    return extractPlayerStat(summary, playerName, propMarket, sportKey)
+}
+
 // ─── ESPN Box Score Resolution ───────────────────────────────────────
 
 /**
@@ -284,6 +366,7 @@ export interface LegToGrade {
 /**
  * Grade a batch of legs for a given sport.
  * Returns a map of leg ID → GradeResult.
+ * Player props are graded in parallel with shared ESPN caches.
  */
 export async function gradeBatch(
     legs: LegToGrade[],
@@ -291,22 +374,15 @@ export async function gradeBatch(
 ): Promise<Map<string, GradeResult>> {
     const results = new Map<string, GradeResult>()
 
+    // Separate standard bets (sync) from props (async)
+    const propLegs: LegToGrade[] = []
+
     for (const leg of legs) {
         const betType = (leg.bet_type || 'moneyline').toLowerCase()
 
         if (betType.includes('prop') || betType.includes('player')) {
-            // Player props — async ESPN resolution
-            const grade = await gradePlayerPropLeg(
-                leg.sport,
-                leg.player || leg.team,
-                leg.prop_market,
-                leg.line || '',
-                leg.team,
-                leg.opponent
-            )
-            results.set(leg.id, grade)
+            propLegs.push(leg)
         } else {
-            // Standard bets — use scores API
             const game = findMatchingGame(scores, leg.team, leg.opponent)
             if (!game) continue
 
@@ -322,6 +398,33 @@ export async function gradeBatch(
             }
 
             results.set(leg.id, grade)
+        }
+    }
+
+    // Grade all player props in parallel with shared ESPN caches
+    if (propLegs.length > 0) {
+        const scoreboardCache = new Map<string, any>()
+        const summaryCache = new Map<string, any>()
+
+        const propResults = await Promise.allSettled(
+            propLegs.map(leg =>
+                gradePlayerPropLegCached(
+                    leg.sport,
+                    leg.player || leg.team,
+                    leg.prop_market,
+                    leg.line || '',
+                    leg.team,
+                    leg.opponent,
+                    scoreboardCache,
+                    summaryCache
+                ).then(grade => ({ id: leg.id, grade }))
+            )
+        )
+
+        for (const result of propResults) {
+            if (result.status === 'fulfilled') {
+                results.set(result.value.id, result.value.grade)
+            }
         }
     }
 
