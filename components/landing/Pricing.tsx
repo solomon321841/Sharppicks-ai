@@ -27,7 +27,7 @@ const tiers = [
         price: '$24',
         period: '/mo',
         description: 'For serious bettors who want control.',
-        features: ['4 Daily Picks (All Risk Levels)', '100 Custom Builder Credits/Mo*', 'All Sports + Player Props', 'Custom Parlay Builder', 'Advanced Risk Models (1-10)', 'Full Bet Tracking'],
+        features: ['4 Daily Picks (All Risk Levels)', '50 Custom Builder Credits/Mo*', 'All Sports + Player Props', 'Custom Parlay Builder', 'Advanced Risk Models (1-10)', 'Full Bet Tracking'],
         limitations: ['*Trial includes 3 total credits'],
         cta: 'Start 3-Day Free Trial',
         popular: true,
