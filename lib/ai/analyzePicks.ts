@@ -849,6 +849,10 @@ function buildErrorResponse(request: ParlayRequest, rawError: string): any {
         message = `Couldn't build a parlay matching Risk Level ${request.riskLevel} with the current games. Try adjusting the risk slider or selecting more sports.`
     } else if (err.includes('wrong bet type') || err.includes('bet type')) {
         message = `Not enough ${request.betTypes.join('/')} bets available for the selected sports. Try enabling more bet types.`
+    } else if (err.includes('too many legs') || err.includes('at least 2 legs')) {
+        message = `Not enough qualifying bets to build a ${request.numLegs}-leg parlay for the selected sports. Try fewer legs or enable more bet types.`
+    } else if (err.includes('substantive reasoning')) {
+        message = 'AI returned an incomplete parlay. Please try again.'
     } else if (err.includes('duplicate')) {
         message = `Not enough unique bets to build a ${request.numLegs}-leg parlay. Try reducing legs or selecting more sports.`
     } else if (err.includes('correlation')) {
@@ -859,13 +863,15 @@ function buildErrorResponse(request: ParlayRequest, rawError: string): any {
         message = 'AI servers are temporarily busy. Please try again in a moment.'
     } else if (err.includes('json') || err.includes('no legs') || err.includes('syntax')) {
         message = 'AI returned an invalid response. Please try again.'
-    } else if (err.includes('game_id') || err.includes('invalid') || err.includes('team')) {
+    } else if (err.includes('game_id') || err.includes('invalid') || err.includes('team') || err.includes('not in game')) {
         message = 'AI picked data that doesn\'t match live odds. Please try again — results vary each attempt.'
     } else if (err.includes('rate limit') || err.includes('rate_limit')) {
         message = 'Too many requests to the AI. Please wait a moment and try again.'
     } else {
         console.error(`[ParlayGen] Unhandled error: "${rawError}"`)
-        message = `Couldn't generate a valid parlay. Please try again — the AI may return different results on retry.`
+        // Surface a short tail of the raw error so users (and logs) can see what's actually failing
+        const tail = rawError.length > 140 ? rawError.slice(0, 140) + '…' : rawError
+        message = `Couldn't generate a valid parlay (${tail}). Please try again — the AI may return different results on retry.`
     }
 
     return {
