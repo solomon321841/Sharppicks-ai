@@ -62,7 +62,7 @@ export function getTargetRange(riskLevel: number, numLegs?: number): [number, nu
     const baseRanges: Record<number, [number, number]> = {
         1: [-500, 200],
         2: [-400, 300],
-        3: [-200, 500],
+        3: [-200, 700],
         4: [100, 700],
         5: [200, 1500],
         6: [300, 2500],
@@ -79,10 +79,12 @@ export function getTargetRange(riskLevel: number, numLegs?: number): [number, nu
 
     // Scale bounds for more legs — each additional leg beyond 2 naturally
     // compounds the combined odds even when every individual pick is safe.
-    // Safe tiers (1-3) scale slower so 4-leg parlays don't blow past chalk territory.
+    // Truly-safe tiers (risk 1-2) scale slower so 4-leg parlays don't blow
+    // past chalk territory; risk 3+ uses normal scaling so multi-leg mixed
+    // bet types (e.g. spreads at -110) can still fit.
     if (numLegs && numLegs > 2) {
         const extraLegs = numLegs - 2;
-        const upperScale = riskLevel <= 3 ? 1.25 : 1.5;
+        const upperScale = riskLevel <= 2 ? 1.25 : 1.5;
         upper = Math.round(upper * Math.pow(upperScale, extraLegs));
         // Also scale lower bound down slightly so the AI has room
         if (lower > 0) {
