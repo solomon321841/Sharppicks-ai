@@ -60,10 +60,10 @@ export function calculateCombinedParlayMetrics(legs: { odds: number }[]) {
 
 export function getTargetRange(riskLevel: number, numLegs?: number): [number, number] {
     const baseRanges: Record<number, [number, number]> = {
-        1: [-300, 400],
-        2: [-200, 500],
-        3: [100, 600],
-        4: [150, 800],
+        1: [-500, 200],
+        2: [-400, 300],
+        3: [-200, 500],
+        4: [100, 700],
         5: [200, 1500],
         6: [300, 2500],
         7: [500, 6000],
@@ -79,10 +79,11 @@ export function getTargetRange(riskLevel: number, numLegs?: number): [number, nu
 
     // Scale bounds for more legs — each additional leg beyond 2 naturally
     // compounds the combined odds even when every individual pick is safe.
-    // e.g. 3 legs of -115 each ≈ +600 combined, which exceeds a base cap of +500.
+    // Safe tiers (1-3) scale slower so 4-leg parlays don't blow past chalk territory.
     if (numLegs && numLegs > 2) {
         const extraLegs = numLegs - 2;
-        upper = Math.round(upper * Math.pow(1.5, extraLegs));
+        const upperScale = riskLevel <= 3 ? 1.25 : 1.5;
+        upper = Math.round(upper * Math.pow(upperScale, extraLegs));
         // Also scale lower bound down slightly so the AI has room
         if (lower > 0) {
             lower = Math.round(lower * Math.pow(0.8, extraLegs));

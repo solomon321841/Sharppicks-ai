@@ -144,7 +144,7 @@ Return ONLY the JSON. No markdown, no explanation, no wrapping.`
 
 // ─── Risk personality definitions ──────────────────────────────────────
 function getRiskPersonality(risk: number): { label: string, instructions: string } {
-    if (risk <= 2) {
+    if (risk <= 3) {
         return {
             label: 'SAFE — Lock It In',
             instructions: `PICK SELECTION STRATEGY:
@@ -235,8 +235,10 @@ export async function analyzePicks(request: ParlayRequest) {
     }
 
     // Check: enough games for the requested legs (no-correlation check)
-    if (request.riskLevel <= 5 && simplifiedGames.length < request.numLegs) {
-        // At low risk, each leg must be a different game
+    // Player props from the same game are NOT correlated, so the per-game cap
+    // only applies when the parlay is built from non-prop bet types.
+    const hasPropsInRequest = request.betTypes.includes('player_props')
+    if (request.riskLevel <= 5 && !hasPropsInRequest && simplifiedGames.length < request.numLegs) {
         if (simplifiedGames.length < 2) {
             return buildErrorResponse(request, `Only ${simplifiedGames.length} game(s) available. Need at least 2 games to build a safe parlay. Try selecting more sports.`)
         }
@@ -335,7 +337,8 @@ export async function analyzePicks(request: ParlayRequest) {
 
 // ─── Minify games for AI context ───────────────────────────────────────
 function minifyGames(request: ParlayRequest): any[] {
-    return request.oddsData.slice(0, 10).map(g => {
+    // Cap at 20 games to give the AI enough material for multi-leg + prop parlays
+    return request.oddsData.slice(0, 20).map(g => {
         const requiredMarkets: string[] = []
         if (request.betTypes.includes('moneyline')) requiredMarkets.push('h2h')
         if (request.betTypes.includes('spread')) requiredMarkets.push('spreads')
