@@ -254,7 +254,7 @@ export async function analyzePicks(request: ParlayRequest) {
     // ── Call AI with retry loop ──────────────────────────────────────
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
     let lastError = ''
-    const maxAttempts = request.fastMode ? 1 : 2
+    const maxAttempts = request.fastMode ? 1 : 3
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -859,8 +859,8 @@ function buildErrorResponse(request: ParlayRequest, rawError: string): any {
         message = `Couldn't build a parlay matching Risk Level ${request.riskLevel} with the current games. Try adjusting the risk slider or selecting more sports.`
     } else if (err.includes('wrong bet type') || err.includes('bet type')) {
         message = `Not enough ${request.betTypes.join('/')} bets available for the selected sports. Try enabling more bet types.`
-    } else if (err.includes('too many legs') || err.includes('at least 2 legs')) {
-        message = `Not enough qualifying bets to build a ${request.numLegs}-leg parlay for the selected sports. Try fewer legs or enable more bet types.`
+    } else if (err.includes('too many legs') || err.includes('at least 2 legs') || err.includes('wrong leg count')) {
+        message = `AI couldn't build a parlay with exactly ${request.numLegs} legs from the available games. Try fewer legs or enable more bet types.`
     } else if (err.includes('substantive reasoning')) {
         message = 'AI returned an incomplete parlay. Please try again.'
     } else if (err.includes('duplicate')) {
