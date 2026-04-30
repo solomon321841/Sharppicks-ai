@@ -65,9 +65,13 @@ These are GUIDELINES for pick style, not hard rules. Always build the parlay eve
 
 ${riskPersonality.instructions}
 
-The user chose ${numLegs} legs. Your combined parlay odds MUST fall within the target range for this risk level and leg count. Pick individual legs with odds that will combine to hit this target:
+## LEG COUNT (NON-NEGOTIABLE)
+You MUST return EXACTLY ${numLegs} legs. Not ${numLegs - 1}, not ${numLegs + 1}. EXACTLY ${numLegs}.
+This is the user's explicit choice — returning a different count is a hard failure.
+
+Your combined parlay odds MUST also fall within the target range for this risk level and leg count. Pick individual legs with odds that will combine to hit this target:
 ${(() => { const [lo, hi] = getTargetRange(riskLevel, numLegs); return `- Target combined odds: ${lo > 0 ? '+' : ''}${lo} to +${hi}`; })()}
-If your picks would exceed this range, choose SAFER individual legs (heavier favorites, lower prop lines).
+If you cannot fit ${numLegs} legs in this range, pick SAFER individual legs (heavier favorites, lower prop lines) — DO NOT reduce the leg count.
 
 ## CORRELATION RULES
 - Player props from the SAME game but DIFFERENT players are always allowed at any risk level.
@@ -497,9 +501,12 @@ function validateResult(result: any, request: ParlayRequest): { valid: boolean, 
         return { valid: false, error: 'Each leg needs substantive reasoning (at least 15 chars). Explain the statistical edge.' }
     }
 
-    // 4. Validate leg count
-    if (legs.length > request.numLegs) {
-        return { valid: false, error: `Too many legs (${legs.length}). Maximum is ${request.numLegs} for Risk ${request.riskLevel}.` }
+    // 4. Validate leg count — must be EXACTLY numLegs (the user picked it)
+    if (legs.length !== request.numLegs) {
+        return {
+            valid: false,
+            error: `Wrong leg count: returned ${legs.length} legs but the user requested EXACTLY ${request.numLegs}. Return exactly ${request.numLegs} legs.`
+        }
     }
 
     if (legs.length < 2) {
